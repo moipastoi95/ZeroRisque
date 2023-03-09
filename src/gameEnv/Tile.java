@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Tile {
 
 	private int id;
+	private Continent continent;
 	private String name;
 	private Player occupier;
 	private int numTroops;
@@ -15,8 +16,9 @@ public class Tile {
 	 * @param id : id of the Tile
 	 * @param name : the name of the territory
 	 */
-	public Tile(int id, String name) {
+	public Tile(int id, Continent continent, String name) {
 		this.id = id;
+		this.continent = continent;
 		this.name = name;
 		this.occupier = null;
 		this.numTroops = 0;

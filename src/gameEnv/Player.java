@@ -23,6 +23,7 @@ public class Player {
 	/**
 	 * Add a tile to the list of the player's tiles
 	 * @param tile : the new tile
+	 * @author Vincent
 	 */
 	public void addTile(Tile tile) {
 		tiles.add(tile);

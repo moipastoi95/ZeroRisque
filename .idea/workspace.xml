@@ -5,9 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79af91a6-2af3-403b-8bc1-11986e578c7d" name="Changes" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gameEnv/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gameEnv/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gameEnv/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gameEnv/Tile.java" afterDir="false" />
+=======
+      <change afterPath="$PROJECT_DIR$/src/gameEnv/Continent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> 12e6317da3bdfa202e45465e692e660072268c36
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +22,23 @@
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="Git.Settings">
+=======
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Enum" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+>>>>>>> 12e6317da3bdfa202e45465e692e660072268c36
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -37,6 +58,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+<<<<<<< HEAD
     "last_opened_file_path": "C:/Users/CYTech Student/IdeaProjects/ZeroRisque/src",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -45,6 +67,8 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
+=======
+>>>>>>> 12e6317da3bdfa202e45465e692e660072268c36
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -61,11 +85,41 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1678357251596</updated>
+<<<<<<< HEAD
       <workItem from="1678357253412" duration="4340000" />
+=======
+      <workItem from="1678358132786" duration="2440000" />
+>>>>>>> 12e6317da3bdfa202e45465e692e660072268c36
     </task>
+    <task id="LOCAL-00001" summary="Creation de ma branche (la meilleure)">
+      <created>1678359297433</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1678359297433</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+<<<<<<< HEAD
+=======
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Creation de ma branche (la meilleure)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Creation de ma branche (la meilleure)" />
+  </component>
+>>>>>>> 12e6317da3bdfa202e45465e692e660072268c36
 </project>

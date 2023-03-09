@@ -1,0 +1,83 @@
+Alaska:Northwest Territory
+Alaska:Alberta
+Alaska:Kamchatka
+Alberta:Western US
+Alberta:Ontario
+Alberta:Northwest Territory
+Central America:Western US
+Central America:Eastern US
+Central America:Venezuela
+Eastern US:Western US
+Eastern US:Ontario
+Eastern US:Quebec
+Greenland:Quebec
+Greenland:Ontario
+Greenland:Northwest Territory
+Greenland:Iceland
+Northwest Territory:Ontario
+Ontario:Quebec
+Ontario:Western US
+Argentina:Peru
+Argentina:Brazil
+Brazil:Peru
+Brazil:Venezuela
+Brazil:North Africa
+Venezuela:Peru
+Great Britain:Iceland
+Great Britain:Scandinavia
+Great Britain:Northern Europe
+Great Britain:Western Europe
+Iceland:Scandinavia
+Northern Europe:Scandinavia
+Northern Europe:Western Europe
+Northern Europe:Southern Europe
+Northern Europe:Ukraine
+Scandinavia:Ukraine
+Southern Europe:Western Europe
+Southern Europe:North Africa
+Southern Europe:Egypt
+Southern Europe:Ukraine
+Southern Europe:Middle East
+Ukraine:Middle East
+Ukraine:Afghanistan
+Ukraine:Ural
+Western Europe:North Africa
+Congo:North Africa
+Congo:East Africa
+Congo:South Africa
+East Africa:Egypt
+East Africa:North Africa
+East Africa:South Africa
+East Africa:Madagascar
+East Africa:Middle East
+Egypt:North Africa
+Egypt:Middle East
+Madagascar:South Africa
+Afghanistan:Middle East
+Afghanistan:India
+Afghanistan:China
+Afghanistan:Ural
+China:India
+China:Siam
+China:Mongolia
+China:Siberia
+China:Ural
+India:Middle East
+India:Siam
+Irkutsk:Mongolia
+Irkutsk:Siberia
+Irkutsk:Yakutsk
+Irkutsk:Kamchatka
+Japan:Kamchatka
+Japan:Mongolia
+Kamchatka:Yakutsk
+Kamchatka:Mongolia
+Mongolia:Siberia
+Siam:Indonesia
+Siberia:Ural
+Siberia:Yakutsk
+Eastern Australia:Western Australia
+Eastern Australia:New Guinea
+New Guinea:Indonesia
+New Guinea:Western Australia
+Indonesia:Western Australia
