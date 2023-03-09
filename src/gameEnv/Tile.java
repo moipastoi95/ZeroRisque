@@ -32,6 +32,16 @@ public class Tile {
 			neighbors.add(tile);
 		}
 	}
+
+	/**
+	 * Add a list of tiles as neighbors
+	 * @param tiles : list of tiles
+	 */
+	public void addNeighbors(ArrayList<Tile> tiles) {
+		for(Tile item : tiles) {
+			addNeighbor(item);
+		}
+	}
 	
 	/**
 	 * Put a player on a tile. Moreover, give the new player a ref to the tile and remove the ref from the other player.
