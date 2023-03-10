@@ -10,13 +10,20 @@ import java.util.HashMap;
 public class RandomAgent extends Agent{
 
     /**
-     * Main constructor
-     *
+     * Typically used to create the neutral player //TODO A enlever quand on aura créer l'agent neutre
      * @param color : String of the color
      * @param game  : ref to the game object
      */
     public RandomAgent(String color, Game game) {
         super(color, game);
+    }
+
+    /**
+     * Used to create the players before the game, typically the red and blue players
+     * @param color : String of the color
+     */
+    public RandomAgent(String color) {
+        super(color);
     }
 
     public Actions action(int numTroops) {

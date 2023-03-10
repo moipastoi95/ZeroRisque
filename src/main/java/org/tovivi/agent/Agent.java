@@ -9,17 +9,19 @@ public abstract class Agent {
 
     private String color;
     private ArrayList<Tile> tiles;
-    private Game mGame;
+    private Game game;
 
     /**
-     * Main constructor
      * @param color : String of the color
      * @param game : ref to the game object
      * */
     public Agent(String color, Game game) {
         this.color = color;
         this.tiles = new ArrayList<>();
-        this.mGame = game;
+        this.game = game;
+    }
+    public Agent(String color) {
+        this(color, null);
     }
 
     /**
@@ -51,6 +53,14 @@ public abstract class Agent {
                 i.remove();
             }
         }
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     /**

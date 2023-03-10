@@ -56,7 +56,7 @@ public class Tile {
      * @param numTroops : the number of troops to put on it. Has to be greater or equal to 1
      */
     public void setOccupier(Agent p, int numTroops) {
-        if (numTroops < 1) {
+        if (numTroops >= 1) {
             p.addTile(this);
             if (this.occupier != null) {
                 this.occupier.removeTile(this);
@@ -64,6 +64,10 @@ public class Tile {
             continent_support.firePropertyChange("newOccupier", this.occupier, p);
             this.occupier = p;
             this.numTroops = numTroops;
+        }
+        else {
+            //TODO Faire des exceptions propres pour ce genre de cas... oui c'est chiant je sais
+            System.out.println("Invalid number of troops");
         }
     }
 
