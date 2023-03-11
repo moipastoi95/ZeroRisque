@@ -1,9 +1,7 @@
 package org.tovivi.environment.action;
 
-import java.util.ArrayList;
-
 public class Actions {
-    private Deployment deployment;
+    private MultiDeploy deployment;
     private Offensive firstOffensive;
 
     /**
@@ -12,12 +10,12 @@ public class Actions {
      * @param firstAttack the first attack to do
      * @param fortify the Fortify move
      */
-    public Actions(Deployment deployment, Offensive firstOffensive) {
+    public Actions(MultiDeploy deployment, Offensive firstOffensive) {
         this.deployment = deployment;
         this.firstOffensive = firstOffensive;
     }
 
-    public Deployment getDeployment() {
+    public MultiDeploy getDeployment() {
         return deployment;
     }
 

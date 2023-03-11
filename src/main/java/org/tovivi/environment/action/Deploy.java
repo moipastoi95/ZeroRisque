@@ -1,10 +1,11 @@
 package org.tovivi.environment.action;
 
+import org.tovivi.agent.Agent;
 import org.tovivi.environment.*;
 
 import java.util.ArrayList;
 
-public class Deploy {
+public class Deploy extends Deployment {
     private int numTroops = 0;
     private Tile tile;
 
@@ -29,8 +30,11 @@ public class Deploy {
         return numTroops;
     }
 
-    public Tile getTile() {
-        return tile;
+    @Override
+    public ArrayList<Tile> getTiles() {
+        ArrayList<Tile> tiles = new ArrayList<Tile>();
+        tiles.add(tile);
+        return tiles;
     }
 
     /**
@@ -47,5 +51,50 @@ public class Deploy {
             return "[Deploy:null -> +0]";
         }
         return "[Deploy:" + tile.getName() + " -> +" + numTroops + "]";
+    }
+
+    @Override
+    boolean isMoveLegal(Agent player) {
+        return tile.getOccupier().equals(player) && player.getNumDeploy() >= numTroops;
+    }
+
+    @Override
+    public boolean perform(Agent player) {
+        if (!super.perform(player)) {
+            return false;
+        }
+
+        if (!isMoveLegal(player)) {
+            return false;
+        }
+
+        if (!stopDeploy()) {
+            tile.setNumTroops(tile.getNumTroops() + getNumTroops());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean doSimulation() {
+        if (!super.doSimulation()) {
+            return false;
+        }
+        // perform it
+        if (!stopDeploy()) {
+            tile.setNumTroops(tile.getNumTroops() + getNumTroops());
+        }
+        return true;
+    }
+
+    @Override
+    public boolean undoSimulation() {
+        if (!super.undoSimulation()) {
+            return false;
+        }
+        // perform it
+        if (!stopDeploy()) {
+            tile.setNumTroops(tile.getNumTroops() - getNumTroops());
+        }
+        return true;
     }
 }

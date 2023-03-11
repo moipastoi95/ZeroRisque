@@ -6,12 +6,8 @@ import org.tovivi.agent.Legume;
 import org.tovivi.agent.RandomAgent;
 import org.tovivi.environment.action.Actions;
 
-import javax.swing.text.PlainDocument;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 public class Game {
 
@@ -20,17 +16,88 @@ public class Game {
     private HashMap<String, Continent> continents = new HashMap<>();
     private HashMap<String, Tile> tiles = new HashMap<>();
     private HashMap<String, Agent> players = new HashMap<>();
+    private Stack<Card> theStack = new Stack<>();
 
     public Game() {
-        // number of troops per players
-        int troops = 35;
+
+        setupElements();
+        configElements();
+
+        // for each player --> deploy, attack, fortify
+        int index = 0;
+        ArrayList<Agent> turns = new ArrayList<>(players.values());
+        while(turns.size() > 1) {
+            Agent p = turns.get(index); // Perry the platypus
+            Actions a = p.action();
+            int territories = p.getTiles().size();
+
+            System.out.println("Player " + p.getColor() + "'s turn");
+
+            // deploy
+            if (a.getDeployment().perform(p)) {
+                System.out.println("    [Success] :: " + a.getDeployment().toString());
+            } else {
+                System.out.println("    [Failed] :: " + a.getDeployment().toString());
+            }
+
+            // attack
+            if (a.getFirstOffensive().perform(p)) {
+                System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
+            } else {
+                System.out.println("    [Failed] :: " + a.getFirstOffensive().toString());
+            }
+
+            System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
+
+            // check if one or more of the players lose
+            Iterator<Agent> iterator = turns.iterator();
+            while (iterator.hasNext()) {
+                Agent agent = iterator.next();
+                if (agent.getTiles().size() == 0) {
+                    iterator.remove();
+                    System.out.println("[DEAD] The player " + agent.getColor() + " DIED like a beetroot !");
+                    // give the player the cards
+                    p.getDeck().addAll(agent.getDeck());
+                }
+            }
+
+            // check if the player could retrieve cards
+            if (p.getTiles().size() > territories && theStack.size() > 0) {
+                p.getDeck().add(theStack.pop());
+            }
+
+            // next player
+            index += 1;
+            if (index >= turns.size()) {
+                index = 0;
+            }
+        }
+        System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
+    }
+
+    private void setupElements() {
+        // the map
+        TextReader tr = new TextReader();
+        tr.readAll(this, env_data);
+
         // x players of less
         players.put("Blue", new RandomAgent("Blue", this));
         players.put("Red", new RandomAgent("Red", this));
         players.put("Grey", new Legume("Grey", this));
 
-        TextReader tr = new TextReader();
-        tr.readAll(this, env_data);
+        // the stack
+        for(CardType type : CardType.values()) {
+            for(Tile tile : tiles.values()) {
+                theStack.push(new Card(type, tile));
+            }
+        }
+        // shuffle the stack
+        Collections.shuffle(theStack);
+    }
+
+    private void configElements() {
+        // number of troops per players
+        int troops = 35;
 
         if (troops < (int)(tiles.size()/players.size())) {
             System.out.println("Not enough troops");
@@ -55,49 +122,6 @@ public class Game {
                 tile.setNumTroops(tile.getNumTroops()+1);
             }
         }
-
-        // for each player --> deploy, attack, fortify
-        int index = 0;
-        ArrayList<Agent> turns = new ArrayList<>(players.values());
-        while(turns.size() > 1) {
-            Agent p = turns.get(index);
-            Actions a = p.action();
-
-            System.out.println("Player " + p.getColor() + "'s turn");
-
-            // deploy
-            if (a.getDeployment().perform(p)) {
-                System.out.println("    [Success] :: " + a.getDeployment().toString());
-            } else {
-                System.out.println("    [Failed] :: " + a.getDeployment().toString());
-            }
-
-            // attack
-            if (a.getFirstOffensive().perform(p)) {
-                System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
-            } else {
-                System.out.println("    [Failed] :: " + a.getFirstOffensive().toString());
-            }
-
-            System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
-
-            // check if players lose
-            Iterator<Agent> iterator = turns.iterator();
-            while (iterator.hasNext()) {
-                Agent agent = iterator.next();
-                if (agent.getTiles().size() == 0) {
-                    iterator.remove();
-                    System.out.println("[DEAD] The player " + agent.getColor() + " is DEAD like a beetroot !");
-                }
-            }
-
-            // next player
-            index += 1;
-            if (index >= turns.size()) {
-                index = 0;
-            }
-        }
-        System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
     }
 
     public HashMap<String, Continent> getContinents() {
@@ -122,7 +146,7 @@ public class Game {
 
     public static void main(String[] args) throws IOException {
         // this main function will just start the game, with parameters (list of player, list of tiles)
-        // the Game object will make players play, and restrict time for turn. It will ends by giving the winner
-        Game g = new Game() ;
+        // the Game object will make players play, and restrict time for turn. It will end by giving the winner
+        new Game() ;
     }
 }

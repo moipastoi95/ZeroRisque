@@ -17,10 +17,10 @@ public class RandomAgent extends Agent{
      * Main constructor
      *
      * @param color : String of the color
-     * @param mGame  : ref to the game object
+     * @param game  : ref to the game object
      */
-    public RandomAgent(String color, Game mGame) {
-        super(color, mGame);
+    public RandomAgent(String color, Game game) {
+        super(color, game);
     }
 
     @Override
@@ -47,17 +47,28 @@ public class RandomAgent extends Agent{
         ArrayList<Tile> frontKeys = new ArrayList<>(front.keySet());
         Tile fromTile = frontKeys.get((int)(Math.random() * frontKeys.size()));
 
+        // if cards owned, use them
+        ArrayList<Deployment> depL = new ArrayList<>();
+        ArrayList<Card> goodCards = Card.chooseCards(getDeck(), this);
+        int goodCardsValue = Card.value(goodCards, this);
+        if (goodCardsValue > 0) {
+            depL.add(new PlayCards(goodCards, this));
+        }
         // deploy all troops on this tile
-        Deploy dep = new Deploy(numTroops, fromTile);
-        ArrayList<Deploy> depL = new ArrayList<>();
-        depL.add(dep);
-        Deployment deployPart = new Deployment(depL);
+        depL.add(new Deploy(numTroops+goodCardsValue, fromTile));
+        MultiDeploy deployPart = new MultiDeploy(depL);
+
+        // do a simulation to create the attack part
+        deployPart.doSimulation();
 
         // attack a random tile next to the tile chosen
         ArrayList<Tile> frontValue = front.get(fromTile);
         Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
 
         Offensive offensivePart = new Attack(fromTile, toTile, fromTile.getNumTroops()-1, new Fortify(), new Fortify());
+
+        // don't forget to undo the simulation
+        deployPart.undoSimulation();
 
         return new Actions(deployPart, offensivePart);
     }

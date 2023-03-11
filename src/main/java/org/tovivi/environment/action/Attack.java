@@ -139,8 +139,8 @@ public class Attack extends Offensive{
     }
 
     @Override
-    public boolean doSimulation(Game game) {
-        if (!super.doSimulation(game)) {
+    public boolean doSimulation() {
+        if (!super.doSimulation()) {
             return false;
         }
 
@@ -155,8 +155,8 @@ public class Attack extends Offensive{
     }
 
     @Override
-    public boolean undoSimulation(Game game) {
-        if (!super.undoSimulation(game)) {
+    public boolean undoSimulation() {
+        if (!super.undoSimulation()) {
             return false;
         }
 

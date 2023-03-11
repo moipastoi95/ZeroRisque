@@ -11,17 +11,19 @@ public abstract class Agent {
 
     private String color;
     private ArrayList<Tile> tiles;
-    private Game mGame;
+    private Game game;
+    private ArrayList<Card> deck;
 
     /**
      * Main constructor
      * @param color : String of the color
      * @param game : ref to the game object
      * */
-    public Agent(String color, Game mGame) {
+    public Agent(String color, Game game) {
         this.color = color;
         this.tiles = new ArrayList<>();
-        this.mGame = mGame;
+        this.game = game;
+        this.deck = new ArrayList<>();
     }
 
     /**
@@ -31,10 +33,6 @@ public abstract class Agent {
      */
     public void addTile(Tile tile) {
         tiles.add(tile);
-    }
-
-    public Game getGame() {
-        return mGame;
     }
 
     /**
@@ -61,11 +59,19 @@ public abstract class Agent {
         return this.color;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public ArrayList<Card> getDeck() {
+        return deck;
+    }
+
     /**
      * Get the number of troops the player is able to deploy at each turn
      * @return the number of troops
      */
-    public int getNumDeploy() {
+    public final int getNumDeploy() {
         int total = 0;
         if (getTiles().size() <= 3) {
             total = 3;

@@ -19,7 +19,8 @@ public abstract class Actuator {
 
     /**
      * Perform the action of the actuator
-     * @return if the action has been well performed
+     * @return if the action has been well performed (without bugs).
+     * For instance, if an attack has failed, it will return true, because it was a legal move.
      */
     public boolean perform(Agent player) {
         if (runningSimulation) {
@@ -29,10 +30,10 @@ public abstract class Actuator {
     }
 
     /**
-     * Simulate the game after moves
+     * Simulate the game after moves. Won't check if the move is legal
      * @return tiles : the state of the game before the moves. Be careful, it will be modified
      */
-    public boolean doSimulation(Game game) {
+    public boolean doSimulation() {
         if (!runningSimulation) {
             runningSimulation = true;
             return true;
@@ -41,7 +42,7 @@ public abstract class Actuator {
         return false;
 
     }
-    public boolean undoSimulation(Game game) {
+    public boolean undoSimulation() {
         if (runningSimulation) {
             runningSimulation = false;
             return true;
