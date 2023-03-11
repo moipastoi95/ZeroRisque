@@ -2,7 +2,9 @@ package org.tovivi.environment.action;
 
 import org.tovivi.environment.*;
 
-public class Deploy extends Deployment {
+import java.util.ArrayList;
+
+public class Deploy {
     private int numTroops = 0;
     private Tile tile;
 
@@ -16,11 +18,34 @@ public class Deploy extends Deployment {
         this.tile = tile;
     }
 
+    /**
+     * Deploy 0 units
+     */
+    public Deploy() {
+        this(0, null);
+    }
+
     public int getNumTroops() {
         return numTroops;
     }
 
     public Tile getTile() {
         return tile;
+    }
+
+    /**
+     * Specify if the player doesn't want to deploy troops
+     * @return
+     */
+    public boolean stopDeploy() {
+        return numTroops == 0 && tile == null;
+    }
+
+    @Override
+    public String toString() {
+        if (stopDeploy()) {
+            return "[Deploy:null -> +0]";
+        }
+        return "[Deploy:" + tile.getName() + " -> +" + numTroops + "]";
     }
 }
