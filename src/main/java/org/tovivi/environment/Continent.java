@@ -7,8 +7,6 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
 public class Continent implements PropertyChangeListener {
-
-
     private String name;
     private int bonus;
     private int nbTiles;
@@ -62,12 +60,12 @@ public class Continent implements PropertyChangeListener {
      * @param occupier : the player that possess the continent
      * @param players : the hashmap which links the players to their number of tiles in the continent
      */
-    public Continent(String name, int bonus, int nbTiles, Agent occupier, HashMap<Agent, Integer> players) {
+    public Continent(String name, int bonus, int nbTiles) {
         this.bonus = bonus;
         this.name = name;
         this.nbTiles = nbTiles;
-        this.players = players;
-        this.occupier = occupier;
+        this.occupier = null;
+        this.players = new HashMap<Agent, Integer>();
     }
 
     @Override

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 public class Tile {
 
-    private int id;
     private Continent continent;
     private String name;
     private Agent occupier;
@@ -56,7 +55,7 @@ public class Tile {
      * @param numTroops : the number of troops to put on it. Has to be greater or equal to 1
      */
     public void setOccupier(Agent p, int numTroops) {
-        if (numTroops < 1) {
+        if (numTroops >= 1) {
             p.addTile(this);
             if (this.occupier != null) {
                 this.occupier.removeTile(this);
@@ -65,10 +64,6 @@ public class Tile {
             this.occupier = p;
             this.numTroops = numTroops;
         }
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
@@ -83,8 +78,12 @@ public class Tile {
         return numTroops;
     }
 
+    /**
+     * Set the num of troops
+     * @param numTroops Has to be positive. 0 is allowed
+     */
     public void setNumTroops(int numTroops) {
-        if (numTroops >= 1) {
+        if (numTroops >= 0) {
             this.numTroops = numTroops;
         }
     }
