@@ -18,7 +18,7 @@ public abstract class Actuator {
     abstract boolean isMoveLegal(Agent player);
 
     /**
-     * Perform the action of the actuator
+     * Perform the action of the actuator. Should verify if the move is legal (to implement in the function).
      * @return if the action has been well performed (without bugs).
      * For instance, if an attack has failed, it will return true, because it was a legal move.
      */

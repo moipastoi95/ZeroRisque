@@ -40,10 +40,7 @@ public class MultiDeploy extends Deployment {
                 return false;
             }
         }
-        // make sure to deploy a limited number of troops
-        if (getNumTroops() > player.getNumDeploy()) {
-            return false;
-        }
+
         return true;
     }
 
@@ -88,7 +85,7 @@ public class MultiDeploy extends Deployment {
         }
 
         // be careful to the order
-        ListIterator<Deployment> it = deploys.listIterator();
+        ListIterator<Deployment> it = deploys.listIterator(deploys.size());
         while(it.hasPrevious()) {
             if (!it.previous().undoSimulation()) {
                 return false;
@@ -127,6 +124,15 @@ public class MultiDeploy extends Deployment {
             count += dep.getNumTroops();
         }
         return count;
+    }
+
+    @Override
+    public boolean isNumTroopsLegal(Agent player) {
+        // make sure to deploy a limited number of troops
+        if (getNumTroops() > player.getNumDeploy()) {
+            return false;
+        }
+        return true;
     }
 
     /**

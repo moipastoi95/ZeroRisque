@@ -25,4 +25,11 @@ public abstract class Deployment extends Actuator {
      * @return an integer
      */
     public abstract int getNumTroops();
+
+    /**
+     * Is the num of troops involve is allowed
+     * @param player the player who owns the troops
+     * @return yes it is legal !
+     */
+    public abstract boolean isNumTroopsLegal(Agent player);
 }

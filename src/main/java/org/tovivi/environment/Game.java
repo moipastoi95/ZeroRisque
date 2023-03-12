@@ -8,11 +8,15 @@ import org.tovivi.environment.action.Actions;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class Game {
 
     final private static String[] env_data = {"continent-bonus", "continent-country", "country-neighbor"};
-
+    // number of troops per players
+    final private int troops = 35;
+    //  max time per turn
+    final private int timeout = 6;
     private HashMap<String, Continent> continents = new HashMap<>();
     private HashMap<String, Tile> tiles = new HashMap<>();
     private HashMap<String, Agent> players = new HashMap<>();
@@ -26,45 +30,64 @@ public class Game {
         // for each player --> deploy, attack, fortify
         int index = 0;
         ArrayList<Agent> turns = new ArrayList<>(players.values());
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        System.out.println("Let's begin !");
         while(turns.size() > 1) {
             Agent p = turns.get(index); // Perry the platypus
-            Actions a = p.action();
-            int territories = p.getTiles().size();
-
             System.out.println("Player " + p.getColor() + "'s turn");
 
-            // deploy
-            if (a.getDeployment().perform(p)) {
-                System.out.println("    [Success] :: " + a.getDeployment().toString());
-            } else {
-                System.out.println("    [Failed] :: " + a.getDeployment().toString());
-            }
+            Future<Actions> future = executor.submit(p);
+            try {
+                Actions a = future.get(timeout, TimeUnit.SECONDS);
 
-            // attack
-            if (a.getFirstOffensive().perform(p)) {
-                System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
-            } else {
-                System.out.println("    [Failed] :: " + a.getFirstOffensive().toString());
-            }
+                int territories = p.getTiles().size();
 
-            System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
-
-            // check if one or more of the players lose
-            Iterator<Agent> iterator = turns.iterator();
-            while (iterator.hasNext()) {
-                Agent agent = iterator.next();
-                if (agent.getTiles().size() == 0) {
-                    iterator.remove();
-                    System.out.println("[DEAD] The player " + agent.getColor() + " DIED like a beetroot !");
-                    // give the player the cards
-                    p.getDeck().addAll(agent.getDeck());
+                // deploy
+                if(a.getDeployment().isNumTroopsLegal(p)) {
+                    if (a.getDeployment().perform(p)) {
+                        System.out.println("    [Success] :: " + a.getDeployment().toString());
+                    } else {
+                        System.out.println("    [Failed:illegal move] :: " + a.getDeployment().toString());
+                    }
+                } else {
+                    System.out.println("    [Failed:too many troops] :: " + a.getDeployment().toString());
                 }
+
+
+                // attack
+                if (a.getFirstOffensive().perform(p)) {
+                    System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
+                } else {
+                    System.out.println("    [Failed:illegal move] :: " + a.getFirstOffensive().toString());
+                }
+
+                System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
+
+                // check if one or more of the players lose
+                Iterator<Agent> iterator = turns.iterator();
+                while (iterator.hasNext()) {
+                    Agent agent = iterator.next();
+                    if (agent.getTiles().size() == 0) {
+                        iterator.remove();
+                        System.out.println("[DEAD] The player " + agent.getColor() + " DIED like a beetroot !");
+                        // give the player the cards
+                        p.getDeck().addAll(agent.getDeck());
+                    }
+                }
+
+                // check if the player could retrieve cards
+                if (p.getTiles().size() > territories && theStack.size() > 0) {
+                    p.getDeck().add(theStack.pop());
+                }
+
+            } catch (TimeoutException e) {
+                future.cancel(true);
+                System.out.println("    [TIMEOUT => ending " + p.getColor() + "'s turn]");
+            } catch (Exception e) {
+                System.out.println("    [Error] " + e);
             }
 
-            // check if the player could retrieve cards
-            if (p.getTiles().size() > territories && theStack.size() > 0) {
-                p.getDeck().add(theStack.pop());
-            }
+            // executor.shutdownNow();
 
             // next player
             index += 1;
@@ -72,6 +95,7 @@ public class Game {
                 index = 0;
             }
         }
+        executor.shutdownNow();
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
     }
 
@@ -96,8 +120,6 @@ public class Game {
     }
 
     private void configElements() {
-        // number of troops per players
-        int troops = 35;
 
         if (troops < (int)(tiles.size()/players.size())) {
             System.out.println("Not enough troops");

@@ -56,7 +56,7 @@ public class PlayCards extends Deployment {
      */
     @Override
     public boolean undoSimulation() {
-        if (!super.doSimulation()) {
+        if (!super.undoSimulation()) {
             return false;
         }
         return true;
@@ -79,6 +79,11 @@ public class PlayCards extends Deployment {
     @Override
     public int getNumTroops() {
         return -Card.value(cards, player);
+    }
+
+    @Override
+    public boolean isNumTroopsLegal(Agent player) {
+        return true;
     }
 
     @Override

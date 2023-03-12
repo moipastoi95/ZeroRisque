@@ -31,6 +31,11 @@ public class Deploy extends Deployment {
     }
 
     @Override
+    public boolean isNumTroopsLegal(Agent player) {
+        return player.getNumDeploy() >= numTroops;
+    }
+
+    @Override
     public ArrayList<Tile> getTiles() {
         ArrayList<Tile> tiles = new ArrayList<Tile>();
         tiles.add(tile);
@@ -55,7 +60,7 @@ public class Deploy extends Deployment {
 
     @Override
     boolean isMoveLegal(Agent player) {
-        return tile.getOccupier().equals(player) && player.getNumDeploy() >= numTroops;
+        return tile.getOccupier().equals(player);
     }
 
     @Override

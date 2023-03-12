@@ -2,7 +2,6 @@ package org.tovivi.environment;
 
 import org.tovivi.agent.Agent;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Card {

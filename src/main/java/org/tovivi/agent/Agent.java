@@ -6,8 +6,9 @@ import org.tovivi.environment.action.Actions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.Callable;
 
-public abstract class Agent {
+public abstract class Agent implements Callable<Actions> {
 
     private String color;
     private ArrayList<Tile> tiles;
@@ -109,5 +110,10 @@ public abstract class Agent {
             return p.getColor() == this.getColor();
         }
         return false;
+    }
+
+    @Override
+    public Actions call() throws Exception {
+        return action();
     }
 }
