@@ -1,11 +1,8 @@
 package org.tovivi.environment.action;
 
 import org.tovivi.agent.Agent;
-import org.tovivi.environment.Game;
-import org.tovivi.environment.Tile;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import org.tovivi.environment.action.exceptions.IllegalActionException;
+import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 public abstract class Actuator {
 
@@ -22,15 +19,13 @@ public abstract class Actuator {
      * @return if the action has been well performed (without bugs).
      * For instance, if an attack has failed, it will return true, because it was a legal move.
      */
-    public boolean perform(Agent player) {
-        if (runningSimulation) {
-            System.out.println("Cannot perform the actuator. A simulation is in processing");
-        }
+    public abstract Actuator perform(Agent player) throws SimulationRunningException, IllegalActionException;
+
+    public boolean isSimulating() {
         return !runningSimulation;
     }
-
     /**
-     * Simulate the game after moves. Won't check if the move is legal
+     * Simulate the game after moves. Won't check if the move is legal. Not recursive.
      * @return tiles : the state of the game before the moves. Be careful, it will be modified
      */
     public boolean doSimulation() {

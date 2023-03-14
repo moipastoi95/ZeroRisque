@@ -35,8 +35,23 @@ public class Legume extends Agent{
         MultiDeploy deployPart = new MultiDeploy(depL);
 
         // no attack
-        Attack attackPart = new Attack();
+        Offensive attackPart = new Fortify();
 
         return new Actions(deployPart, attackPart);
+    }
+
+    @Override
+    public Deployment getNextDeploy() {
+        return null;
+    }
+
+    @Override
+    public Attack getNextAttack() {
+        return null;
+    }
+
+    @Override
+    public Fortify getFortify() {
+        return null;
     }
 }

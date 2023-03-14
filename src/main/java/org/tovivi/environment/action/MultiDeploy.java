@@ -3,6 +3,8 @@ package org.tovivi.environment.action;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
+import org.tovivi.environment.action.exceptions.IllegalActionException;
+import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -45,9 +47,9 @@ public class MultiDeploy extends Deployment {
     }
 
     @Override
-    public boolean perform(Agent player) {
-        if (!super.perform(player)) {
-            return false;
+    public Actuator perform(Agent player) throws SimulationRunningException, IllegalActionException {
+        if (!super.isSimulating()) {
+            throw new SimulationRunningException();
         }
 
         // TODO : useful ? a check is already done in the perform function of each deploy/Playcard object
@@ -55,13 +57,14 @@ public class MultiDeploy extends Deployment {
 //            return false;
 //        }
 
+
         // perform the deployment
-        for(Deployment dep : deploys) {
-            if (!dep.perform(player)) {
-                return false;
-            }
+        if (deploys.size() != 0) {
+            Actuator actuator = deploys.get(0).perform(player);
+            deploys.remove(0);
+            return actuator;
         }
-        return true;
+        return null;
     }
 
     @Override
@@ -96,11 +99,15 @@ public class MultiDeploy extends Deployment {
 
     @Override
     public String toString() {
-        String msg = "";
+        /*String msg = "";
         for(Deployment dep : deploys) {
             msg += dep; // + "\n";
         }
-        return msg;
+        return msg;*/
+        if (deploys.size() > 0) {
+            return deploys.get(0).toString();
+        }
+        return "";
     }
 
     @Override

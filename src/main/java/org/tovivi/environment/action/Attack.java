@@ -2,9 +2,8 @@ package org.tovivi.environment.action;
 
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import org.tovivi.environment.action.exceptions.IllegalActionException;
+import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import static java.lang.Math.min;
 
@@ -15,13 +14,6 @@ public class Attack extends Offensive{
     private Tile toTile;
     private int movedTroops;
     private Tile copyToTile;
-
-    /**
-     * Create a stop attack node. Goes to the fortification part
-     */
-    public Attack() {
-        this(null, null, 0, null, null);
-    }
 
     /**
      * Conquer a tile
@@ -59,31 +51,13 @@ public class Attack extends Offensive{
         return movedTroops;
     }
 
-    /**
-     * Is it a stop attack node
-     * @return this object is a stop attack node
-     */
-    public boolean stopAttack() {
-        return fromTile == null &&
-                toTile == null &&
-                movedTroops == 0 &&
-                onSucceed == null &&
-                onFailed == null;
-    }
-
     @Override
     public String toString() {
-        if (stopAttack()) {
-            return "";
-        }
-        return "[Attack:" + fromTile.getName() + " -" + movedTroops + "-> " + toTile.getName() + "]" + onSucceed;
+        return "[Attack:" + fromTile.getName() + " -" + movedTroops + "-> " + toTile.getName() + "]";
     }
 
     @Override
     public boolean isMoveLegal(Agent player) {
-        if (stopAttack()) {
-            return true;
-        }
 
         // check game state consistency
         if (!fromTile.getOccupier().equals(player) || toTile.getOccupier().equals(player) || fromTile.getNumTroops()<=1) {
@@ -99,17 +73,13 @@ public class Attack extends Offensive{
     }
 
     @Override
-    public boolean perform(Agent player) {
-        if (!super.perform(player)) {
-            return false;
-        }
-
-        if (stopAttack()) {
-            return true;
+    public Actuator perform(Agent player) throws SimulationRunningException, IllegalActionException {
+        if (!super.isSimulating()) {
+            throw new SimulationRunningException();
         }
 
         if (!isMoveLegal(player)) {
-            return false;
+            throw new IllegalActionException();
         }
 
         // fight
@@ -131,10 +101,10 @@ public class Attack extends Offensive{
             int troopsReallyMoved = min(movedTroops, fromTile.getNumTroops()-1);
             toTile.setOccupier(player, troopsReallyMoved);
             fromTile.setNumTroops(fromTile.getNumTroops()-troopsReallyMoved);
-            return onSucceed.perform(player);
+            return onSucceed;
         }
         else {
-            return onFailed.perform(player);
+            return onFailed;
         }
     }
 

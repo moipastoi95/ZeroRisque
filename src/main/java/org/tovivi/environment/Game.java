@@ -5,6 +5,9 @@ import org.tovivi.agent.Agent;
 import org.tovivi.agent.Legume;
 import org.tovivi.agent.RandomAgent;
 import org.tovivi.environment.action.Actions;
+import org.tovivi.environment.action.Deployment;
+import org.tovivi.environment.action.exceptions.IllegalActionException;
+import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import java.io.IOException;
 
@@ -57,23 +60,49 @@ public class Game {
                 int pTerritories = p.getTiles().size();
 
                 // deploy
-                if(a.getDeployment().isNumTroopsLegal(p)) {
-                    if (a.getDeployment().perform(p)) {
-                        System.out.println("    [Success] :: " + a.getDeployment().toString());
-                    } else {
-                        System.out.println("    [Failed:illegal move] :: " + a.getDeployment().toString());
+                String print = "";
+                try {
+                    boolean flag = true;
+                    while(flag) {
+                        if(a.getDeployment().isNumTroopsLegal(p)) {
+                            print = a.getDeployment().toString();
+                            a.performDeployment(p);
+                            System.out.println("    [Success] :: " + print);
+                        } else {
+                            flag = false;
+                        }
                     }
-                } else {
-                    System.out.println("    [Failed:too many troops] :: " + a.getDeployment().toString());
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
                 }
-
 
                 // attack
-                if (a.getFirstOffensive().perform(p)) {
-                    System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
-                } else {
-                    System.out.println("    [Failed:illegal move] :: " + a.getFirstOffensive().toString());
+                print = "";
+                try {
+                    while(a.performAttack(p)) {
+                        print = a.getFirstOffensive().toString();
+                        System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
+                    }
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
                 }
+
+                // fortify
+                print = "";
+                try {
+                    print = a.getFirstOffensive().toString();
+                    a.performFortify(p);
+                    System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
+                }
+
 
                 System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
 

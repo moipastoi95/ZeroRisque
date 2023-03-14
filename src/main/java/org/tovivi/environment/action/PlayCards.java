@@ -3,6 +3,8 @@ package org.tovivi.environment.action;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Card;
 import org.tovivi.environment.Tile;
+import org.tovivi.environment.action.exceptions.IllegalActionException;
+import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import java.util.ArrayList;
 
@@ -25,17 +27,17 @@ public class PlayCards extends Deployment {
     }
 
     @Override
-    public boolean perform(Agent player) {
-        if (!super.perform(player)) {
-            return false;
+    public Actuator perform(Agent player) throws SimulationRunningException, IllegalActionException {
+        if (!super.isSimulating()) {
+            throw new SimulationRunningException();
         }
 
         if (!isMoveLegal(player)) {
-            return false;
+            throw new IllegalActionException();
         }
 
         player.getDeck().removeAll(cards);
-        return true;
+        return null;
     }
 
     /**

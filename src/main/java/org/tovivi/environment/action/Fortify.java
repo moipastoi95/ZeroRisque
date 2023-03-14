@@ -3,6 +3,8 @@ package org.tovivi.environment.action;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
+import org.tovivi.environment.action.exceptions.IllegalActionException;
+import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,23 +71,23 @@ public class Fortify extends Offensive {
     }
 
     @Override
-    public boolean perform(Agent player) {
-        if (!super.perform(player)) {
-            return false;
+    public Actuator perform(Agent player) throws SimulationRunningException, IllegalActionException {
+        if (!super.isSimulating()) {
+            throw new SimulationRunningException();
         }
 
         if (stopFortification()) {
-            return true;
+            return null;
         }
 
         if (!isMoveLegal(player)) {
-            return false;
+            throw new IllegalActionException();
         }
 
         // proceed to the fortification
         fromTile.setNumTroops(fromTile.getNumTroops()-numTroops);
         toTile.setNumTroops(toTile.getNumTroops()+numTroops);
-        return true;
+        return null;
     }
 
     @Override

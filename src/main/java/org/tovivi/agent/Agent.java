@@ -1,12 +1,13 @@
 package org.tovivi.agent;
 
 import org.tovivi.environment.*;
-import org.tovivi.environment.action.Actions;
+import org.tovivi.environment.action.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 public abstract class Agent implements Callable<Actions> {
 
@@ -118,6 +119,10 @@ public abstract class Agent implements Callable<Actions> {
     }
 
     public abstract Actions action();
+
+    public abstract Deployment getNextDeploy();
+    public abstract Attack getNextAttack();
+    public abstract Fortify getFortify();
 
     @Override
     public String toString() {

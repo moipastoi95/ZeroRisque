@@ -2,6 +2,8 @@ package org.tovivi.environment.action;
 
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.*;
+import org.tovivi.environment.action.exceptions.IllegalActionException;
+import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import java.util.ArrayList;
 
@@ -64,19 +66,19 @@ public class Deploy extends Deployment {
     }
 
     @Override
-    public boolean perform(Agent player) {
-        if (!super.perform(player)) {
-            return false;
+    public Actuator perform(Agent player)  throws SimulationRunningException, IllegalActionException {
+        if (!super.isSimulating()) {
+            throw new SimulationRunningException();
         }
 
         if (!isMoveLegal(player)) {
-            return false;
+            throw new IllegalActionException();
         }
 
         if (!stopDeploy()) {
             tile.setNumTroops(tile.getNumTroops() + getNumTroops());
         }
-        return true;
+        return null;
     }
 
     @Override
