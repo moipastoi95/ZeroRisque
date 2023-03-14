@@ -11,7 +11,7 @@ public class Tile {
     private Continent continent;
     private String name;
     private Agent occupier;
-    private PropertyChangeSupport continent_support;
+    private PropertyChangeSupport support;
     private int numTroops;
     private ArrayList<Tile> neighbors;
 
@@ -26,7 +26,8 @@ public class Tile {
         this.numTroops = 0;
         this.neighbors = new ArrayList<>();
         this.continent = continent;
-        continent_support = new PropertyChangeSupport(this);
+        support = new PropertyChangeSupport(this);
+        addPropertyChangeListener(continent);
     }
 
     /**
@@ -60,7 +61,7 @@ public class Tile {
             if (this.occupier != null) {
                 this.occupier.removeTile(this);
             }
-            continent_support.firePropertyChange("newOccupier", this.occupier, p);
+            support.firePropertyChange("newOccupier", this.occupier, p);
             this.occupier = p;
             this.numTroops = numTroops;
         }
@@ -93,11 +94,11 @@ public class Tile {
     }
 
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
-        continent_support.addPropertyChangeListener(pcl);
+        support.addPropertyChangeListener(pcl);
     }
 
     public void removePropertyChangeListener(PropertyChangeListener pcl) {
-        continent_support.removePropertyChangeListener(pcl);
+        support.removePropertyChangeListener(pcl);
     }
 
     public void setContinent(Continent continent) {
