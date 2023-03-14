@@ -125,7 +125,9 @@ public class Game {
         // the map
         TextReader tr = new TextReader();
         tr.readAll(this, env_data);
-        System.out.println(blue);
+
+        blue.setGame(this); red.setGame(this);
+
         // x players of less
         players.put("Blue", blue);
         players.put("Red", red);
