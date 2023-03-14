@@ -34,10 +34,10 @@ public class Game {
 
     private int playclock;
 
-    public Game(Agent blue, Agent red, int territories, int playclock) {
+    public Game(ArrayList<Agent> agents, int territories, int playclock) {
 
         this.playclock = playclock;
-        setupElements(blue, red, territories);
+        setupElements(agents, territories);
     }
 
     private void play() {
@@ -113,21 +113,21 @@ public class Game {
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
     }
 
-    private void setupElements(Agent blue, Agent red, int territories) {
+    private void setupElements(ArrayList<Agent> agents, int territories) {
         // the map
         TextReader tr = new TextReader();
         tr.readAll(this, env_data);
 
-        blue.setGame(this); red.setGame(this);
+        for(Agent a : agents) {
+            a.setGame(this);
+            players.put(a.getColor(), a);
+        }
 
-        // x players of less
-        players.put("Blue", blue);
-        players.put("Red", red);
         Agent grey = new Legume("Grey", this);
-        players.put("Grey", grey);
+        players.put(grey.getColor(), grey);
 
         // Randomly distribute the tiles among the players
-        distributeTiles(blue, grey, red, territories);
+        distributeTiles(agents.get(0), grey, agents.get(1), territories);
 
         // the stack
         for(CardType type : CardType.values()) {
