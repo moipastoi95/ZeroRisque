@@ -35,10 +35,8 @@ public class Game {
     // HashMap who links the Tiles to their names
     private HashMap<String, Tile> tiles = new HashMap<>();
 
-    // ArrayList of the players
-    private ArrayList<Agent> players = new ArrayList<>();
-    
-    // private HashMap<String, Agent> players = new HashMap<>(); TEMPORAIREMENT EN COMMENTAIRE
+    //HashMap of the players
+    private HashMap<String, Agent> players = new HashMap<>();
     private Stack<Card> theStack = new Stack<>();
 
     private int playclock;
@@ -47,8 +45,9 @@ public class Game {
 
         this.playclock = playclock;
 
-        setupElements();
-        //configElements();        
+        setupElements(blue, red, territories);
+        //configElements();
+
         
         // for each player --> deploy, attack, fortify
         int index = 0;
@@ -63,7 +62,7 @@ public class Game {
             try {
                 Actions a = future.get(timeout, TimeUnit.SECONDS);
 
-                int territories = p.getTiles().size();
+                int pTerritories = p.getTiles().size();
 
                 // deploy
                 if(a.getDeployment().isNumTroopsLegal(p)) {
@@ -99,7 +98,7 @@ public class Game {
                 }
 
                 // check if the player could retrieve cards
-                if (p.getTiles().size() > territories && theStack.size() > 0) {
+                if (p.getTiles().size() > pTerritories && theStack.size() > 0) {
                     p.getDeck().add(theStack.pop());
                 }
 
@@ -122,15 +121,15 @@ public class Game {
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
     }
 
-    private void setupElements(blue, red, territories) {
+    private void setupElements(Agent blue, Agent red, int territories) {
         // the map
         TextReader tr = new TextReader();
         tr.readAll(this, env_data);
-        
+        System.out.println(blue);
         // x players of less
         players.put("Blue", blue);
         players.put("Red", red);
-        grey = new Legume("Grey", this)
+        Agent grey = new Legume("Grey", this);
         players.put("Grey", grey);
 
         // Randomly distribute the tiles among the players
@@ -207,21 +206,20 @@ public class Game {
 
             //Setting probabilities to pick the next territory
             // More an agent possess territories compare to the others, less will be its chances to get the next one
-            double blueLim = (double) (territories-blue.getTiles().size())/(rem_tiles) ;
-            double redLim = 1 - (double) (territories-red.getTiles().size())/(rem_tiles) ;
+            double blueLim = (double) (territories - blue.getTiles().size()) / (rem_tiles);
+            double redLim = 1 - (double) (territories - red.getTiles().size()) / (rem_tiles);
 
-            if (roll<blueLim) {
+            if (roll < blueLim) {
                 t.setOccupier(blue, TROOPS_FACTOR);
-            }
-            else if (roll>redLim) {
+            } else if (roll > redLim) {
                 t.setOccupier(red, TROOPS_FACTOR);
-            }
-            else {
+            } else {
                 t.setOccupier(grey, TROOPS_FACTOR);
             }
             rem_tiles--;
         }
-        
+    }
+
     public HashMap<String, Agent> getPlayers() {
         return players;
     }
@@ -229,6 +227,5 @@ public class Game {
     public static void main(String[] args) throws IOException {
         // this main function will just start the game, with parameters (list of player, list of tiles)
         // the Game object will make players play, and restrict time for turn. It will end by giving the winner
-        new Game() ;
     }
 }

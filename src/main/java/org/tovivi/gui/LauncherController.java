@@ -65,10 +65,10 @@ public class LauncherController implements Initializable {
             Constructor<?> constr;
             //Instantiate the agents
             constr = Class.forName(agentPackage + red.getValue()).getConstructor(String.class);
-            Agent redAgent = (Agent) constr.newInstance("red");
+            Agent redAgent = (Agent) constr.newInstance("Red");
 
             constr = Class.forName(agentPackage + blue.getValue()).getConstructor(String.class);
-            Agent blueAgent = (Agent) constr.newInstance("blue");
+            Agent blueAgent = (Agent) constr.newInstance("Blue");
 
             // Create the game according to the inputs
             GameController.setG(new Game(blueAgent, redAgent, territories.getValue(), playclock.getValue()));

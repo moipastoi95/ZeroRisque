@@ -33,11 +33,13 @@ public class RandomAgent extends Agent{
 
     public Actions action(int numTroops) {
         // deploy all troops on a random tile
-        Tile chosenOne = this.getTiles().get((int)(Math.random() * this.getTiles().size()));
+        Tile chosenOne = this.getTiles().get((int) (Math.random() * this.getTiles().size()));
         Deployment dep = new Deploy(numTroops, chosenOne);
         ArrayList<Deployment> depL = new ArrayList<>();
         depL.add(dep);
-        
+        return null;
+    }
+
     @Override
     public Actions action() {
         int numTroops = getNumDeploy();

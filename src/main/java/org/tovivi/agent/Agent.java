@@ -48,8 +48,9 @@ public abstract class Agent implements Callable<Actions> {
 
     /**
      * Remove a tile from the list of the player's tiles
-     * @param idTile : id of the tile to remove
+     * @param  : id of the tile to remove
      */
+    /*
     public void removeTile(int idTile) {
         boolean found = false;
         Iterator<Tile> i = this.tiles.iterator();
@@ -59,7 +60,7 @@ public abstract class Agent implements Callable<Actions> {
             }
         }
     }
-
+    */
     public Game getGame() {
         return game;
     }
@@ -82,10 +83,6 @@ public abstract class Agent implements Callable<Actions> {
      */
     public String getColor() {
         return this.color;
-    }
-
-    public Game getGame() {
-        return game;
     }
 
     public ArrayList<Card> getDeck() {
