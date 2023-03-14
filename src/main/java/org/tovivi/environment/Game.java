@@ -7,26 +7,49 @@ import org.tovivi.agent.RandomAgent;
 import org.tovivi.environment.action.Actions;
 
 import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.*;
 import java.util.concurrent.*;
 
 public class Game {
 
+    // Data used to create the game based on the original map of the board game Risk
     final private static String[] env_data = {"continent-bonus", "continent-country", "country-neighbor"};
+
+
+    // The number of troops at the beginning of the game at each territories
+    final public static int TROOPS_FACTOR = 2;
+
+    // HashMap who links the Continents to their names
     // number of troops per players
+    
     final private int troops = 35;
     //  max time per turn
     final private int timeout = 6;
+    
     private HashMap<String, Continent> continents = new HashMap<>();
+
+    // HashMap who links the Tiles to their names
     private HashMap<String, Tile> tiles = new HashMap<>();
-    private HashMap<String, Agent> players = new HashMap<>();
+
+    // ArrayList of the players
+    private ArrayList<Agent> players = new ArrayList<>();
+    
+    // private HashMap<String, Agent> players = new HashMap<>(); TEMPORAIREMENT EN COMMENTAIRE
     private Stack<Card> theStack = new Stack<>();
 
-    public Game() {
+    private int playclock;
+
+    public Game(Agent blue, Agent red, int territories, int playclock) {
+
+        this.playclock = playclock;
 
         setupElements();
-        configElements();
-
+        //configElements();        
+        
         // for each player --> deploy, attack, fortify
         int index = 0;
         ArrayList<Agent> turns = new ArrayList<>(players.values());
@@ -99,15 +122,19 @@ public class Game {
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
     }
 
-    private void setupElements() {
+    private void setupElements(blue, red, territories) {
         // the map
         TextReader tr = new TextReader();
         tr.readAll(this, env_data);
-
+        
         // x players of less
-        players.put("Blue", new RandomAgent("Blue", this));
-        players.put("Red", new RandomAgent("Red", this));
-        players.put("Grey", new Legume("Grey", this));
+        players.put("Blue", blue);
+        players.put("Red", red);
+        grey = new Legume("Grey", this)
+        players.put("Grey", grey);
+
+        // Randomly distribute the tiles among the players
+        distributeTiles(blue, grey, red, territories);
 
         // the stack
         for(CardType type : CardType.values()) {
@@ -118,7 +145,8 @@ public class Game {
         // shuffle the stack
         Collections.shuffle(theStack);
     }
-
+    
+    /*
     private void configElements() {
 
         if (troops < (int)(tiles.size()/players.size())) {
@@ -145,6 +173,7 @@ public class Game {
             }
         }
     }
+    */
 
     public HashMap<String, Continent> getContinents() {
         return continents;
@@ -162,6 +191,37 @@ public class Game {
         return tiles;
     }
 
+
+    /**
+     * This function distributes the tiles of the map randomly among the players
+     * @param blue : blue agent
+     * @param grey  : grey //TODO Un jour il faudra peut-être l'enlever et le mettre en variable final
+     * @param red  : red agent
+     * @param territories : The number of territories to assigned to both red and blue players
+     */
+    public void distributeTiles(Agent blue, Agent grey, Agent red, int territories) {
+        int rem_tiles = tiles.size(); // Number of remaining tiles to assign
+        for (Tile t : tiles.values()) {
+            Random rd = new Random();
+            double roll = rd.nextDouble();
+
+            //Setting probabilities to pick the next territory
+            // More an agent possess territories compare to the others, less will be its chances to get the next one
+            double blueLim = (double) (territories-blue.getTiles().size())/(rem_tiles) ;
+            double redLim = 1 - (double) (territories-red.getTiles().size())/(rem_tiles) ;
+
+            if (roll<blueLim) {
+                t.setOccupier(blue, TROOPS_FACTOR);
+            }
+            else if (roll>redLim) {
+                t.setOccupier(red, TROOPS_FACTOR);
+            }
+            else {
+                t.setOccupier(grey, TROOPS_FACTOR);
+            }
+            rem_tiles--;
+        }
+        
     public HashMap<String, Agent> getPlayers() {
         return players;
     }

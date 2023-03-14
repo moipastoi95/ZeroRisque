@@ -14,8 +14,7 @@ import java.util.HashMap;
 public class RandomAgent extends Agent{
 
     /**
-     * Main constructor
-     *
+     * Typically used to create the neutral player //TODO A enlever quand on aura créer l'agent neutre
      * @param color : String of the color
      * @param game  : ref to the game object
      */
@@ -23,6 +22,22 @@ public class RandomAgent extends Agent{
         super(color, game);
     }
 
+
+    /**
+     * Used to create the players before the game, typically the red and blue players
+     * @param color : String of the color
+     */
+    public RandomAgent(String color) {
+        super(color);
+    }
+
+    public Actions action(int numTroops) {
+        // deploy all troops on a random tile
+        Tile chosenOne = this.getTiles().get((int)(Math.random() * this.getTiles().size()));
+        Deployment dep = new Deploy(numTroops, chosenOne);
+        ArrayList<Deployment> depL = new ArrayList<>();
+        depL.add(dep);
+        
     @Override
     public Actions action() {
         int numTroops = getNumDeploy();

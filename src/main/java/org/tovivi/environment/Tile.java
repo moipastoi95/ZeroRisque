@@ -64,6 +64,10 @@ public class Tile {
             this.occupier = p;
             this.numTroops = numTroops;
         }
+        else {
+            //TODO Faire des exceptions propres pour ce genre de cas... oui c'est chiant je sais
+            System.out.println("Invalid number of troops");
+        }
     }
 
     public String getName() {

@@ -1,59 +1,59 @@
-Alaska:Northwest Territory
+Alaska:Northwest_Territory
 Alaska:Alberta
 Alaska:Kamchatka
-Alberta:Western US
+Alberta:Western_US
 Alberta:Ontario
-Alberta:Northwest Territory
-Central America:Western US
-Central America:Eastern US
-Central America:Venezuela
-Eastern US:Western US
-Eastern US:Ontario
-Eastern US:Quebec
+Alberta:Northwest_Territory
+Central_America:Western_US
+Central_America:Eastern_US
+Central_America:Venezuela
+Eastern_US:Western_US
+Eastern_US:Ontario
+Eastern_US:Quebec
 Greenland:Quebec
 Greenland:Ontario
-Greenland:Northwest Territory
+Greenland:Northwest_Territory
 Greenland:Iceland
-Northwest Territory:Ontario
+Northwest_Territory:Ontario
 Ontario:Quebec
-Ontario:Western US
+Ontario:Western_US
 Argentina:Peru
 Argentina:Brazil
 Brazil:Peru
 Brazil:Venezuela
-Brazil:North Africa
+Brazil:North_Africa
 Venezuela:Peru
-Great Britain:Iceland
-Great Britain:Scandinavia
-Great Britain:Northern Europe
-Great Britain:Western Europe
+Great_Britain:Iceland
+Great_Britain:Scandinavia
+Great_Britain:Northern_Europe
+Great_Britain:Western_Europe
 Iceland:Scandinavia
-Northern Europe:Scandinavia
-Northern Europe:Western Europe
-Northern Europe:Southern Europe
-Northern Europe:Ukraine
+Northern_Europe:Scandinavia
+Northern_Europe:Western_Europe
+Northern_Europe:Southern_Europe
+Northern_Europe:Ukraine
 Scandinavia:Ukraine
-Southern Europe:Western Europe
-Southern Europe:North Africa
-Southern Europe:Egypt
-Southern Europe:Ukraine
-Southern Europe:Middle East
-Ukraine:Middle East
+Southern_Europe:Western_Europe
+Southern_Europe:North_Africa
+Southern_Europe:Egypt
+Southern_Europe:Ukraine
+Southern_Europe:Middle_East
+Ukraine:Middle_East
 Ukraine:Afghanistan
 Ukraine:Ural
-Western Europe:North Africa
-Congo:North Africa
-Congo:East Africa
-Congo:South Africa
-East Africa:Egypt
-East Africa:North Africa
-East Africa:South Africa
-East Africa:Madagascar
-East Africa:Middle East
-Egypt:North Africa
-Egypt:Middle East
-Madagascar:South Africa
-Afghanistan:Middle East
+Western_Europe:North_Africa
+Congo:North_Africa
+Congo:East_Africa
+Congo:South_Africa
+East_Africa:Egypt
+East_Africa:North_Africa
+East_Africa:South_Africa
+East_Africa:Madagascar
+East_Africa:Middle_East
+Egypt:North_Africa
+Egypt:Middle_East
+Madagascar:South_Africa
+Afghanistan:Middle_East
 Afghanistan:India
 Afghanistan:China
 Afghanistan:Ural
@@ -62,7 +62,7 @@ China:Siam
 China:Mongolia
 China:Siberia
 China:Ural
-India:Middle East
+India:Middle_East
 India:Siam
 Irkutsk:Mongolia
 Irkutsk:Siberia
@@ -76,8 +76,8 @@ Mongolia:Siberia
 Siam:Indonesia
 Siberia:Ural
 Siberia:Yakutsk
-Eastern Australia:Western Australia
-Eastern Australia:New Guinea
-New Guinea:Indonesia
-New Guinea:Western Australia
-Indonesia:Western Australia
+Eastern_Australia:Western_Australia
+Eastern_Australia:New_Guinea
+New_Guinea:Indonesia
+New_Guinea:Western_Australia
+Indonesia:Western_Australia

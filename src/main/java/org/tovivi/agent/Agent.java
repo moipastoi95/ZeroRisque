@@ -16,15 +16,17 @@ public abstract class Agent implements Callable<Actions> {
     private ArrayList<Card> deck;
 
     /**
-     * Main constructor
      * @param color : String of the color
      * @param game : ref to the game object
      * */
     public Agent(String color, Game game) {
         this.color = color;
         this.tiles = new ArrayList<>();
-        this.game = game;
         this.deck = new ArrayList<>();
+        this.game = game;
+    }
+    public Agent(String color) {
+        this(color, null);
     }
 
     /**
@@ -42,6 +44,28 @@ public abstract class Agent implements Callable<Actions> {
      */
     public void removeTile(Tile tile) {
         tiles.remove(tile);
+    }
+
+    /**
+     * Remove a tile from the list of the player's tiles
+     * @param idTile : id of the tile to remove
+     */
+    public void removeTile(int idTile) {
+        boolean found = false;
+        Iterator<Tile> i = this.tiles.iterator();
+        while (!found && i.hasNext()) {
+            if (i.next().getId() == idTile) {
+                i.remove();
+            }
+        }
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     /**
