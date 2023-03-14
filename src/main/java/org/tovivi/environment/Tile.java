@@ -15,6 +15,17 @@ public class Tile {
     private int numTroops;
     private ArrayList<Tile> neighbors;
 
+    public Tile(Tile tile) {
+        this.continent = new Continent(tile.getContinent());
+        this.name = tile.getName();
+        this.occupier = tile.getOccupier(); //Not a deepCopy
+        this.support = new PropertyChangeSupport(this);
+        this.numTroops = tile.getNumTroops();
+        for(Tile j : tile.getNeighbors()){
+            this.neighbors.add(new Tile(j));
+        }
+    }
+
     /**
      * Main constructor. Create an empty tile.
      * @param name : the name of the territory
@@ -63,7 +74,7 @@ public class Tile {
             }
             support.firePropertyChange("newOccupier", this.occupier, p);
             this.occupier = p;
-            this.numTroops = numTroops;
+            setNumTroops(numTroops);
         }
         else {
             //TODO Faire des exceptions propres pour ce genre de cas... oui c'est chiant je sais
@@ -89,6 +100,7 @@ public class Tile {
      */
     public void setNumTroops(int numTroops) {
         if (numTroops >= 0) {
+            support.firePropertyChange("newNumTroops", getNumTroops(), numTroops);
             this.numTroops = numTroops;
         }
     }

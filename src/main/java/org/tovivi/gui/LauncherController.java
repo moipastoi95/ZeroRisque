@@ -76,7 +76,8 @@ public class LauncherController implements Initializable {
             agents.add(blueAgent);
 
             // Create the game according to the inputs
-            GameController.setG(new Game(agents, territories.getValue(), playclock.getValue()));
+
+            GameController.setGame(new Game(agents, territories.getValue(), playclock.getValue()));
 
             //Switching to the game to instantiate it
             App.newConf("ZeroRisque", 1280, 720);

@@ -3,6 +3,7 @@ package org.tovivi.agent;
 import org.tovivi.environment.*;
 import org.tovivi.environment.action.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,7 +19,7 @@ public class RandomAgent extends Agent{
      * @param color : String of the color
      * @param game  : ref to the game object
      */
-    public RandomAgent(String color, Game game) {
+    public RandomAgent(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(color, game);
     }
 
@@ -27,7 +28,7 @@ public class RandomAgent extends Agent{
      * Used to create the players before the game, typically the red and blue players
      * @param color : String of the color
      */
-    public RandomAgent(String color) {
+    public RandomAgent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(color);
     }
 
@@ -79,8 +80,7 @@ public class RandomAgent extends Agent{
         deployPart.doSimulation();
 
         // attack a random tile next to the tile chosen
-        ArrayList<Tile> frontValue = front.get(fromTile);
-        Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
+        ArrayList<Tile> frontValue = front.get(fromTile);        Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
 
         Offensive offensivePart = new Attack(fromTile, toTile, fromTile.getNumTroops()-1, new Fortify(), new Fortify());
 

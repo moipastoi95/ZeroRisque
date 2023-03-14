@@ -11,7 +11,15 @@ public class Continent implements PropertyChangeListener {
     private int bonus;
     private int nbTiles;
     private Agent occupier;
-    private HashMap<Agent, Integer> players;
+    private HashMap<String, Integer> players;
+
+    public Continent(Continent continent) {
+        this.name = continent.getName();
+        this.bonus = continent.getBonus();
+        this.nbTiles = continent.getNbTiles();
+        this.occupier = continent.getOccupier(); //Not a deepCopy |
+        this.players = continent.getPlayers();
+    }
 
     public int getBonus() {
         return bonus;
@@ -37,11 +45,11 @@ public class Continent implements PropertyChangeListener {
         this.nbTiles = nbTiles;
     }
 
-    public HashMap<Agent, Integer> getPlayers() {
+    public HashMap<String, Integer> getPlayers() {
         return players;
     }
 
-    public void setPlayers(HashMap<Agent, Integer> players) {
+    public void setPlayers(HashMap<String, Integer> players) {
         this.players = players;
     }
 
@@ -63,7 +71,7 @@ public class Continent implements PropertyChangeListener {
         this.name = name;
         this.nbTiles = nbTiles;
         this.occupier = null;
-        this.players = new HashMap<Agent, Integer>();
+        this.players = new HashMap<String, Integer>();
     }
 
     @Override
@@ -76,7 +84,7 @@ public class Continent implements PropertyChangeListener {
             if (players.containsKey(evt.getNewValue())) {
 
                 //Add 1 to the number of tile possessed in the continent
-                players.put((Agent) evt.getNewValue(), players.get(evt.getNewValue())+1);
+                players.put(((Agent) evt.getNewValue()).getColor(), players.get(evt.getNewValue())+1);
 
                 // Test if the new occupier of the tile also occupied the whole continent
                 if (players.get(evt.getNewValue())==nbTiles) {
@@ -85,11 +93,11 @@ public class Continent implements PropertyChangeListener {
             }
             //The player has never possessed a tile of the continent and we set its value to 1
             else {
-                players.put((Agent) evt.getNewValue(), 1);
+                players.put(((Agent) evt.getNewValue()).getColor(), 1);
             }
             //If there was someone
             if (evt.getOldValue()!=null) {
-                players.put((Agent) evt.getOldValue(), players.get(evt.getOldValue())-1);
+                players.put(((Agent) evt.getOldValue()).getColor(), players.get(evt.getOldValue())-1);
             }
         }
     }

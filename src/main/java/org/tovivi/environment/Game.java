@@ -11,6 +11,8 @@ import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import java.io.IOException;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -41,6 +43,35 @@ public class Game {
 
         this.playclock = playclock;
         setupElements(agents, territories);
+    }
+
+    public Game(Game Game) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+
+        //Create a copy of all the players
+        for(String key : Game.getPlayers().keySet()){
+            Constructor<?> constr;
+            //Instantiate the agents
+            Agent player = Game.getPlayers().get(key);
+            constr = player.getClass().getConstructor(Agent.class);
+            this.players.put(key, (Agent) constr.newInstance(player));
+            this.players.get(key).setGame(this);
+        }
+
+        //Copy of all the continents of the game
+        for(String key : Game.getContinents().keySet()){
+            Continent cont = Game.getContinents().get(key);
+            this.continents.put(key, new Continent(cont));
+            if(cont.getOccupier()!=null)
+                this.continents.get(key).setOccupier(this.players.get(cont.getOccupier().getColor()));
+        }
+
+        //Copy of all the tile of the game (DeepCopy of the agents in continents will be done afterwards)
+        for(String key : Game.getTiles().keySet()){
+            Tile til = Game.getTiles().get(key);
+            this.tiles.put(key, new Tile(til));
+            this.tiles.get(key).setOccupier(this.players.get(til.getOccupier().getColor()), til.getNumTroops());
+        }
+
     }
 
     private void play() {
@@ -143,7 +174,8 @@ public class Game {
     }
 
     private void setupElements(ArrayList<Agent> agents, int territories) {
-        // the map
+
+        // Setup the map with the data resources
         TextReader tr = new TextReader();
         tr.readAll(this, env_data);
 

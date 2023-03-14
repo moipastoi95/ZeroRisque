@@ -3,6 +3,7 @@ package org.tovivi.agent;
 import org.tovivi.environment.*;
 import org.tovivi.environment.action.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,14 +21,26 @@ public abstract class Agent implements Callable<Actions> {
      * @param color : String of the color
      * @param game : ref to the game object
      * */
-    public Agent(String color, Game game) {
+    public Agent(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         this.color = color;
         this.tiles = new ArrayList<>();
         this.deck = new ArrayList<>();
-        this.game = game;
+        this.game = new Game(game);
     }
-    public Agent(String color) {
+    public Agent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         this(color, null);
+    }
+
+    public Agent(Agent agent){
+        this.color = agent.getColor();
+        this.tiles = new ArrayList<>();
+        for(Tile j: agent.getTiles()) {
+            this.tiles.add(j);
+        }
+        this.deck = new ArrayList<>();
+        for(Card c: agent.getDeck()){
+            this.deck.add(new Card(c));
+        }
     }
 
     /**

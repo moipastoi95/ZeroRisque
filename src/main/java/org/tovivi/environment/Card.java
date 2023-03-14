@@ -18,6 +18,11 @@ public class Card {
         this.bonusTile = bonusTile;
     }
 
+    public Card(Card c) {
+        this.type = c.getType();
+        this.bonusTile = new Tile(bonusTile);
+    }
+
     public CardType getType() {
         return type;
     }
