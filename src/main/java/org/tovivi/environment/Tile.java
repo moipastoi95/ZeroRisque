@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 public class Tile {
 
-    private int id;
     private Continent continent;
     private String name;
     private Agent occupier;
@@ -71,10 +70,6 @@ public class Tile {
         }
     }
 
-    public int getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
@@ -87,8 +82,12 @@ public class Tile {
         return numTroops;
     }
 
+    /**
+     * Set the num of troops
+     * @param numTroops Has to be positive. 0 is allowed
+     */
     public void setNumTroops(int numTroops) {
-        if (numTroops >= 1) {
+        if (numTroops >= 0) {
             this.numTroops = numTroops;
         }
     }

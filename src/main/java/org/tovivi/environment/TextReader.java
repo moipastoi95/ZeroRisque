@@ -33,7 +33,7 @@ public class TextReader {
             String bonus = str.substring(str.indexOf(sep)+1);
 
             //Creating the continent, with 0 tile and no occupier
-            Continent c = new Continent(continent, (Integer.parseInt(bonus)),0,null, (new HashMap<>()));
+            Continent c = new Continent(continent, (Integer.parseInt(bonus)),0);
             res.put(continent,c);
         }
         return res;

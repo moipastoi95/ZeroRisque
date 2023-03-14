@@ -1,11 +1,8 @@
 package org.tovivi.environment.action;
 
-import java.util.ArrayList;
-
 public class Actions {
-    private ArrayList<Deployment> deploys;
-    private Attack firstAttack;
-    private Fortification fortify;
+    private MultiDeploy deployment;
+    private Offensive firstOffensive;
 
     /**
      * A following of depoy, attack and fortify moves. It represents the turn of a player
@@ -13,21 +10,16 @@ public class Actions {
      * @param firstAttack the first attack to do
      * @param fortify the Fortify move
      */
-    public Actions(ArrayList<Deployment> deploys, Attack firstAttack, Fortification fortify) {
-        this.deploys = deploys;
-        this.firstAttack = firstAttack;
-        this.fortify = fortify;
+    public Actions(MultiDeploy deployment, Offensive firstOffensive) {
+        this.deployment = deployment;
+        this.firstOffensive = firstOffensive;
     }
 
-    public ArrayList<Deployment> getDeploys() {
-        return deploys;
+    public MultiDeploy getDeployment() {
+        return deployment;
     }
 
-    public Attack getFirstAttack() {
-        return firstAttack;
-    }
-
-    public Fortification getFortify() {
-        return fortify;
+    public Offensive getFirstOffensive() {
+        return firstOffensive;
     }
 }
