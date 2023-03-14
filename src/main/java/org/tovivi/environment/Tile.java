@@ -15,6 +15,17 @@ public class Tile {
     private int numTroops;
     private ArrayList<Tile> neighbors;
 
+    public Tile(Tile tile) {
+        this.continent = new Continent(tile.getContinent());
+        this.name = tile.getName();
+        this.occupier = tile.getOccupier(); //Not a deepCopy
+        this.support = new PropertyChangeSupport(this);
+        this.numTroops = tile.getNumTroops();
+        for(Tile j : tile.getNeighbors()){
+            this.neighbors.add(new Tile(j));
+        }
+    }
+
     /**
      * Main constructor. Create an empty tile.
      * @param name : the name of the territory

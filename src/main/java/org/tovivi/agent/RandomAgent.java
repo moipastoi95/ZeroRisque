@@ -79,8 +79,7 @@ public class RandomAgent extends Agent{
         deployPart.doSimulation();
 
         // attack a random tile next to the tile chosen
-        ArrayList<Tile> frontValue = front.get(fromTile);
-        Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
+        ArrayList<Tile> frontValue = front.get(fromTile);        Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
 
         Offensive offensivePart = new Attack(fromTile, toTile, fromTile.getNumTroops()-1, new Fortify(), new Fortify());
 
