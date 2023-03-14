@@ -37,11 +37,10 @@ public class Game {
     public Game(Agent blue, Agent red, int territories, int playclock) {
 
         this.playclock = playclock;
-
         setupElements(blue, red, territories);
-        //configElements();
+    }
 
-        
+    private void play() {
         // for each player --> deploy, attack, fortify
         int index = 0;
         ArrayList<Agent> turns = new ArrayList<>(players.values());

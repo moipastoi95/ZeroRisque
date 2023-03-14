@@ -57,8 +57,6 @@ public class Continent implements PropertyChangeListener {
      * @param name : the name of the continent
      * @param bonus : the extra troops earned by the player who totally possess the continent
      * @param nbTiles : the number of tiles in the continent
-     * @param occupier : the player that possess the continent
-     * @param players : the hashmap which links the players to their number of tiles in the continent
      */
     public Continent(String name, int bonus, int nbTiles) {
         this.bonus = bonus;
