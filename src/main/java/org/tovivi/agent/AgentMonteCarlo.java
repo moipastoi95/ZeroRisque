@@ -2,6 +2,9 @@ package org.tovivi.agent;
 
 import org.tovivi.environment.Game;
 import org.tovivi.environment.action.Actions;
+import org.tovivi.environment.action.Attack;
+import org.tovivi.environment.action.Deployment;
+import org.tovivi.environment.action.Fortify;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +30,21 @@ public class AgentMonteCarlo extends Agent {
     // 3 - Propager la valeur de manière récursive sur les noeuds parents (fonction backpropagate)
     // 4 - Renvoyer le meilleur child
     public Actions action() {
+        return null;
+    }
+
+    @Override
+    public Deployment getNextDeploy() {
+        return null;
+    }
+
+    @Override
+    public Attack getNextAttack() {
+        return null;
+    }
+
+    @Override
+    public Fortify getFortify() {
         return null;
     }
 

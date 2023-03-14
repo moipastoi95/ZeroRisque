@@ -46,7 +46,9 @@ public class Game {
     }
 
     public Game(Game Game) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-
+        if (Game == null) {
+            return;
+        }
         //Create a copy of all the players
         for(String key : Game.getPlayers().keySet()){
             Constructor<?> constr;
@@ -184,11 +186,16 @@ public class Game {
             players.put(a.getColor(), a);
         }
 
-        Agent grey = new Legume("Grey", this);
-        players.put(grey.getColor(), grey);
+        try {
+            Agent grey = new Legume("Grey", this);
+            players.put(grey.getColor(), grey);
 
-        // Randomly distribute the tiles among the players
-        distributeTiles(agents.get(0), grey, agents.get(1), territories);
+            // Randomly distribute the tiles among the players
+            distributeTiles(agents.get(0), grey, agents.get(1), territories);
+        } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         // the stack
         for(CardType type : CardType.values()) {

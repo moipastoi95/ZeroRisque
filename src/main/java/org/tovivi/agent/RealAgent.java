@@ -6,13 +6,15 @@ import org.tovivi.environment.action.Attack;
 import org.tovivi.environment.action.Deployment;
 import org.tovivi.environment.action.Fortify;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class RealAgent extends Agent {
 
-    public RealAgent(String color, Game game) {
+    public RealAgent(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(color, game);
     }
 
-    public RealAgent(String color) {
+    public RealAgent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(color);
     }
 
