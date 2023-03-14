@@ -114,7 +114,8 @@ public class Game {
     }
 
     private void setupElements(ArrayList<Agent> agents, int territories) {
-        // the map
+
+        // Setup the map with the data resources
         TextReader tr = new TextReader();
         tr.readAll(this, env_data);
 
