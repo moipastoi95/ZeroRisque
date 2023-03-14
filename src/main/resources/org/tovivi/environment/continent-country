@@ -1,42 +1,42 @@
-North America:Alaska
-North America:Alberta
-North America:Central America
-North America:Eastern US
-North America:Western US
-North America:Greenland
-North America:Northwest Territory
-North America:Ontario
-North America:Quebec
-South America:Argentina
-South America:Brazil
-South America:Venezuela
-South America:Peru
-Europe:Great Britain
+North_America:Alaska
+North_America:Alberta
+North_America:Central_America
+North_America:Eastern_US
+North_America:Western_US
+North_America:Greenland
+North_America:Northwest_Territory
+North_America:Ontario
+North_America:Quebec
+South_America:Argentina
+South_America:Brazil
+South_America:Venezuela
+South_America:Peru
+Europe:Great_Britain
 Europe:Iceland
-Europe:Northern Europe
+Europe:Northern_Europe
 Europe:Scandinavia
-Europe:Southern Europe
-Europe:Western Europe
+Europe:Southern_Europe
+Europe:Western_Europe
 Europe:Ukraine
 Africa:Congo
-Africa:East Africa
+Africa:East_Africa
 Africa:Egypt
 Africa:Madagascar
-Africa:North Africa
-Africa:South Africa
+Africa:North_Africa
+Africa:South_Africa
 Asia:Afghanistan
 Asia:China
 Asia:India
 Asia:Irkutsk
 Asia:Japan
 Asia:Kamchatka
-Asia:Middle East
+Asia:Middle_East
 Asia:Mongolia
 Asia:Siam
 Asia:Siberia
 Asia:Ural
 Asia:Yakutsk
-Australia:Eastern Australia
-Australia:New Guinea
+Australia:Eastern_Australia
+Australia:New_Guinea
 Australia:Indonesia
-Australia:Western Australia
+Australia:Western_Australia

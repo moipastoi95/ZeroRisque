@@ -6,11 +6,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -32,6 +31,9 @@ public class LauncherController implements Initializable {
     @FXML
     private TextField troops;
 
+    /**
+     * Called to initialize a controller after its root element has been completely processed
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -50,37 +52,35 @@ public class LauncherController implements Initializable {
         troops.setPromptText(String.valueOf(territories.getValue() * Game.TROOPS_FACTOR));
 
         // binding the troops value to the number of territories
-        territories.valueProperty().addListener(new ChangeListener<Integer>() {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
-                troops.setPromptText(String.valueOf(t1 * Game.TROOPS_FACTOR));
-            }
-        });
+        territories.valueProperty().addListener((observableValue, integer, t1) -> troops.setPromptText(String.valueOf(t1 * Game.TROOPS_FACTOR)));
     }
 
+    /**
+     * This function is called when someone click on START GAME on the launcher
+     * it initializes the game according to the values in the launcher
+     */
     @FXML
-    private void launch() throws IOException {
-        Constructor<?> constr = null;
+    private void launch() {
         try {
+            Constructor<?> constr;
             //Instantiate the agents
-            constr = Class.forName(agentPackage+red.getValue()).getConstructor(String.class);
-            Agent redAgent = (Agent) constr.newInstance("red") ;
+            constr = Class.forName(agentPackage + red.getValue()).getConstructor(String.class);
+            Agent redAgent = (Agent) constr.newInstance("red");
 
-            constr = Class.forName(agentPackage+blue.getValue()).getConstructor(String.class);
-            Agent blueAgent = (Agent) constr.newInstance("blue") ;
+            constr = Class.forName(agentPackage + blue.getValue()).getConstructor(String.class);
+            Agent blueAgent = (Agent) constr.newInstance("blue");
 
             // Create the game according to the inputs
-            Game g = new Game(blueAgent, redAgent, territories.getValue(), playclock.getValue());
+            GameController.setG(new Game(blueAgent, redAgent, territories.getValue(), playclock.getValue()));
 
-        } catch (NoSuchMethodException e) {
+            //Switching to the game to instantiate it
+            App.newConf("ZeroRisque", 1280, 720);
+            App.setRoot("game");
+
+        } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
             throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
