@@ -19,17 +19,10 @@ public class Game {
     // Data used to create the game based on the original map of the board game Risk
     final private static String[] env_data = {"continent-bonus", "continent-country", "country-neighbor"};
 
-
-    // The number of troops at the beginning of the game at each territories
+    // The number of troops at the beginning of the game at each territory
     final public static int TROOPS_FACTOR = 2;
 
     // HashMap who links the Continents to their names
-    // number of troops per players
-    
-    final private int troops = 35;
-    //  max time per turn
-    final private int timeout = 6;
-    
     private HashMap<String, Continent> continents = new HashMap<>();
 
     // HashMap who links the Tiles to their names
@@ -44,11 +37,10 @@ public class Game {
     public Game(Agent blue, Agent red, int territories, int playclock) {
 
         this.playclock = playclock;
-
         setupElements(blue, red, territories);
-        //configElements();
+    }
 
-        
+    private void play() {
         // for each player --> deploy, attack, fortify
         int index = 0;
         ArrayList<Agent> turns = new ArrayList<>(players.values());
@@ -60,7 +52,7 @@ public class Game {
 
             Future<Actions> future = executor.submit(p);
             try {
-                Actions a = future.get(timeout, TimeUnit.SECONDS);
+                Actions a = future.get(playclock, TimeUnit.SECONDS);
 
                 int pTerritories = p.getTiles().size();
 
