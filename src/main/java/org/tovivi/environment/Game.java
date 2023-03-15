@@ -87,7 +87,7 @@ public class Game {
 
     }
 
-    private void play() {
+    public void play() {
         // for each player --> deploy, attack, fortify
         int index = 0;
         ArrayList<Agent> turns = new ArrayList<>(players.values());
@@ -106,11 +106,11 @@ public class Game {
                 // deploy
                 String print = "";
                 try {
-                    boolean flag = true;
+                    boolean flag = a.getDeployment() != null;
                     while(flag) {
                         if(a.getDeployment().isNumTroopsLegal(p)) {
                             print = a.getDeployment().toString();
-                            a.performDeployment(p);
+                            flag = a.performDeployment(p);
                             System.out.println("    [Success] :: " + print);
                         } else {
                             flag = false;
@@ -125,10 +125,12 @@ public class Game {
                 // attack
                 print = "";
                 try {
-                    while(a.performAttack(p)) {
-                        print = a.getFirstOffensive().toString();
-                        System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
-                    }
+                    do {
+                        if(a.getFirstOffensive() != null) {
+                            print = a.getFirstOffensive().toString();
+                            System.out.println("    [Success] :: " + print);
+                        }
+                    } while(a.performAttack(p));
                 } catch (SimulationRunningException e) {
                     System.out.println("    [Failed:Simulation currently running] :: " + print);
                 } catch (IllegalActionException e) {
@@ -138,9 +140,11 @@ public class Game {
                 // fortify
                 print = "";
                 try {
-                    print = a.getFirstOffensive().toString();
-                    a.performFortify(p);
-                    System.out.println("    [Success] :: " + a.getFirstOffensive().toString());
+                    if(a.getFirstOffensive() != null) {
+                        print = a.getFirstOffensive().toString();
+                        a.performFortify(p);
+                        System.out.println("    [Success] :: " + print);
+                    }
                 } catch (SimulationRunningException e) {
                     System.out.println("    [Failed:Simulation currently running] :: " + print);
                 } catch (IllegalActionException e) {

@@ -25,7 +25,7 @@ public abstract class Agent implements Callable<Actions> {
         this.color = color;
         this.tiles = new ArrayList<>();
         this.deck = new ArrayList<>();
-        this.game = new Game(game);
+        this.game = game;
     }
     public Agent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         this(color, null);
