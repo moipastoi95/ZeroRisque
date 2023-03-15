@@ -25,11 +25,6 @@ public class Legume extends Agent{
 
     @Override
     public Actions action() {
-          try {
-               Thread.sleep(5000);
-          } catch (Exception e) {
-
-          }
         int numTroops = getNumDeploy();
 
         // deploy all troops on a random tile
