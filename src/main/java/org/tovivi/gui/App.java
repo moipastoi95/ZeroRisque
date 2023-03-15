@@ -47,12 +47,24 @@ public class App extends Application {
         return scene.getRoot().lookup(fxid);
     }
 
+    /**
+     * Change the title, width and height of the static stage of the App
+     * @param title the new title
+     * @param w the new width
+     * @param h the new height
+     */
     static void newConf(String title, int w, int h) {
         stage.setTitle(title);
         stage.setMinWidth(w); stage.setMinHeight(h+40);
         stage.centerOnScreen();
     }
 
+    /**
+     * Load the FXML resources needed
+     * @param fxml name of the fxml name
+     * @return
+     * @throws IOException
+     */
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
