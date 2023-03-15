@@ -84,7 +84,6 @@ public class Continent implements PropertyChangeListener {
 
                 //Add 1 to the number of tile possessed in the continent
                 players.put(((Agent) evt.getNewValue()).getColor(), players.get(((Agent) evt.getNewValue()).getColor())+1);
-                System.out.println("Je suis là bébou");
 
                 // Test if the new occupier of the tile also occupied the whole continent
                 if (players.get(((Agent) evt.getNewValue()).getColor())==nbTiles) {
