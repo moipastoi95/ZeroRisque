@@ -31,6 +31,14 @@ public class App extends Application {
         scene.setRoot(loadFXML(fxml));
     }
 
+    static Parent getRoot() {
+        return scene.getRoot();
+    }
+
+    static Stage getStage() {
+        return stage;
+    }
+
     static Node getNode(String fxid) {
         
         for (Node n : scene.getRoot().getChildrenUnmodifiable()) {
@@ -41,7 +49,7 @@ public class App extends Application {
 
     static void newConf(String title, int w, int h) {
         stage.setTitle(title);
-        stage.setMinWidth(w); stage.setMinHeight(h);
+        stage.setMinWidth(w); stage.setMinHeight(h+40);
         stage.centerOnScreen();
     }
 

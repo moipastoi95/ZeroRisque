@@ -7,8 +7,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -21,6 +24,8 @@ import org.tovivi.environment.Game;
 public class LauncherController implements Initializable {
 
     final private static String agentPackage = "org.tovivi.agent.";
+
+    protected static Game game ;
     @FXML
     private ComboBox<Integer> playclock;
     @FXML
@@ -72,14 +77,14 @@ public class LauncherController implements Initializable {
             Agent blueAgent = (Agent) constr.newInstance("Blue");
 
             ArrayList<Agent> agents = new ArrayList<>();
-            agents.add(redAgent);
             agents.add(blueAgent);
+            agents.add(redAgent);
 
             // Create the game according to the inputs
-
-            GameController.setGame(new Game(agents, territories.getValue(), playclock.getValue()));
+            game = new Game(agents, territories.getValue(), playclock.getValue());
 
             //Switching to the game to instantiate it
+            App.getStage().hide();
             App.newConf("ZeroRisque", 1280, 720);
             App.setRoot("game");
 
