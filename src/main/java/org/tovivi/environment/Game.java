@@ -107,13 +107,13 @@ public class Game {
                 String print = "";
                 try {
                     boolean flag = a.getDeployment() != null;
-                    while(flag) {
-                        if(a.getDeployment().isNumTroopsLegal(p)) {
-                            print = a.getDeployment().toString();
-                            flag = a.performDeployment(p);
-                            System.out.println("    [Success] :: " + print);
-                        } else {
-                            flag = false;
+                    if (flag) {
+                        if (a.getDeployment().isNumTroopsLegal(p)) {
+                            while(flag) {
+                                print = a.getDeployment().toString();
+                                flag = a.performDeployment(p);
+                                System.out.println("    [Success] :: " + print);
+                            }
                         }
                     }
                 } catch (SimulationRunningException e) {
@@ -140,11 +140,11 @@ public class Game {
                 // fortify
                 print = "";
                 try {
-                    if(a.getFirstOffensive() != null) {
+                    // if(a.getFirstOffensive() != null) {
                         print = a.getFirstOffensive().toString();
                         a.performFortify(p);
                         System.out.println("    [Success] :: " + print);
-                    }
+                    // }
                 } catch (SimulationRunningException e) {
                     System.out.println("    [Failed:Simulation currently running] :: " + print);
                 } catch (IllegalActionException e) {
