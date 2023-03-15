@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tovivi.gui.GameController">
+<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tovivi.gui.GameController">
     <tabs>
         <Tab fx:id="map" text="Map">
             <content>
@@ -55,8 +55,391 @@
                         </AnchorPane>
                         <Line endX="-90.0" layoutX="80.0" layoutY="47.0" startX="-100.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
                         <Line endX="-90.0" layoutX="90.0" layoutY="57.0" startX="-100.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="35.0" />
+                        <AnchorPane fx:id="Alberta" layoutX="10.0" layoutY="10.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#d7ad3a" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Alberta" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="100.0" layoutY="67.0" startY="10.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="80.0" />
+                        <Line endX="37.0" layoutX="110.0" layoutY="77.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="65.0" />
+                        <AnchorPane fx:id="Ontario" layoutX="41.0" layoutY="20.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#d7ad3a" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Ontario" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="110.0" layoutY="80.0" startY="10.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="80.0" />
+                        <Line endX="-90.0" layoutX="90.0" layoutY="57.0" startX="-100.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="135.0" />
+                        <Line endX="37.0" layoutX="120.0" layoutY="87.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="165.0" AnchorPane.topAnchor="65.0" />
+                        <AnchorPane fx:id="Quebec" layoutX="51.0" layoutY="30.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#d7ad3a" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Quebec" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="120.0" layoutY="90.0" startY="10.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="235.0" AnchorPane.topAnchor="80.0" />
+                        <Line endX="-90.0" layoutX="100.0" layoutY="67.0" startX="-100.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="135.0" />
+                        <AnchorPane fx:id="Western_US" layoutX="20.0" layoutY="20.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="200.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#d7ad3a" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Western US" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="110.0" layoutY="77.0" startY="10.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="180.0" />
+                        <Line endX="37.0" layoutX="120.0" layoutY="87.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="165.0" />
+                        <AnchorPane fx:id="Eastern_US" layoutX="30.0" layoutY="30.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="200.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#d7ad3a" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Eastern US" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line endX="-90.0" layoutX="100.0" layoutY="67.0" startX="-100.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="235.0" />
+                        <Line layoutX="120.0" layoutY="87.0" startY="10.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="180.0" />
+                        <Line endX="37.0" layoutX="130.0" layoutY="97.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="165.0" AnchorPane.topAnchor="165.0" />
+                        <AnchorPane fx:id="Central_America" layoutX="40.0" layoutY="40.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="300.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#d7ad3a" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Central America" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="120.0" layoutY="87.0" startY="10.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="280.0" />
+                        <Line endX="37.0" layoutX="130.0" layoutY="97.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="265.0" />
+                        <Label layoutX="168.0" layoutY="269.0" prefHeight="62.0" prefWidth="103.0" text="North America" wrapText="true" AnchorPane.leftAnchor="168.0" AnchorPane.topAnchor="269.0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
                      </children>
                   </AnchorPane>
+                  <AnchorPane fx:id="South_America" layoutX="75.0" layoutY="66.0" prefHeight="180.0" prefWidth="271.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="450.0">
+                     <children>
+                        <AnchorPane fx:id="Venezuela" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#b778b9" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Venezuela" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="100.0" layoutY="67.0" startY="10.0" stroke="#88598a" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="80.0" />
+                        <Line endX="37.0" layoutX="110.0" layoutY="77.0" startY="37.0" stroke="#88598a" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="65.0" />
+                        <Label layoutX="189.0" layoutY="85.0" prefHeight="62.0" prefWidth="103.0" text="South America" wrapText="true" AnchorPane.leftAnchor="189.0" AnchorPane.topAnchor="85.0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Line endX="10.0" layoutX="110.0" layoutY="77.0" stroke="#88598a" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="35.0" />
+                        <AnchorPane fx:id="Brazil" layoutX="10.0" layoutY="10.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#b778b9" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Brazil" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="110.0" layoutY="77.0" startY="10.0" stroke="#88598a" strokeWidth="10.0" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="80.0" />
+                        <AnchorPane fx:id="Peru" layoutX="10.0" layoutY="10.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#b778b9" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Peru" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line endX="10.0" layoutX="120.0" layoutY="87.0" stroke="#88598a" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="135.0" />
+                        <AnchorPane fx:id="Argentina" layoutX="20.0" layoutY="20.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#b778b9" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Argentina" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <Line layoutX="181.0" layoutY="420.0" startY="30.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="95.0" AnchorPane.topAnchor="410.0" />
+                  <AnchorPane fx:id="Europe" layoutX="75.0" layoutY="123.0" prefHeight="300.0" prefWidth="280.0" AnchorPane.leftAnchor="420.0" AnchorPane.topAnchor="90.0">
+                     <children>
+                        <AnchorPane fx:id="Iceland" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#6aa7c3" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Iceland" textAlignment="CENTER" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="120.0" layoutY="87.0" startY="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="80.0" />
+                        <Line endX="37.0" layoutX="130.0" layoutY="97.0" startY="37.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="65.0" />
+                        <Label layoutX="-7.0" layoutY="210.0" prefHeight="25.0" prefWidth="85.0" text="Europe" wrapText="true" AnchorPane.leftAnchor="-7.0" AnchorPane.topAnchor="210.0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Line layoutX="130.0" layoutY="97.0" startX="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="35.0" />
+                        <AnchorPane fx:id="Scandinavia" layoutX="10.0" layoutY="10.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#6aa7c3" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Scandin-avia" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="130.0" layoutY="97.0" startY="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="80.0" />
+                        <Line layoutX="140.0" layoutY="107.0" startX="37.0" startY="37.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="165.0" AnchorPane.topAnchor="65.0" />
+                        <AnchorPane fx:id="Great_Britain" layoutX="20.0" layoutY="20.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#6aa7c3" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Great Britain" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="140.0" layoutY="107.0" startX="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="135.0" />
+                        <AnchorPane fx:id="Northern_Europe" layoutX="30.0" layoutY="30.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#6aa7c3" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Northern Europe" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="140.0" layoutY="107.0" startY="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="180.0" />
+                        <Line layoutX="150.0" layoutY="117.0" startX="37.0" startY="37.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="165.0" />
+                        <Line layoutX="160.0" layoutY="127.0" startX="37.0" startY="37.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="165.0" AnchorPane.topAnchor="165.0" />
+                        <Line layoutX="150.0" layoutY="117.0" startX="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="135.0" />
+                        <AnchorPane fx:id="Western_Europe" layoutX="40.0" layoutY="40.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="200.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#6aa7c3" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label fx:id="Northern_Europe1" alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Western Europe" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="Southern_Europe" layoutX="50.0" layoutY="50.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="200.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#6aa7c3" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label fx:id="Northern_Europe11" alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Southern Europe" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="160.0" layoutY="127.0" startX="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="180.0" AnchorPane.topAnchor="235.0" />
+                        <AnchorPane fx:id="Ukraine" layoutX="60.0" layoutY="60.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#6aa7c3" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label fx:id="Northern_Europe111" alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Ukraine" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="140.0" layoutY="107.0" startY="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="235.0" AnchorPane.topAnchor="180.0" />
+                     </children>
+                  </AnchorPane>
+                  <Line layoutX="380.0" layoutY="108.0" startX="76.0" startY="30.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="335.0" AnchorPane.topAnchor="77.0" />
+                  <AnchorPane fx:id="Africa" layoutX="85.0" layoutY="133.0" prefHeight="270.0" prefWidth="261.0" AnchorPane.leftAnchor="520.0" AnchorPane.topAnchor="390.0">
+                     <children>
+                        <AnchorPane fx:id="North_Africa" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#dd6b6b" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="North Africa" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="120.0" layoutY="87.0" startY="10.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="80.0" />
+                        <Line layoutX="130.0" layoutY="97.0" startX="37.0" startY="37.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="65.0" />
+                        <Label layoutX="190.0" layoutY="120.0" prefHeight="30.0" prefWidth="71.0" text="Africa" wrapText="true" AnchorPane.leftAnchor="190.0" AnchorPane.topAnchor="120.0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Line layoutX="130.0" layoutY="97.0" startX="10.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="35.0" />
+                        <AnchorPane fx:id="Egypt" layoutX="10.0" layoutY="10.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#dd6b6b" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Egypt" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="Congo" layoutX="10.0" layoutY="10.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#dd6b6b" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Congo" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="East_Africa" layoutX="20.0" layoutY="20.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="100.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#dd6b6b" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="East Africa" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="130.0" layoutY="97.0" startY="10.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="80.0" />
+                        <Line layoutX="140.0" layoutY="107.0" startX="10.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="135.0" />
+                        <AnchorPane fx:id="South_Africa" layoutX="30.0" layoutY="30.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="200.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#dd6b6b" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="South Africa" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="Madagascar" layoutX="40.0" layoutY="40.0" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="200.0">
+                           <children>
+                              <Circle fill="#1f93ff00" layoutX="47.0" layoutY="53.0" radius="40.0" stroke="#dd6b6b" strokeType="INSIDE" strokeWidth="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="22.0" layoutY="53.0" text="Madagas-car" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="42.0" layoutY="32.0" text="1" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                 <font>
+                                    <Font size="17.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Line layoutX="130.0" layoutY="97.0" startY="10.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="180.0" />
+                        <Line layoutX="140.0" layoutY="107.0" startY="10.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="135.0" AnchorPane.topAnchor="180.0" />
+                        <Line endY="37.0" layoutX="140.0" layoutY="107.0" startX="37.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="165.0" />
+                        <Line layoutX="150.0" layoutY="117.0" startX="10.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="235.0" />
+                     </children>
+                  </AnchorPane>
+                  <Line layoutX="475.0" layoutY="408.0" startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="555.0" AnchorPane.topAnchor="370.0" />
+                  <Line layoutX="485.0" layoutY="418.0" startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="655.0" AnchorPane.topAnchor="370.0" />
+                  <Line endX="37.0" layoutX="495.0" layoutY="428.0" startY="37.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="585.0" AnchorPane.topAnchor="355.0" />
+                  <Line endY="50.0" layoutX="191.0" layoutY="430.0" startX="272.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="237.0" AnchorPane.topAnchor="430.0" />
                </children></AnchorPane>
             </content>
         </Tab>

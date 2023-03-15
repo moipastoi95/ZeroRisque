@@ -40,7 +40,7 @@ public class Game {
         setupElements(agents, territories);
     }
 
-    private void play() {
+    public void play() {
         // for each player --> deploy, attack, fortify
         int index = 0;
         ArrayList<Agent> turns = new ArrayList<>(players.values());
@@ -123,6 +123,7 @@ public class Game {
             a.setGame(this);
             players.put(a.getColor(), a);
         }
+
 
         Agent grey = new Legume("Grey", this);
         players.put(grey.getColor(), grey);
