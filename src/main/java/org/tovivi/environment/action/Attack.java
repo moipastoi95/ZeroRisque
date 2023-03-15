@@ -99,7 +99,6 @@ public class Attack extends Offensive{
         // fail the defence
         if (toTile.getNumTroops() == 0) {
             int troopsReallyMoved = min(movedTroops, fromTile.getNumTroops()-1);
-            System.out.println(troopsReallyMoved);
             toTile.setOccupier(player, troopsReallyMoved);
             fromTile.setNumTroops(fromTile.getNumTroops()-troopsReallyMoved);
             return onSucceed;
