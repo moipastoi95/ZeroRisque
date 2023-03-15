@@ -79,15 +79,15 @@ public class Continent implements PropertyChangeListener {
 
         //New Occupier : called if a tile of the continent has been claimed by a new player
         if (evt.getPropertyName().compareTo("newOccupier")==0) {
-
             //The player has already possess a tile of the continent during the game
-            if (players.containsKey(evt.getNewValue())) {
+            if (players.containsKey(((Agent) evt.getNewValue()).getColor())) {
 
                 //Add 1 to the number of tile possessed in the continent
-                players.put(((Agent) evt.getNewValue()).getColor(), players.get(evt.getNewValue())+1);
+                players.put(((Agent) evt.getNewValue()).getColor(), players.get(((Agent) evt.getNewValue()).getColor())+1);
+                System.out.println("Je suis là bébou");
 
                 // Test if the new occupier of the tile also occupied the whole continent
-                if (players.get(evt.getNewValue())==nbTiles) {
+                if (players.get(((Agent) evt.getNewValue()).getColor())==nbTiles) {
                     setOccupier((Agent) evt.getNewValue());
                 }
             }
@@ -97,7 +97,7 @@ public class Continent implements PropertyChangeListener {
             }
             //If there was someone
             if (evt.getOldValue()!=null) {
-                players.put(((Agent) evt.getOldValue()).getColor(), players.get(evt.getOldValue())-1);
+                players.put(((Agent) evt.getOldValue()).getColor(), players.get(((Agent) evt.getOldValue()).getColor())-1);
             }
         }
     }
