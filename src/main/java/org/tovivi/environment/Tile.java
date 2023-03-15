@@ -21,9 +21,10 @@ public class Tile {
         this.occupier = tile.getOccupier(); //Not a deepCopy
         this.support = new PropertyChangeSupport(this);
         this.numTroops = tile.getNumTroops();
-        for(Tile j : tile.getNeighbors()){
+        /*for(Tile j : tile.getNeighbors()){
             this.neighbors.add(new Tile(j));
-        }
+        }*/
+        this.neighbors = tile.getNeighbors(); //Not a deep copy
     }
 
     /**

@@ -6,6 +6,7 @@ import org.tovivi.environment.action.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Random Agent will choose a random tile next to a opponent tile, deploy all troops available and attack.
@@ -30,6 +31,10 @@ public class RandomAgent extends Agent{
      */
     public RandomAgent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(color);
+    }
+
+    public RandomAgent(Agent agent){
+        super(agent);
     }
 
     public Actions action(int numTroops) {

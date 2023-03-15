@@ -51,10 +51,10 @@ public class Game {
         }
         //Create a copy of all the players
         for(String key : Game.getPlayers().keySet()){
-            Constructor<?> constr;
+            Constructor<Agent> constr;
             //Instantiate the agents
             Agent player = Game.getPlayers().get(key);
-            constr = player.getClass().getConstructor(Agent.class);
+            constr = (Constructor<Agent>) player.getClass().getConstructor(Agent.class);
             this.players.put(key, (Agent) constr.newInstance(player));
             this.players.get(key).setGame(this);
         }
@@ -71,7 +71,18 @@ public class Game {
         for(String key : Game.getTiles().keySet()){
             Tile til = Game.getTiles().get(key);
             this.tiles.put(key, new Tile(til));
-            this.tiles.get(key).setOccupier(this.players.get(til.getOccupier().getColor()), til.getNumTroops());
+            if(til.getOccupier() != null){
+                this.tiles.get(key).setOccupier(this.players.get(til.getOccupier().getColor()), til.getNumTroops());
+            }
+        }
+
+        //DeepCopy des voisins d'une tile
+        for(String key: this.tiles.keySet()){
+            ArrayList<Tile> neigh = new ArrayList<>();
+            for(Tile t: this.tiles.get(key).getNeighbors()){
+                neigh.add(this.tiles.get(t.getName()));
+            }
+            this.tiles.get(key).setNeighbors(neigh);
         }
 
     }
