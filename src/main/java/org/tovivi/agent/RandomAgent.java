@@ -3,7 +3,9 @@ package org.tovivi.agent;
 import org.tovivi.environment.*;
 import org.tovivi.environment.action.*;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -20,7 +22,7 @@ public class RandomAgent extends Agent{
      * @param color : String of the color
      * @param game  : ref to the game object
      */
-    public RandomAgent(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public RandomAgent(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super(color, game);
     }
 
@@ -29,7 +31,7 @@ public class RandomAgent extends Agent{
      * Used to create the players before the game, typically the red and blue players
      * @param color : String of the color
      */
-    public RandomAgent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public RandomAgent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super(color);
     }
 
@@ -82,7 +84,8 @@ public class RandomAgent extends Agent{
         MultiDeploy deployPart = new MultiDeploy(depL);
 
         // attack a random tile next to the tile chosen
-        ArrayList<Tile> frontValue = front.get(fromTile);        Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
+        ArrayList<Tile> frontValue = front.get(fromTile);
+        Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
 
         Offensive offensivePart = new Attack(fromTile, toTile, fromTile.getNumTroops()+numTroops+goodCardsValue-1, new Fortify(), new Fortify());
 
