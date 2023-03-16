@@ -123,6 +123,10 @@ public class Card {
 
     @Override
     public String toString() {
-        return "[CARD:" + this.type + " - " + this.bonusTile.getName() + "]";
+        String str = type.toString();
+        if (bonusTile!=null) {
+            str += " - " + bonusTile.getName();
+        }
+        return str;
     }
 }

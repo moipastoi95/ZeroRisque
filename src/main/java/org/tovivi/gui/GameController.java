@@ -50,44 +50,41 @@ public class GameController implements Initializable {
     final static private int STROKE = 5;
 
     // PropertyChangeListener that listens the property changes from notably tiles to update the GUI
-    private PropertyChangeListener pcl = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            //New Occupier : called if a tile of the continent has been claimed by a new player
-            if (evt.getPropertyName().compareTo("newOccupier")==0) {
+    private PropertyChangeListener pcl = evt -> {
+        //New Occupier : called if a tile of the continent has been claimed by a new player
+        if (evt.getPropertyName().compareTo("newOccupier")==0) {
+            Tile changedT = (Tile) evt.getSource();
+            Platform.runLater(() -> {
+                fill(changedT, ((Agent) evt.getNewValue()).getColor());
+            });
+        }
+        if (evt.getPropertyName().compareTo("newNumTroops")==0) {
+            try {
                 Tile changedT = (Tile) evt.getSource();
                 Platform.runLater(() -> {
-                    fill(changedT, ((Agent) evt.getNewValue()).getColor());
+                    changeNumTroops(changedT, (int) evt.getNewValue());
                 });
+                if (!changedT.isInConflict()) {Platform.runLater(() -> {highligth(changedT);});}
+
+                boolean earn = ((int) evt.getNewValue()) > ((int) evt.getOldValue());
+                impact(changedT, earn);
+
+                if (!changedT.isInConflict()) {Platform.runLater(() -> {turnOff(changedT);});}
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-            if (evt.getPropertyName().compareTo("newNumTroops")==0) {
-                try {
-                    Tile changedT = (Tile) evt.getSource();
-                    Platform.runLater(() -> {
-                        changeNumTroops(changedT, (int) evt.getNewValue());
-                    });
-                    if (!changedT.isInConflict()) {Platform.runLater(() -> {highligth(changedT);});}
-
-                    boolean earn = ((int) evt.getNewValue()) > ((int) evt.getOldValue());
-                    impact(changedT, earn);
-
-                    if (!changedT.isInConflict()) {Platform.runLater(() -> {turnOff(changedT);});}
-
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        }
+        if (evt.getPropertyName().compareTo("inConflictChange")==0) {
+            Tile changedT = (Tile) evt.getSource();
+            Platform.runLater(() -> {
+                if ((boolean) evt.getNewValue()) {
+                    highligth(changedT);
                 }
-            }
-            if (evt.getPropertyName().compareTo("inConflictChange")==0) {
-                Tile changedT = (Tile) evt.getSource();
-                Platform.runLater(() -> {
-                    if ((boolean) evt.getNewValue()) {
-                        highligth(changedT);
-                    }
-                    else {
-                        turnOff(changedT);
-                    }
-                });
-            }
+                else {
+                    turnOff(changedT);
+                }
+            });
         }
     };
 
@@ -118,7 +115,6 @@ public class GameController implements Initializable {
         for (Tile t : game.getTiles().values()) {
             fill(t, t.getOccupier().getColor());
             changeNumTroops(t, t.getNumTroops());
-            t.addPropertyChangeListener(pcl);
         }
         GameService gs = new GameService(this);
         gs.start();
