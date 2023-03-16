@@ -5,14 +5,14 @@ import org.tovivi.environment.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import static java.lang.Math.min;
 
 public class Attack extends Offensive{
     private Offensive onSucceed;
     private Offensive onFailed;
-    private Tile fromTile;
-    private Tile toTile;
-    private int movedTroops;
     private Tile copyToTile;
 
     /**
@@ -24,9 +24,7 @@ public class Attack extends Offensive{
      * @param onFailed the nex action to do if the attack has failed
      */
     public Attack(Tile fromTile, Tile toTile, int movedTroops, Offensive onSucceed, Offensive onFailed) {
-        this.fromTile = fromTile;
-        this.toTile = toTile;
-        this.movedTroops = movedTroops;
+        super(fromTile, toTile, movedTroops);
         this.onSucceed = onSucceed;
         this.onFailed = onFailed;
     }
@@ -39,33 +37,21 @@ public class Attack extends Offensive{
         return onFailed;
     }
 
-    public Tile getFromTile() {
-        return fromTile;
-    }
-
-    public Tile getToTile() {
-        return toTile;
-    }
-
-    public int getMovedTroops() {
-        return movedTroops;
-    }
-
     @Override
     public String toString() {
-        return "[Attack:" + fromTile.getName() + " -" + movedTroops + "-> " + toTile.getName() + "]";
+        return "[Attack:" + getFromTile().getName() + " -" + getNumTroops() + "-> " + getToTile().getName() + "]";
     }
 
     @Override
     public boolean isMoveLegal(Agent player) {
 
         // check game state consistency
-        if (!fromTile.getOccupier().equals(player) || toTile.getOccupier().equals(player) || fromTile.getNumTroops()<=1) {
+        if (!getFromTile().getOccupier().equals(player) || getToTile().getOccupier().equals(player) || getFromTile().getNumTroops()<=1) {
             return false;
         }
 
         // make sure it cannot move all the troops
-        if (movedTroops >= fromTile.getNumTroops()) {
+        if (getNumTroops() >= getFromTile().getNumTroops()) {
             return false;
         }
 
@@ -83,24 +69,37 @@ public class Attack extends Offensive{
         }
 
         // fight
-        while(toTile.getNumTroops() != 0 && fromTile.getNumTroops() != 1) {
-            // throw of the dice
-            int diceP = (int)(Math.random() * 6); // dice of the player
-            int diceO = (int)(Math.random() * 6); // dice of the opponent
+        while(getToTile().getNumTroops() != 0 && getFromTile().getNumTroops() != 1) {
+            // throw of the dices
+            // dices of the player and the opponent
+            ArrayList<Integer> dicesP = new ArrayList<>();
+            ArrayList<Integer> dicesO = new ArrayList<>();
+            for(int i=0; i<min(getFromTile().getNumTroops()-1, 3); i++) {
+                dicesP.add((int)(Math.random() * 6));
+            }
+            for(int i=0; i<min(getToTile().getNumTroops(), 2); i++) {
+                dicesO.add((int)(Math.random() * 6));
+            }
 
-            // succeed attack
-            if (diceP > diceO) {
-                toTile.setNumTroops(toTile.getNumTroops()-1);
-            } else { // failed
-                fromTile.setNumTroops(fromTile.getNumTroops()-1);
+            //order dices
+            Collections.sort(dicesP, Collections.reverseOrder());
+            Collections.sort(dicesO, Collections.reverseOrder());
+
+            for(int i=0; i<min(dicesP.size(), dicesO.size()); i++) {
+                // succeed attack
+                if (dicesP.get(i) > dicesO.get(i)) {
+                    getToTile().setNumTroops(getToTile().getNumTroops()-1);
+                } else { // failed
+                    getFromTile().setNumTroops(getFromTile().getNumTroops()-1);
+                }
             }
         }
 
         // fail the defence
-        if (toTile.getNumTroops() == 0) {
-            int troopsReallyMoved = min(movedTroops, fromTile.getNumTroops()-1);
-            toTile.setOccupier(player, troopsReallyMoved);
-            fromTile.setNumTroops(fromTile.getNumTroops()-troopsReallyMoved);
+        if (getToTile().getNumTroops() == 0) {
+            int troopsReallyMoved = min(getNumTroops(), getFromTile().getNumTroops()-1);
+            getFromTile().setNumTroops(getFromTile().getNumTroops()-troopsReallyMoved);
+            getToTile().setOccupier(player, troopsReallyMoved);
             return onSucceed;
         }
         else {
@@ -115,11 +114,11 @@ public class Attack extends Offensive{
         }
 
         // copy former value of toTile
-        copyToTile = new Tile(toTile.getName(), toTile.getContinent());
-        copyToTile.setOccupier(toTile.getOccupier(), toTile.getNumTroops());
+        copyToTile = new Tile(getToTile().getName(), getToTile().getContinent());
+        copyToTile.setOccupier(getToTile().getOccupier(), getToTile().getNumTroops());
 
-        toTile.setOccupier(fromTile.getOccupier(), movedTroops);
-        fromTile.setNumTroops(fromTile.getNumTroops()-movedTroops);
+        getToTile().setOccupier(getFromTile().getOccupier(), getNumTroops());
+        getFromTile().setNumTroops(getFromTile().getNumTroops()-getNumTroops());
 
         return true;
     }
@@ -130,8 +129,8 @@ public class Attack extends Offensive{
             return false;
         }
 
-        toTile.setOccupier(copyToTile.getOccupier(), copyToTile.getNumTroops());
-        fromTile.setNumTroops(fromTile.getNumTroops()-movedTroops);
+        getToTile().setOccupier(copyToTile.getOccupier(), copyToTile.getNumTroops());
+        getFromTile().setNumTroops(getFromTile().getNumTroops()-getNumTroops());
 
         return true;
     }
