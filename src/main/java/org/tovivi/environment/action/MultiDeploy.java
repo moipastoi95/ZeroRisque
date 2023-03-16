@@ -59,10 +59,12 @@ public class MultiDeploy extends Deployment {
 
 
         // perform the deployment
-        if (deploys.size() != 0) {
-            Actuator actuator = deploys.get(0).perform(player);
+        if (!stopDeploy()) {
+            deploys.get(0).perform(player);
             deploys.remove(0);
-            return actuator;
+        }
+        if (!stopDeploy()) {
+            return this;
         }
         return null;
     }
