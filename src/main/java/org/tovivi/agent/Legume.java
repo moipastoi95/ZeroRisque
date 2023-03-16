@@ -4,7 +4,9 @@ import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
 import org.tovivi.environment.action.*;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class Legume extends Agent{
@@ -15,7 +17,7 @@ public class Legume extends Agent{
      * @param color : String of the color
      * @param game  : ref to the game object
      */
-    public Legume(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Legume(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super(color, game);
     }
 

@@ -3,10 +3,13 @@ package org.tovivi.agent;
 import org.tovivi.environment.*;
 import org.tovivi.environment.action.*;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -16,18 +19,21 @@ public abstract class Agent implements Callable<Actions> {
     private ArrayList<Tile> tiles;
     private Game game;
     private ArrayList<Card> deck;
+    private LinkedList<LinkedList<Double>> proba = new LinkedList<>();
 
     /**
      * @param color : String of the color
      * @param game : ref to the game object
      * */
-    public Agent(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Agent(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         this.color = color;
         this.tiles = new ArrayList<>();
         this.deck = new ArrayList<>();
         this.game = game;
+        TextReader tr = new TextReader();
+        this.proba = tr.readProba(TextReader.class.getResource("proba.txt"));
     }
-    public Agent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Agent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         this(color, null);
     }
 
@@ -77,6 +83,12 @@ public abstract class Agent implements Callable<Actions> {
     */
     public Game getGame() {
         return game;
+    }
+    /**Return the probability of winning for a fight of i attackers against j defenders
+     * @return A double giving the winninig probability
+     * */
+    public double getProba(int i, int j){
+        return this.proba.get(i).get(j);
     }
 
     public void setGame(Game game) {
