@@ -19,9 +19,6 @@ import static java.lang.Math.*;
 
 public class AgentMonteCarlo extends Agent {
 
-    //TODO: Ajouter les variables nécessaire à l'algo mdrrr
-    // Surtout genre comment stocker l'arbre des coups à jouer et leur valeur....
-
     private Node root;
 
     private Node actual_node;
@@ -34,6 +31,22 @@ public class AgentMonteCarlo extends Agent {
         this.root = new Node(new Game(game),0,null, this.getDeck());
     }
 
+    public AgentMonteCarlo(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
+        super(color);
+    }
+
+    public AgentMonteCarlo(Agent agent){
+        super(agent);
+    }
+
+    public void setGame(Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        super.setGame(game);
+    }
+
+    public void setRoot() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        this.root = new Node(new Game(this.getGame()),0,null, this.getDeck());
+    }
+
     @Override
     //TODO: while(ressource_left):
     // 0 - Choisir le nouveau noeud à partir duquel explorer (fonction traverse)
@@ -43,21 +56,14 @@ public class AgentMonteCarlo extends Agent {
     // 4 - Renvoyer le meilleur child
     public Actions action() {
 
-        while(depth < 5){
-            this.actual_node = this.traverse(); //Etape 0
+        this.actual_node = this.traverse(); //Etape 0
 
-            //On récupère les tiles correspondant au front, tiles adjacentes à des adversaires
-            HashMap<Tile, ArrayList<Tile>> front = this.getFront(actual_node);
+        //On récupère les tiles correspondant au front, tiles adjacentes à des adversaires
+        HashMap<Tile, ArrayList<Tile>> front = this.getFront(actual_node);
 
-            Actions new_action = this.getNewAction(front);
+        Actions new_action = this.getNewAction(front);
 
-        }
-
-
-
-
-
-        return null;
+        return new_action;
     }
 
 
@@ -65,6 +71,9 @@ public class AgentMonteCarlo extends Agent {
         Actions act = null;
         Agent player = this;
         String OpColor = "";
+        MultiDeploy deployPart = null;
+        Offensive offensivePart = null;
+
         if(this.getColor() == "Red") OpColor = "Blue";
         else OpColor = "Red";
 
@@ -74,15 +83,52 @@ public class AgentMonteCarlo extends Agent {
             else player = this;
 
             //Deployement on one or two tile of the frontier of the current player
-            MultiDeploy deployPart = this.createDeployment(front, this.getNumDeploy(), player);
+            deployPart = this.createDeployment(front, this.getNumDeploy(), player);
             deployPart.doSimulation();
 
-            //Attack phase
+            offensivePart = this.createAttack(front, 0, 5, player);
 
 
         }
 
-        return null;
+        return new Actions(deployPart, offensivePart);
+    }
+
+    public Offensive createAttack(HashMap<Tile, ArrayList<Tile>> front, int actDepth, int maxDepth, Agent player){
+        System.out.println("Depth : " + actDepth);
+        Random rand = new Random();
+        boolean flag;
+        if(actDepth != maxDepth) flag = true;
+        else {
+            return new Fortify();
+        }
+        Attack offensive = null;
+        while(flag) {
+            //Choose a random tile from where to attack in the frontier
+            ArrayList<Tile> frontKeys = new ArrayList<>(front.keySet());
+            Tile fromTile = frontKeys.get((int) (Math.random() * frontKeys.size()));
+            // attack a random tile next to the tile chosen
+            Tile toTile = front.get(fromTile).get((int) (Math.random() * front.get(fromTile).size()));
+
+            int attackers = fromTile.getNumTroops();
+            int defenders = toTile.getNumTroops();
+            double prob = this.getProba(attackers, defenders);
+            if(rand.nextDouble() < prob){
+                //Modification du game en supposant une loose:
+                fromTile.setNumTroops(1);
+                HashMap<Tile, ArrayList<Tile>> frontLoose = front;
+
+                //Modification du game en cas de win
+                toTile.setOccupier(player, attackers/2);
+                HashMap<Tile, ArrayList<Tile>> frontWin = front;
+
+                offensive = new Attack(fromTile, toTile, attackers-1,
+                        createAttack(frontWin, actDepth+1, maxDepth, player),
+                        createAttack(frontLoose, actDepth+1, maxDepth, player));
+                flag = false;
+            }
+        }
+        return offensive;
     }
 
     private MultiDeploy createDeployment(HashMap<Tile, ArrayList<Tile>> front, int numTroops, Agent player) {

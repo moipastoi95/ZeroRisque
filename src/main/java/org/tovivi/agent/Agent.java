@@ -91,7 +91,7 @@ public abstract class Agent implements Callable<Actions> {
         return this.proba.get(i).get(j);
     }
 
-    public void setGame(Game game) {
+    public void setGame(Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         this.game = game;
     }
 

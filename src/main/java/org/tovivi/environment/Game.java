@@ -2,6 +2,7 @@ package org.tovivi.environment;
 
 
 import org.tovivi.agent.Agent;
+import org.tovivi.agent.AgentMonteCarlo;
 import org.tovivi.agent.Legume;
 import org.tovivi.agent.RandomAgent;
 import org.tovivi.environment.action.Actions;
@@ -40,7 +41,7 @@ public class Game {
 
     private int playclock;
 
-    public Game(ArrayList<Agent> agents, int territories, int playclock) {
+    public Game(ArrayList<Agent> agents, int territories, int playclock) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         this.playclock = playclock;
         setupElements(agents, territories);
@@ -68,7 +69,7 @@ public class Game {
                 this.continents.get(key).setOccupier(this.players.get(cont.getOccupier().getColor()));
         }
 
-        //Copy of all the tile of the game (DeepCopy of the agents in continents will be done afterwards)
+        //Copy of all the tile of the game
         for(String key : Game.getTiles().keySet()){
             Tile til = Game.getTiles().get(key);
             this.tiles.put(key, new Tile(til));
@@ -191,7 +192,7 @@ public class Game {
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
     }
 
-    private void setupElements(ArrayList<Agent> agents, int territories) {
+    private void setupElements(ArrayList<Agent> agents, int territories) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         // Setup the map with the data resources
         TextReader tr = new TextReader();
@@ -215,6 +216,12 @@ public class Game {
             throw new RuntimeException(e);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
+        }
+
+        for(Agent a : agents){
+            if(a instanceof AgentMonteCarlo){
+                ((AgentMonteCarlo) a).setRoot();
+            }
         }
 
         // the stack
