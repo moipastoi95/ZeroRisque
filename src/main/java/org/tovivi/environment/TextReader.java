@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class TextReader {
 
@@ -35,6 +36,26 @@ public class TextReader {
             //Creating the continent, with 0 tile and no occupier
             Continent c = new Continent(continent, (Integer.parseInt(bonus)),0);
             res.put(continent,c);
+        }
+        return res;
+    }
+    public LinkedList<LinkedList<Double>> readProba(URL url) throws IOException, URISyntaxException {
+
+        LinkedList<LinkedList<Double>> res = new LinkedList<>();
+        File file = new File(url.toURI());
+
+        // Creating an object of BufferedReader class
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        // Declaring a string variable
+        String str;
+
+        for(int i = 0; i<50; i++){
+            res.add(new LinkedList<>());
+            for(int j = 0; j<50; j++) {
+                str = br.readLine();
+                res.get(0).add(Double.valueOf(str));
+            }
         }
         return res;
     }

@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -212,6 +213,10 @@ public class Game {
             distributeTiles(agents.get(0), grey, agents.get(1), territories);
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException |
                  IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
