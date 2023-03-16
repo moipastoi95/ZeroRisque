@@ -1,26 +1,27 @@
 package org.tovivi.gui;
 
+import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Label;
 
-import javafx.stage.WindowEvent;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
-import org.w3c.dom.events.Event;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
@@ -32,10 +33,21 @@ public class GameController implements Initializable {
     //Game that will be run
     private Game game ;
 
+    final static private Color SEA = Color.rgb(220,240,255);
+
     // Colors of the 3 agents
-    final static private Color blue = Color.rgb(153,204,255);
-    final static private Color red = Color.rgb(255,153,153);
-    final static private Color grey = Color.rgb(224,224,224);
+    final static private Color BLUE = Color.rgb(140,150,255);
+    final static private Color RED = Color.rgb(255,150,140);
+    final static private Color GREY = Color.rgb(224,224,224);
+
+    final static private RadialGradient HIGHLIGHT = new RadialGradient(
+            0.0, 0.0, 0.5, 0.5, 0.7, true, CycleMethod.NO_CYCLE,
+            new Stop(0.0, new Color(0.9529, 0.7372, 0.1960, 1.0)),
+            new Stop(0.5, new Color(0.9425, 0.9868, 0.5437, 1.0)),
+            new Stop(1.0, new Color(1.0, 1.0, 1.0, 1.0)));
+
+    final static private int RADIUS = 40;
+    final static private int STROKE = 5;
 
     // PropertyChangeListener that listens the property changes from notably tiles to update the GUI
     private PropertyChangeListener pcl = new PropertyChangeListener() {
@@ -46,12 +58,35 @@ public class GameController implements Initializable {
                 Tile changedT = (Tile) evt.getSource();
                 Platform.runLater(() -> {
                     fill(changedT, ((Agent) evt.getNewValue()).getColor());
-                    highligth(changedT);
                 });
             }
             if (evt.getPropertyName().compareTo("newNumTroops")==0) {
+                try {
+                    Tile changedT = (Tile) evt.getSource();
+                    Platform.runLater(() -> {
+                        changeNumTroops(changedT, (int) evt.getNewValue());
+                    });
+                    if (!changedT.isInConflict()) {Platform.runLater(() -> {highligth(changedT);});}
+
+                    boolean earn = ((int) evt.getNewValue()) > ((int) evt.getOldValue());
+                    impact(changedT, earn);
+
+                    if (!changedT.isInConflict()) {Platform.runLater(() -> {turnOff(changedT);});}
+
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (evt.getPropertyName().compareTo("inConflictChange")==0) {
                 Tile changedT = (Tile) evt.getSource();
-                Platform.runLater(() -> {changeNumTroops(changedT, (int) evt.getNewValue());});
+                Platform.runLater(() -> {
+                    if ((boolean) evt.getNewValue()) {
+                        highligth(changedT);
+                    }
+                    else {
+                        turnOff(changedT);
+                    }
+                });
             }
         }
     };
@@ -78,11 +113,14 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setGame(LauncherController.game);
+        BackgroundFill bf = new BackgroundFill(SEA, null, null);
+        world.setBackground(new Background(bf));
         for (Tile t : game.getTiles().values()) {
             fill(t, t.getOccupier().getColor());
             changeNumTroops(t, t.getNumTroops());
+            t.addPropertyChangeListener(pcl);
         }
-        GameService gs = new GameService(game);
+        GameService gs = new GameService(this);
         gs.start();
         App.getStage().show();
     }
@@ -100,13 +138,13 @@ public class GameController implements Initializable {
             Circle c = (Circle) aT.getChildren().get(0);
             switch (color) {
                 case "Blue":
-                    c.setFill(blue);
+                    c.setFill(BLUE);
                     break;
                 case "Red":
-                    c.setFill(red);
+                    c.setFill(RED);
                     break;
                 default:
-                    c.setFill(grey);
+                    c.setFill(GREY);
             }
         }
         else {
@@ -116,35 +154,43 @@ public class GameController implements Initializable {
 
     /**
      * Highlight the circle associated to the Tile, in order to make the game running GUI understandable
-     * @param t Tile to highlight
      */
     public void highligth(Tile t) {
         // Searching for the AnchorPane link to Tile t and the AnchorPane of the continent (The highlight circle will be added at this level)
         AnchorPane aT = (AnchorPane) world.lookup("#"+t.getName());
         AnchorPane cT = (AnchorPane) world.lookup("#"+t.getContinent().getName());
 
-        if (aT!=null) {
+        if (cT!=null && aT!=null) {
             Circle c = (Circle) aT.getChildren().get(0);
-            Circle h = new Circle(aT.getLayoutX()+40, aT.getLayoutY()+40, 44);
+            Circle h = new Circle(aT.getLayoutX()+RADIUS, aT.getLayoutY()+RADIUS, RADIUS+STROKE-1);
             h.setFill(new Color(0,0,0,0));
-            h.setStrokeWidth(c.getStrokeWidth()+5);
+            h.setStrokeWidth(2*STROKE);
             h.setId(aT.getId() + "_highlight");
 
-            Stop[] arr_stops = {(new Stop(0, Color.WHITE)), new Stop(0, Color.valueOf(c.getStroke().toString()))};
-            List<Stop> stops = List.of(arr_stops);
-            RadialGradient paint = new RadialGradient(
-                    0.0, 0.0, 0.5, 0.5, 0.7, true, CycleMethod.NO_CYCLE,
-                    new Stop(0.0, new Color(0.7632, 0.609, 0.2191, 1.0)),
-                    new Stop(0.5, Color.valueOf(c.getStroke().toString())),
-                    new Stop(1.0, new Color(1.0, 1.0, 1.0, 1.0)));
-            RadialGradient rg = new RadialGradient(360, 40, 40, 40, 50, true, CycleMethod.NO_CYCLE, stops);
-            h.setStroke(paint);
+            h.setStroke(HIGHLIGHT);
             cT.toFront();
             cT.getChildren().add(h);
 
         }
         else {
-            System.out.println(t.getName() + " doesn't exist in the world");
+            System.out.println(t.getName() + " or " + t.getContinent().getName() + " doesn't exist in the world");
+        }
+    }
+
+    /**
+     * Turn off the highlight the circle associated to the Tile, in order to make the game running GUI understandable
+     * @param t Tile to highlight
+     */
+    public void turnOff(Tile t) {
+        // Searching for the AnchorPane of the continent (The highlight circle will be added at this level)
+        AnchorPane cT = (AnchorPane) world.lookup("#"+t.getContinent().getName());
+
+        if (cT!=null) {
+            Circle h = (Circle) cT.lookup("#"+t.getName()+"_highlight");
+            cT.getChildren().remove(h);
+        }
+        else {
+            System.out.println(t.getContinent().getName() + " doesn't exist in the world");
         }
     }
 
@@ -163,5 +209,24 @@ public class GameController implements Initializable {
         else {
             System.out.println(t.getName() + " doesn't exist in the world");
         }
+    }
+
+    public void scale(Label l, double sc) {
+        l.setScaleX(sc); l.setScaleY(sc);
+    }
+
+    public void impact(Tile t, boolean earn) throws InterruptedException {
+        // Searching for the AnchorPane link to Tile t
+        AnchorPane aT = (AnchorPane) world.lookup("#"+t.getName());
+        Label l = (Label) aT.getChildren().get(2);
+        double init_scale = earn ? 2 : 0.5;
+        for (int i=0; i<=10; i++) {
+            int finalI = i;
+            Platform.runLater(() -> {
+                scale(l,init_scale - ((init_scale-1)*finalI/10));
+            });
+            Thread.sleep(20);
+        }
+
     }
 }

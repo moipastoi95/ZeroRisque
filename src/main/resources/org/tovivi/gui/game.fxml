@@ -4,8 +4,10 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Polyline?>
 <?import javafx.scene.text.Font?>
 
 <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tovivi.gui.GameController">
@@ -147,7 +149,7 @@
                         <Line endX="37.0" layoutX="130.0" layoutY="97.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="165.0" AnchorPane.topAnchor="165.0" />
                         <Line layoutX="120.0" layoutY="87.0" startY="10.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="280.0" />
                         <Line endX="37.0" layoutX="130.0" layoutY="97.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="265.0" />
-                        <Label layoutX="168.0" layoutY="269.0" prefHeight="62.0" prefWidth="110.0" text="North America" wrapText="true" AnchorPane.leftAnchor="168.0" AnchorPane.topAnchor="269.0">
+                        <Label layoutX="176.0" layoutY="271.0" prefHeight="62.0" prefWidth="110.0" text="North America" wrapText="true" AnchorPane.leftAnchor="176.0" AnchorPane.topAnchor="271.0">
                            <font>
                               <Font size="24.0" />
                            </font>
@@ -716,6 +718,22 @@
                   <Line endX="26.0" layoutX="698.0710678100586" layoutY="187.0710678100586" startY="19.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="691.0" AnchorPane.topAnchor="180.0" />
                   <Line endX="52.0" layoutX="688.0" layoutY="400.0" startY="96.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="680.9289321899414" AnchorPane.topAnchor="392.9289321899414" />
                   <Line layoutX="495.0" layoutY="428.0" startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="955.0" AnchorPane.topAnchor="400.0" />
+                  <Polyline fill="#80ff0000" layoutX="370.0" layoutY="250.0" points="690.0, -130.0, 690.0, -237.0, -269.0, -237.0, -269.0, -220.0" stroke="#bcbcbc" strokeLineCap="BUTT" strokeWidth="10.0" />
+                  <VBox fx:id="informations" layoutX="1152.0" layoutY="49.0" prefHeight="200.0" prefWidth="98.0">
+                     <children>
+                        <VBox prefHeight="14.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Red Player" textFill="#da1313" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="12.0" prefWidth="100.0">
+                           <children>
+                              <Label prefHeight="34.0" prefWidth="74.0" text="Blue Player" textFill="#1707eb" />
+                           </children>
+                        </VBox>
+                        <Label text="Neutral" textFill="#5e5e5e" />
+                     </children>
+                  </VBox>
                </children></AnchorPane>
             </content>
         </Tab>

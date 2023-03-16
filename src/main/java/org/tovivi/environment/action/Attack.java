@@ -69,6 +69,7 @@ public class Attack extends Offensive{
         }
 
         // fight
+        getToTile().setInConflict(true); getFromTile().setInConflict(true);
         while(getToTile().getNumTroops() != 0 && getFromTile().getNumTroops() != 1) {
             // throw of the dices
             // dices of the player and the opponent
@@ -94,6 +95,7 @@ public class Attack extends Offensive{
                 }
             }
         }
+        getToTile().setInConflict(false); getFromTile().setInConflict(false);
 
         // fail the defence
         if (getToTile().getNumTroops() == 0) {
