@@ -81,16 +81,10 @@ public class RandomAgent extends Agent{
         depL.add(new Deploy(numTroops+goodCardsValue, fromTile));
         MultiDeploy deployPart = new MultiDeploy(depL);
 
-        // do a simulation to create the attack part
-        deployPart.doSimulation();
-
         // attack a random tile next to the tile chosen
         ArrayList<Tile> frontValue = front.get(fromTile);        Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
 
-        Offensive offensivePart = new Attack(fromTile, toTile, fromTile.getNumTroops()-1, new Fortify(), new Fortify());
-
-        // don't forget to undo the simulation
-        deployPart.undoSimulation();
+        Offensive offensivePart = new Attack(fromTile, toTile, fromTile.getNumTroops()+numTroops+goodCardsValue-1, new Fortify(), new Fortify());
 
         return new Actions(deployPart, offensivePart);
     }

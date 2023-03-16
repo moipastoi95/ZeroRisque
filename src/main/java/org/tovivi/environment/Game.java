@@ -140,11 +140,11 @@ public class Game {
                 // fortify
                 print = "";
                 try {
-                    // if(a.getFirstOffensive() != null) {
+                    if(a.getFirstOffensive() != null) {
                         print = a.getFirstOffensive().toString();
                         a.performFortify(p);
                         System.out.println("    [Success] :: " + print);
-                    // }
+                    }
                 } catch (SimulationRunningException e) {
                     System.out.println("    [Failed:Simulation currently running] :: " + print);
                 } catch (IllegalActionException e) {
