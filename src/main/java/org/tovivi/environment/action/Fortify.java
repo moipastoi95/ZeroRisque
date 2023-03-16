@@ -22,9 +22,7 @@ public class Fortify extends Offensive {
      * @param numTroops the number of troops to move
      */
     public Fortify(Tile fromTile, Tile toTile, int numTroops) {
-        this.fromTile = fromTile;
-        this.toTile = toTile;
-        this.numTroops = numTroops;
+        super(fromTile, toTile, numTroops);
     }
 
     /**
