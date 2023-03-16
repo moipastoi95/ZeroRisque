@@ -1,5 +1,5 @@
 package org.tovivi.environment;
 
 public enum CardType {
-    INFANTRY, CAVALRY, ARTILLERY
+    INFANTRY, CAVALRY, ARTILLERY, JOKER
 }

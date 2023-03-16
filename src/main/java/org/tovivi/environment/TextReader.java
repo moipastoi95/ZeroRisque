@@ -3,8 +3,7 @@ package org.tovivi.environment;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 public class TextReader {
 
@@ -100,6 +99,45 @@ public class TextReader {
     }
 
     /**
+     * Read the file that give information about countries to create the Hashmap of countries, and also update the nbTiles of continents
+     * The line format is "continent:countries" where ":" is the separator
+     * @param g : the game which stores the continents that will be updated and added to tiles
+     * @param url : the url of the file in the project repository
+     * @return The HasMap that stores the countries with their names as keys
+     */
+    public Stack<Card> readCards(Game g, URL url) throws IOException, URISyntaxException {
+        Stack<Card> res = new Stack<>();
+        File file = new File(url.toURI());
+
+        // Creating an object of BufferedReader class
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        // Declaring a string variable
+        String str;
+        // Condition holds true until there is character in a string
+        while ((str = br.readLine()) != null) {
+
+            //Getting the two values separated by the "sep"
+            String country = str.substring(0, str.indexOf(sep));
+            String cardType = str.substring(str.indexOf(sep) + 1);
+
+            //Finding the continent in the hashmap
+            Tile t = g.getTiles().get(country);
+            if (t == null) {
+                System.out.println("There is no country named " + country);
+            } else {
+                // Creating the Card
+                Card c = new Card(CardType.valueOf(cardType), t);
+                res.add(c);
+            }
+        }
+        res.add(new Card(CardType.JOKER, null)); res.add(new Card(CardType.JOKER, null));
+        Collections.shuffle(res);
+        System.out.println(res.size());
+        return res;
+    }
+
+    /**
      * Read the file that give information about countries to update the neighbors of each tiles
      * The line format is "continent:countries" where ":" is the separator
      * @param g : the game which  will be updated according to the edges
@@ -153,6 +191,9 @@ public class TextReader {
                 }
                 if (s.compareTo("country-neighbor")==0) {
                     readEdges(g,TextReader.class.getResource(s)) ;
+                }
+                if (s.compareTo("country-card")==0) {
+                    g.setTheStack(readCards(g,TextReader.class.getResource(s)));
                 }
             }
         } catch (URISyntaxException e) {

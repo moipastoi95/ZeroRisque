@@ -11,6 +11,8 @@ public class Tile {
     private Continent continent;
     private String name;
     private Agent occupier;
+
+    private boolean inConflict;
     private PropertyChangeSupport support;
     private int numTroops;
     private ArrayList<Tile> neighbors;
@@ -21,6 +23,7 @@ public class Tile {
         this.occupier = tile.getOccupier(); //Not a deepCopy
         this.support = new PropertyChangeSupport(this);
         this.numTroops = tile.getNumTroops();
+        this.inConflict=false;
         /*for(Tile j : tile.getNeighbors()){
             this.neighbors.add(new Tile(j));
         }*/
@@ -81,6 +84,15 @@ public class Tile {
             //TODO Faire des exceptions propres pour ce genre de cas... oui c'est chiant je sais
             System.out.println("Invalid number of troops");
         }
+    }
+
+    public boolean isInConflict() {
+        return inConflict;
+    }
+
+    public void setInConflict(boolean inConflict) {
+        support.firePropertyChange("inConflictChange", this.inConflict, inConflict);
+        this.inConflict = inConflict;
     }
 
     public String getName() {

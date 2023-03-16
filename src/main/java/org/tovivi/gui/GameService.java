@@ -6,10 +6,10 @@ import org.tovivi.environment.Game;
 
 public class GameService extends Service<Integer> {
 
-    private Game game;
+    private GameController gc;
 
-    public GameService(Game g) {
-        game = g;
+    public GameService(GameController gc) {
+        this.gc = gc;
     }
 
     /**
@@ -26,7 +26,7 @@ public class GameService extends Service<Integer> {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                game.play();
+                gc.getGame().play();
                 return 0;
             }
         };
