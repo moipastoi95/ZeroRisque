@@ -17,16 +17,18 @@ public class Tile {
     private ArrayList<Tile> neighbors;
 
     public Tile(Tile tile) {
-        this.continent = null;
-        this.name = tile.getName();
-        this.occupier = null;
-        this.support = new PropertyChangeSupport(this);
-        this.numTroops = tile.getNumTroops();
-        this.inConflict=false;
-        /*for(Tile j : tile.getNeighbors()){
-            this.neighbors.add(new Tile(j));
-        }*/
-        this.neighbors = tile.getNeighbors(); //Not a deep copy
+        if (tile != null) {
+            this.continent = null;
+            this.name = tile.getName();
+            this.occupier = null;
+            this.support = new PropertyChangeSupport(this);
+            this.numTroops = tile.getNumTroops();
+            this.inConflict = false;
+            /*for(Tile j : tile.getNeighbors()){
+                this.neighbors.add(new Tile(j));
+            }*/
+            this.neighbors = tile.getNeighbors(); //Not a deep copy
+        }
     }
 
     /**

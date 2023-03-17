@@ -59,7 +59,6 @@ public class Game {
             Agent player = Game.getPlayers().get(key);
             constr = (Constructor<Agent>) player.getClass().getConstructor(Agent.class);
             this.players.put(key, (Agent) constr.newInstance(player));
-            System.out.println("Et la ?");
             this.players.get(key).setGame(this);
         }
 
@@ -73,8 +72,6 @@ public class Game {
                 this.continents.get(key).setOccupier(this.players.get(cont.getOccupier().getColor()));
         }
 
-        System.out.println("On est là deux");
-
         //Copy of all the tile of the game
         for(String key : Game.getTiles().keySet()){
             Tile til = Game.getTiles().get(key);
@@ -87,8 +84,6 @@ public class Game {
                 this.tiles.get(key).setOccupier(this.players.get(til.getOccupier().getColor()), til.getNumTroops());
             }
         }
-
-        System.out.println("On est là trois");
 
         //DeepCopy des voisins d'une tile
         for(String key: this.tiles.keySet()){

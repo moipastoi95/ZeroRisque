@@ -26,6 +26,7 @@ public class AgentMonteCarlo extends Agent {
     private int E = 1;
     private double c = sqrt(2); //Paramètre d'exploration
     private int depth = 0; //Profondeur actuelle de la recherche
+
     public AgentMonteCarlo(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super(color, game);
         this.root = new Node(new Game(game),0,null, this.getDeck());
@@ -43,6 +44,7 @@ public class AgentMonteCarlo extends Agent {
         super.setGame(game);
     }
 
+    /**Update the game copy that is stored in the root node*/
     public void setRoot() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         this.root = new Node(new Game(this.getGame()),0,null, this.getDeck());
     }
@@ -73,9 +75,13 @@ public class AgentMonteCarlo extends Agent {
         return new_action;
     }
 
+    /**Generate a newAction
+     * @param front The tiles of the player next to an opponent tile
+     * @return The new Action generated*/
+    //TODO: Je pense ya un problème il faut rajouter le joueur avec lequelle on veut jouer dans les paramètres
     public Actions getNewAction(HashMap<Tile, ArrayList<Tile>> front) throws IOException, URISyntaxException {
         Actions act = null;
-        Agent player = this;
+        Agent player = this.actual_node.getGame().getPlayers().get(this.getColor());
         String OpColor = this.getColor();
         MultiDeploy deployPart = null;
         Offensive offensivePart = null;
@@ -103,6 +109,10 @@ public class AgentMonteCarlo extends Agent {
         return new Actions(deployPart, offensivePart);
     }
 
+
+    /**Switch the objects references in an offensive to object from the real game
+     * @param offensivePart :The offensive we want to convert
+     * */
     private void convertOffensive(Offensive offensivePart) throws IOException, URISyntaxException {
         if(offensivePart instanceof Attack){
             convertOffensive(((Attack) offensivePart).getOnSucceed());
@@ -114,6 +124,9 @@ public class AgentMonteCarlo extends Agent {
             offensivePart.setToTile(this.getGame().getTiles().get(offensivePart.getToTile().getName()));
     }
 
+    /**Convert all the deepcopy object instances of a deployment to instance from the game
+     * @param deployPart The MultiDeploy wa want to convert
+     * */
     private void convertDeploy(MultiDeploy deployPart) throws IOException, URISyntaxException {
         for(Deployment deploy: deployPart.getDeploys()){
             if(deploy instanceof Deploy){
@@ -122,6 +135,12 @@ public class AgentMonteCarlo extends Agent {
         }
     }
 
+    /**Generate an Attack with a maximum number of steps for a player
+     * @param front The tiles next to opponents tiles
+     * @param actDepth Variable used for the recursive call
+     * @param maxDepth The maximum number of attack in the offensive
+     * @param player The attacker
+     * @return The offensive result*/
     public Offensive createAttack(HashMap<Tile, ArrayList<Tile>> front, int actDepth, int maxDepth, Agent player){
         //System.out.println("Depth : " + actDepth);
         boolean flag;
@@ -140,14 +159,14 @@ public class AgentMonteCarlo extends Agent {
 
             int attackers = fromTile.getNumTroops();
             int defenders = toTile.getNumTroops();
-            double prob = this.getProba(attackers, defenders);
+            double prob = this.getProba(attackers-1, defenders-1);
             if(Math.random() < prob){
                 //Modification du game en supposant une loose:
                 fromTile.setNumTroops(1);
                 HashMap<Tile, ArrayList<Tile>> frontLoose = front;
 
                 //Modification du game en cas de win
-                toTile.setOccupier(player, attackers/2);
+                toTile.setOccupier(player, (attackers-1)/2);
                 HashMap<Tile, ArrayList<Tile>> frontWin = front;
 
                 offensive = new Attack(fromTile, toTile, attackers-1,
@@ -159,6 +178,11 @@ public class AgentMonteCarlo extends Agent {
         return offensive;
     }
 
+    /**Generate a "Random" MultiDeploy for the player on a given number of tiles
+     * @param front Tiles next an opponent tile
+     * @param numTroops The number of troops available for development
+     * @param player Player who is going to deploy
+     * @return The deployment to do as a MultiDeploy*/
     private MultiDeploy createDeployment(HashMap<Tile, ArrayList<Tile>> front, int numTroops, Agent player) {
         Random rand =  new Random();
         MultiDeploy deployPart = null;
@@ -272,6 +296,10 @@ public class AgentMonteCarlo extends Agent {
         return null;
     }
 
+
+    /**Return the front for the agent in the game of the node n, I should probably add player as an parameter
+     * @param n The node where we want to find the frontier
+     * @return The frontier as an HashMap(Tile, List(Tile))*/
     public HashMap<Tile, ArrayList<Tile>> getFront(Node n) throws IOException, URISyntaxException {
         // get every tile next to an opponent tile, and retrieve opponent's tile next to them
         HashMap<Tile, ArrayList<Tile>> front = new HashMap<>();
