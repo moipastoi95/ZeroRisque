@@ -149,7 +149,7 @@
                         <Line endX="37.0" layoutX="130.0" layoutY="97.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="165.0" AnchorPane.topAnchor="165.0" />
                         <Line layoutX="120.0" layoutY="87.0" startY="10.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="280.0" />
                         <Line endX="37.0" layoutX="130.0" layoutY="97.0" startY="37.0" stroke="#9e7a52" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="265.0" />
-                        <Label layoutX="176.0" layoutY="271.0" prefHeight="62.0" prefWidth="110.0" text="North America" wrapText="true" AnchorPane.leftAnchor="176.0" AnchorPane.topAnchor="271.0">
+                        <Label layoutX="176.0" layoutY="271.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="62.0" prefWidth="111.0" text="North America" wrapText="true" AnchorPane.leftAnchor="176.0" AnchorPane.topAnchor="271.0">
                            <font>
                               <Font size="24.0" />
                            </font>

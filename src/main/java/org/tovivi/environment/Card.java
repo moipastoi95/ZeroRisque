@@ -38,42 +38,75 @@ public class Card {
      * @return the bonus value of the combination
      */
     public static int value(ArrayList<Card> cards, Agent player) {
+        int bonus = 0;
         if (cards.size() != 3) {
             return 0;
         }
-        Card c1 = cards.get(0);
-        Card c2 = cards.get(1);
-        Card c3 = cards.get(2);
-        int bonus = 0;
-        // 3 same cards
-        if (c1.getType() == c2.getType() && c2.getType() == c3.getType()) {
-            switch (c1.getType()) {
+        int infantry=0 , cavalry=0 , artillery=0, joker=0;
+        for (Card c : cards) {
+            switch (c.getType()) {
                 case INFANTRY:
-                    bonus += 4;
+                    infantry++;
                     break;
                 case CAVALRY:
-                    bonus += 6;
+                    cavalry++;
                     break;
                 case ARTILLERY:
-                    bonus += 8;
+                    artillery++;
                     break;
+                default:
+                    joker++;
             }
-
-        } else if (c1.getType() != c2.getType() && c2.getType() != c3.getType() && c1.getType() != c3.getType()) {
-            bonus += 10;
+        }
+        int[] typeCount = {infantry, cavalry, artillery};
+        if (joker==1) {
+            int i = 2;
+            do {
+                if (i<2) {
+                    typeCount[i+1]--;
+                }
+                typeCount[i]++;
+                i--;
+            } while (combo(typeCount)==0 && i>=0);
+        }
+        bonus = combo(typeCount);
+        if (joker==2) {
+            bonus = 10;
         }
 
         // adding bonus if the player own a specific territory
-        if (player.getTiles().contains(c1.getBonusTile())) {
-            bonus += 2;
-        }
-        if (player.getTiles().contains(c2.getBonusTile())) {
-            bonus += 2;
-        }
-        if (player.getTiles().contains(c3.getBonusTile())) {
-            bonus += 2;
+        if (bonus>0) {
+            for (Card c : cards) {
+                if (c.getType()!=CardType.JOKER &&  player.getTiles().contains(c.getBonusTile())) {
+                        bonus+=2;
+                }
+            }
         }
         return bonus;
+    }
+
+    /**
+     * Suppose that the sum of the 3 int has a value of 3
+     * @param typeCount array of the type counts
+     * @return the value of the combo
+     */
+    public static int combo(int[] typeCount) {
+        int infantry = typeCount[0]; int cavalry = typeCount[1]; int artillery = typeCount[2];
+        if (infantry==2 || cavalry == 2 || artillery==2) {
+            return 0;
+        }
+        else if (infantry==1 && cavalry==1) {
+            return 10;
+        }
+        else {
+            if (artillery==3) {
+                return 8;
+            }
+            else if (cavalry==3){
+                return 6;
+            }
+            return 4;
+        }
     }
 
     /**
@@ -84,9 +117,8 @@ public class Card {
      */
     public static ArrayList<Card> chooseCards(ArrayList<Card> deck, Agent player) {
         if (deck.size() < 3) {
-            return new ArrayList<Card>();
+            return new ArrayList<>();
         }
-
         int maxI = 0, maxJ=1, maxK=2, maxVal=0;
         for(int i=0; i<=deck.size()-3; i++) {
             for(int j=i+1; j<=deck.size()-2; j++) {
@@ -116,6 +148,9 @@ public class Card {
     public boolean equals(Object obj) {
         if (obj instanceof Card) {
             Card c = (Card) obj;
+            if (c.getType()==CardType.JOKER) {
+                return true;
+            }
             return c.getType() == this.type && c.getBonusTile().equals(this.bonusTile);
         }
         return false;

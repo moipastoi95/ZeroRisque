@@ -61,15 +61,20 @@ public class GameController implements Initializable {
         if (evt.getPropertyName().compareTo("newNumTroops")==0) {
             try {
                 Tile changedT = (Tile) evt.getSource();
+
+                if (!changedT.isInConflict()) {
+                    Thread.sleep(1000/game.getGameSpeed());
+                    Platform.runLater(() -> {highligth(changedT);});
+                }
                 Platform.runLater(() -> {
                     changeNumTroops(changedT, (int) evt.getNewValue());
                 });
-                if (!changedT.isInConflict()) {Platform.runLater(() -> {highligth(changedT);});}
-
                 boolean earn = ((int) evt.getNewValue()) > ((int) evt.getOldValue());
                 impact(changedT, earn);
 
-                if (!changedT.isInConflict()) {Platform.runLater(() -> {turnOff(changedT);});}
+                if (!changedT.isInConflict()) {
+                    Thread.sleep(1000/game.getGameSpeed());
+                    Platform.runLater(() -> {turnOff(changedT);});}
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -221,7 +226,7 @@ public class GameController implements Initializable {
             Platform.runLater(() -> {
                 scale(l,init_scale - ((init_scale-1)*finalI/10));
             });
-            Thread.sleep(20);
+            Thread.sleep(30/game.getGameSpeed());
         }
 
     }

@@ -80,7 +80,8 @@ public class PlayCards extends Deployment {
      */
     @Override
     public int getNumTroops() {
-        return -Card.value(cards, player);
+
+        System.out.println(Card.value(cards, player));return -Card.value(cards, player);
     }
 
     @Override

@@ -47,7 +47,7 @@ public class LauncherController implements Initializable {
         // Set the agents
         red.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo"));
         red.setValue("AgentMonteCarlo");
-        blue.setItems(FXCollections.observableArrayList("RandomAgent"));
+        blue.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo"));
         blue.setValue("RandomAgent");
 
         // Set playclock value

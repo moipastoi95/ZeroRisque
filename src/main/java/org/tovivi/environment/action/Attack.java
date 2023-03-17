@@ -69,6 +69,7 @@ public class Attack extends Offensive{
         }
 
         // fight
+        getToTile().setInConflict(true); getFromTile().setInConflict(true);
         while(getToTile().getNumTroops() != 0 && getFromTile().getNumTroops() != 1) {
             // throw of the dices
             // dices of the player and the opponent
@@ -100,11 +101,12 @@ public class Attack extends Offensive{
             int troopsReallyMoved = min(getNumTroops(), getFromTile().getNumTroops()-1);
             getFromTile().setNumTroops(getFromTile().getNumTroops()-troopsReallyMoved);
             getToTile().setOccupier(player, troopsReallyMoved);
+
+            getToTile().setInConflict(false); getFromTile().setInConflict(false);
             return onSucceed;
         }
-        else {
-            return onFailed;
-        }
+        getToTile().setInConflict(false); getFromTile().setInConflict(false);
+        return onFailed;
     }
 
     @Override

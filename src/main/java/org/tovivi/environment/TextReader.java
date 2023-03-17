@@ -133,7 +133,6 @@ public class TextReader {
         }
         res.add(new Card(CardType.JOKER, null)); res.add(new Card(CardType.JOKER, null));
         Collections.shuffle(res);
-        System.out.println(res.size());
         return res;
     }
 

@@ -29,6 +29,8 @@ public class Game {
     // The number of troops at the beginning of the game at each territory
     final public static int TROOPS_FACTOR = 2;
 
+    private int gameSpeed = 2;
+
     // HashMap who links the Continents to their names
     private HashMap<String, Continent> continents = new HashMap<>();
 
@@ -105,6 +107,7 @@ public class Game {
         while(turns.size() > 1) {
             Agent p = turns.get(index); // Perry the platypus
             System.out.println("Player " + p.getColor() + "'s turn");
+            p.getDeck().forEach(System.out::println);
 
             Future<Actions> future = executor.submit(p);
             try {
@@ -122,7 +125,7 @@ public class Game {
                                 print = a.getDeployment().toString();
                                 flag = a.performDeployment(p);
                                 System.out.println("    [Success] :: " + print);
-                                Thread.sleep(1000);
+                                Thread.sleep(500/gameSpeed);
                             }
                         }
                     }
@@ -139,7 +142,7 @@ public class Game {
                         if(a.getFirstOffensive() != null) {
                             print = a.getFirstOffensive().toString();
                             System.out.println("    [Success] :: " + print);
-                            Thread.sleep(1000);
+                            Thread.sleep(500/gameSpeed);
                         }
                     } while(a.performAttack(p));
                 } catch (SimulationRunningException e) {
@@ -155,7 +158,7 @@ public class Game {
                         print = a.getFirstOffensive().toString();
                         a.performFortify(p);
                         System.out.println("    [Success] :: " + print);
-                        Thread.sleep(1000);
+                        Thread.sleep(500/gameSpeed);
                     }
                 } catch (SimulationRunningException e) {
                     System.out.println("    [Failed:Simulation currently running] :: " + print);
@@ -196,6 +199,11 @@ public class Game {
             index += 1;
             if (index >= turns.size()) {
                 index = 0;
+            }
+            try {
+                Thread.sleep(2000/gameSpeed);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
         executor.shutdownNow();
@@ -271,6 +279,14 @@ public class Game {
 
     public void setContinents(HashMap<String, Continent> continents) {
         this.continents = continents;
+    }
+
+    public int getGameSpeed() {
+        return gameSpeed;
+    }
+
+    public void setGameSpeed(int gameSpeed) {
+        this.gameSpeed = gameSpeed;
     }
 
     public void setTiles(HashMap<String, Tile> tiles) {
