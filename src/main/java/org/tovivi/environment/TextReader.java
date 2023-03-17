@@ -53,7 +53,7 @@ public class TextReader {
             res.add(new LinkedList<>());
             for(int j = 0; j<50; j++) {
                 str = br.readLine();
-                res.get(0).add(Double.valueOf(str));
+                res.get(i).add(Double.valueOf(str));
             }
         }
         return res;

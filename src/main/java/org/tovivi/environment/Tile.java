@@ -11,16 +11,15 @@ public class Tile {
     private Continent continent;
     private String name;
     private Agent occupier;
-
     private boolean inConflict;
     private PropertyChangeSupport support;
     private int numTroops;
     private ArrayList<Tile> neighbors;
 
     public Tile(Tile tile) {
-        this.continent = new Continent(tile.getContinent());
+        this.continent = null;
         this.name = tile.getName();
-        this.occupier = tile.getOccupier(); //Not a deepCopy
+        this.occupier = null;
         this.support = new PropertyChangeSupport(this);
         this.numTroops = tile.getNumTroops();
         this.inConflict=false;

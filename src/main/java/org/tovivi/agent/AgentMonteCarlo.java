@@ -39,11 +39,11 @@ public class AgentMonteCarlo extends Agent {
         super(agent);
     }
 
-    public void setGame(Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public void setGame(Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super.setGame(game);
     }
 
-    public void setRoot() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public void setRoot() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         this.root = new Node(new Game(this.getGame()),0,null, this.getDeck());
     }
 
@@ -54,7 +54,14 @@ public class AgentMonteCarlo extends Agent {
     // 2 - Calculer la valeur de l'état final (en fonction de qui à gagné)
     // 3 - Propager la valeur de manière récursive sur les noeuds parents (fonction backpropagate)
     // 4 - Renvoyer le meilleur child
-    public Actions action() {
+    public Actions action() throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+
+        try{
+            this.root.setGame(new Game(this.getGame()));
+        } catch(Exception e){
+            System.out.println(e.getCause().toString());
+        }
+        //System.out.println("Je crois qu'on se fout de ma gueule mais oklm ");
 
         this.actual_node = this.traverse(); //Etape 0
 
@@ -66,37 +73,57 @@ public class AgentMonteCarlo extends Agent {
         return new_action;
     }
 
-
-    public Actions getNewAction(HashMap<Tile, ArrayList<Tile>> front) {
+    public Actions getNewAction(HashMap<Tile, ArrayList<Tile>> front) throws IOException, URISyntaxException {
         Actions act = null;
         Agent player = this;
-        String OpColor = "";
+        String OpColor = this.getColor();
         MultiDeploy deployPart = null;
         Offensive offensivePart = null;
 
+        //while(!this.actual_node.getChilds().containsKey(act)) {
+
+        //Deployement on one or two tile of the frontier of the current player
+        deployPart = this.createDeployment(front, this.getNumDeploy(), player);
+        deployPart.doSimulation();
+
+        offensivePart = this.createAttack(front, 0, 2, player);
+
+        deployPart.undoSimulation();
+
         if(this.getColor() == "Red") OpColor = "Blue";
         else OpColor = "Red";
+        //Alternance entre les deux joueurs
+        if(player == this) player = this.getGame().getPlayers().get(OpColor);
+        else player = this;
+        //}
 
-        while(!this.actual_node.getChilds().containsKey(act)) {
-            //Alternance entre les deux joueurs
-            if(player == this) player = this.getGame().getPlayers().get(OpColor);
-            else player = this;
-
-            //Deployement on one or two tile of the frontier of the current player
-            deployPart = this.createDeployment(front, this.getNumDeploy(), player);
-            deployPart.doSimulation();
-
-            offensivePart = this.createAttack(front, 0, 5, player);
-
-
-        }
+        this.convertDeploy(deployPart);
+        this.convertOffensive(offensivePart);
 
         return new Actions(deployPart, offensivePart);
     }
 
+    private void convertOffensive(Offensive offensivePart) throws IOException, URISyntaxException {
+        if(offensivePart instanceof Attack){
+            convertOffensive(((Attack) offensivePart).getOnSucceed());
+            convertOffensive(((Attack) offensivePart).getOnFailed());
+        }
+        if (offensivePart.getFromTile() != null)
+            offensivePart.setFromTile(this.getGame().getTiles().get(offensivePart.getFromTile().getName()));
+        if (offensivePart.getToTile() != null)
+            offensivePart.setToTile(this.getGame().getTiles().get(offensivePart.getToTile().getName()));
+    }
+
+    private void convertDeploy(MultiDeploy deployPart) throws IOException, URISyntaxException {
+        for(Deployment deploy: deployPart.getDeploys()){
+            if(deploy instanceof Deploy){
+                ((Deploy) deploy).setTile(this.getGame().getTiles().get(deploy.getTiles().get(0).getName()));
+            }
+        }
+    }
+
     public Offensive createAttack(HashMap<Tile, ArrayList<Tile>> front, int actDepth, int maxDepth, Agent player){
-        System.out.println("Depth : " + actDepth);
-        Random rand = new Random();
+        //System.out.println("Depth : " + actDepth);
         boolean flag;
         if(actDepth != maxDepth) flag = true;
         else {
@@ -106,6 +133,7 @@ public class AgentMonteCarlo extends Agent {
         while(flag) {
             //Choose a random tile from where to attack in the frontier
             ArrayList<Tile> frontKeys = new ArrayList<>(front.keySet());
+
             Tile fromTile = frontKeys.get((int) (Math.random() * frontKeys.size()));
             // attack a random tile next to the tile chosen
             Tile toTile = front.get(fromTile).get((int) (Math.random() * front.get(fromTile).size()));
@@ -113,7 +141,7 @@ public class AgentMonteCarlo extends Agent {
             int attackers = fromTile.getNumTroops();
             int defenders = toTile.getNumTroops();
             double prob = this.getProba(attackers, defenders);
-            if(rand.nextDouble() < prob){
+            if(Math.random() < prob){
                 //Modification du game en supposant une loose:
                 fromTile.setNumTroops(1);
                 HashMap<Tile, ArrayList<Tile>> frontLoose = front;
@@ -145,21 +173,21 @@ public class AgentMonteCarlo extends Agent {
         numTroops += goodCardsValue;
 
         int x = rand.nextInt(2)+1; //Choose between 1 deployment or two deployment on a frontier tile
-        for(int i = 0; i<2;i++) {
+        for(int i = 0; i<x;i++) {
             // pick a random tiles from the front list
             ArrayList<Tile> frontKeys = new ArrayList<>(front.keySet());
             Tile fromTile = frontKeys.get((int) (Math.random() * frontKeys.size()));
             int numToDeploy;
             if(numTroops%2 != 0){
-                if(i == 0) numToDeploy = numTroops/2;
-                else numToDeploy = numTroops/2+1;
+                if(i == 0) numToDeploy = numTroops/x;
+                else numToDeploy = numTroops/x+1;
             }
-            else numToDeploy = numTroops/2;
+            else numToDeploy = numTroops/x;
 
             depL.add(new Deploy(numToDeploy, fromTile));
-            deployPart = new MultiDeploy(depL);
 
         }
+        deployPart = new MultiDeploy(depL);
         return deployPart;
     }
 
@@ -244,21 +272,23 @@ public class AgentMonteCarlo extends Agent {
         return null;
     }
 
-    public HashMap<Tile, ArrayList<Tile>> getFront(Node n) {
+    public HashMap<Tile, ArrayList<Tile>> getFront(Node n) throws IOException, URISyntaxException {
         // get every tile next to an opponent tile, and retrieve opponent's tile next to them
         HashMap<Tile, ArrayList<Tile>> front = new HashMap<>();
         for (Tile t : n.getGame().getTiles().values()) {
-            boolean flag = false;
-            ArrayList<Tile> opponentTiles = new ArrayList<>();
-            for (Tile neighbor : t.getNeighbors()) {
-                if (!neighbor.getOccupier().equals(this)) {
-                    flag = true;
-                    // add the real ref of tiles
-                    opponentTiles.add(getGame().getTiles().get(neighbor.getName()));
+            if(t.getOccupier().getColor() == this.getColor()) {
+                boolean flag = false;
+                ArrayList<Tile> opponentTiles = new ArrayList<>();
+                for (Tile neighbor : t.getNeighbors()) {
+                    if (neighbor.getOccupier().getColor() != this.getColor()) {
+                        flag = true;
+                        // add the real ref of tiles
+                        opponentTiles.add(n.getGame().getTiles().get(neighbor.getName()));
+                    }
                 }
-            }
-            if (flag) {
-                front.put(getGame().getTiles().get(t.getName()), opponentTiles);
+                if (flag) {
+                    front.put(t, opponentTiles);
+                }
             }
         }
         return front;

@@ -3,6 +3,7 @@ package org.tovivi.gui;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -45,7 +46,7 @@ public class LauncherController implements Initializable {
 
         // Set the agents
         red.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo"));
-        red.setValue("RandomAgent");
+        red.setValue("AgentMonteCarlo");
         blue.setItems(FXCollections.observableArrayList("RandomAgent"));
         blue.setValue("RandomAgent");
 
@@ -92,6 +93,8 @@ public class LauncherController implements Initializable {
                  IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }

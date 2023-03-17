@@ -44,6 +44,8 @@ public class Deploy extends Deployment {
         return tiles;
     }
 
+    public void setTile(Tile tile){this.tile = tile;}
+
     /**
      * Specify if the player doesn't want to deploy troops
      * @return

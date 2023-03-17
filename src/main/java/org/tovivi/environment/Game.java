@@ -41,16 +41,17 @@ public class Game {
 
     private int playclock;
 
-    public Game(ArrayList<Agent> agents, int territories, int playclock) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Game(ArrayList<Agent> agents, int territories, int playclock) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
 
         this.playclock = playclock;
         setupElements(agents, territories);
     }
 
-    public Game(Game Game) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public Game(Game Game) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         if (Game == null) {
             return;
         }
+
         //Create a copy of all the players
         for(String key : Game.getPlayers().keySet()){
             Constructor<Agent> constr;
@@ -58,8 +59,11 @@ public class Game {
             Agent player = Game.getPlayers().get(key);
             constr = (Constructor<Agent>) player.getClass().getConstructor(Agent.class);
             this.players.put(key, (Agent) constr.newInstance(player));
+            System.out.println("Et la ?");
             this.players.get(key).setGame(this);
         }
+
+
 
         //Copy of all the continents of the game
         for(String key : Game.getContinents().keySet()){
@@ -69,14 +73,22 @@ public class Game {
                 this.continents.get(key).setOccupier(this.players.get(cont.getOccupier().getColor()));
         }
 
+        System.out.println("On est là deux");
+
         //Copy of all the tile of the game
         for(String key : Game.getTiles().keySet()){
             Tile til = Game.getTiles().get(key);
+
             this.tiles.put(key, new Tile(til));
+
+            this.tiles.get(key).setContinent(this.continents.get(til.getContinent().getName()));
+
             if(til.getOccupier() != null){
                 this.tiles.get(key).setOccupier(this.players.get(til.getOccupier().getColor()), til.getNumTroops());
             }
         }
+
+        System.out.println("On est là trois");
 
         //DeepCopy des voisins d'une tile
         for(String key: this.tiles.keySet()){
@@ -195,7 +207,7 @@ public class Game {
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
     }
 
-    private void setupElements(ArrayList<Agent> agents, int territories) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    private void setupElements(ArrayList<Agent> agents, int territories) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
 
         // Setup the map with the data resources
         TextReader tr = new TextReader();
@@ -222,6 +234,7 @@ public class Game {
         }
 
         for(Agent a : agents){
+
             if(a instanceof AgentMonteCarlo){
                 ((AgentMonteCarlo) a).setRoot();
             }

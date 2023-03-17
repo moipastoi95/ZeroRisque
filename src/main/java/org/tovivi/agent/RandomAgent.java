@@ -49,7 +49,7 @@ public class RandomAgent extends Agent{
     }
 
     @Override
-    public Actions action() {
+    public Actions action() throws IOException, URISyntaxException {
         int numTroops = getNumDeploy();
 
         // get every tile next to an opponent tile, and retrieve opponent's tile next to them

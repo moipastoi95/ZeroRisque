@@ -17,6 +17,14 @@ public abstract class Offensive extends Actuator {
         return fromTile;
     }
 
+    public void setFromTile(Tile fromTile) {
+        this.fromTile = fromTile;
+    }
+
+    public void setToTile(Tile toTile) {
+        this.toTile = toTile;
+    }
+
     public Tile getToTile() {
         return toTile;
     }

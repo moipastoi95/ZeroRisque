@@ -40,9 +40,6 @@ public abstract class Agent implements Callable<Actions> {
     public Agent(Agent agent){
         this.color = agent.getColor();
         this.tiles = new ArrayList<>();
-        for(Tile j: agent.getTiles()) {
-            this.tiles.add(j);
-        }
         this.deck = new ArrayList<>();
         for(Card c: agent.getDeck()){
             this.deck.add(new Card(c));
@@ -81,7 +78,7 @@ public abstract class Agent implements Callable<Actions> {
         }
     }
     */
-    public Game getGame() {
+    public Game getGame() throws IOException, URISyntaxException {
         return game;
     }
     /**Return the probability of winning for a fight of i attackers against j defenders
@@ -91,7 +88,9 @@ public abstract class Agent implements Callable<Actions> {
         return this.proba.get(i).get(j);
     }
 
-    public void setGame(Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public void setGame(Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
+        TextReader tr = new TextReader();
+        this.proba = tr.readProba(TextReader.class.getResource("proba.txt"));
         this.game = game;
     }
 
@@ -143,7 +142,7 @@ public abstract class Agent implements Callable<Actions> {
         return total;
     }
 
-    public abstract Actions action();
+    public abstract Actions action() throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
     public abstract Deployment getNextDeploy();
     public abstract Attack getNextAttack();
