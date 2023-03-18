@@ -190,11 +190,13 @@ public class AgentMonteCarlo extends Agent {
         // if cards owned, use them
         ArrayList<Deployment> depL = new ArrayList<>();
         ArrayList<Card> goodCards = Card.chooseCards(this.actual_node.getDeck(), player);
-        int goodCardsValue = Card.value(goodCards, player);
+        int goodCardsValue = Card.count(goodCards, player);
         if (goodCardsValue > 0) {
-            depL.add(new PlayCards(goodCards, player));
+            PlayCards pc = new PlayCards(goodCards, player);
+            depL.add(pc);
+            depL.addAll(pc.autoDeploy());
+            numTroops += Card.countOnlyCombo(goodCards, this);
         }
-        numTroops += goodCardsValue;
 
         int x = rand.nextInt(2)+1; //Choose between 1 deployment or two deployment on a frontier tile
         for(int i = 0; i<x;i++) {

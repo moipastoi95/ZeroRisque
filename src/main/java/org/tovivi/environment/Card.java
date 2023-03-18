@@ -3,6 +3,8 @@ package org.tovivi.environment;
 import org.tovivi.agent.Agent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 public class Card {
     private CardType type;
@@ -37,10 +39,11 @@ public class Card {
      * @param player The player who want to play the cards
      * @return the bonus value of the combination
      */
-    public static int value(ArrayList<Card> cards, Agent player) {
-        int bonus = 0;
+    public static HashMap<String, Integer> value(ArrayList<Card> cards, Agent player) {
+        HashMap<String, Integer> res = new HashMap<>();
+        res.put("Combo", 0);
         if (cards.size() != 3) {
-            return 0;
+            return res;
         }
         int infantry=0 , cavalry=0 , artillery=0, joker=0;
         for (Card c : cards) {
@@ -69,20 +72,20 @@ public class Card {
                 i--;
             } while (combo(typeCount)==0 && i>=0);
         }
-        bonus = combo(typeCount);
+        res.put("Combo",combo(typeCount));
         if (joker==2) {
-            bonus = 10;
+            res.put("Combo", 10);
         }
 
         // adding bonus if the player own a specific territory
-        if (bonus>0) {
+        if (res.get("Combo")>0) {
             for (Card c : cards) {
                 if (c.getType()!=CardType.JOKER &&  player.getTiles().contains(c.getBonusTile())) {
-                        bonus+=2;
+                        res.put(c.getBonusTile().getName(),2);
                 }
             }
         }
-        return bonus;
+        return res;
     }
 
     /**
@@ -127,7 +130,7 @@ public class Card {
                     cards.add(deck.get(i));
                     cards.add(deck.get(j));
                     cards.add(deck.get(k));
-                    int processVal = Card.value(cards, player);
+                    int processVal = count(cards,player);
                     if (processVal > maxVal) {
                         maxI = i;
                         maxJ = j;
@@ -142,6 +145,20 @@ public class Card {
         cards.add(deck.get(maxJ));
         cards.add(deck.get(maxK));
         return cards;
+    }
+
+    public static int count(ArrayList<Card> cards, Agent player) {
+        HashMap<String, Integer> bonuses = Card.value(cards, player);
+        int res = 0;
+        for (int val : bonuses.values()) {
+            res += val;
+        }
+        return res;
+    }
+
+    public static int countOnlyCombo(ArrayList<Card> cards, Agent player) {
+        HashMap<String, Integer> bonuses = Card.value(cards, player);
+        return bonuses.get("Combo");
     }
 
     @Override

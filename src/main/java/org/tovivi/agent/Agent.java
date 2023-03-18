@@ -6,12 +6,8 @@ import org.tovivi.environment.action.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 public abstract class Agent implements Callable<Actions> {
 
@@ -31,7 +27,7 @@ public abstract class Agent implements Callable<Actions> {
         this.deck = new ArrayList<>();
         this.game = game;
         TextReader tr = new TextReader();
-        this.proba = tr.readProba(TextReader.class.getResource("proba.txt"));
+        this.proba = tr.readProba(Objects.requireNonNull(TextReader.class.getResource("proba.txt")));
     }
     public Agent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         this(color, null);
@@ -90,7 +86,7 @@ public abstract class Agent implements Callable<Actions> {
 
     public void setGame(Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         TextReader tr = new TextReader();
-        this.proba = tr.readProba(TextReader.class.getResource("proba.txt"));
+        this.proba = tr.readProba(Objects.requireNonNull(TextReader.class.getResource("proba.txt")));
         this.game = game;
     }
 
@@ -123,11 +119,11 @@ public abstract class Agent implements Callable<Actions> {
         if (getTiles().size() <= 3) {
             total = 3;
         } else {
-            total = (int) (getTiles().size()/3);
+            total = (getTiles().size()/3);
 
             // adding bonus for continents
             // retrieve continents where the player owns territories
-            HashMap<String, Continent> continents = new HashMap<String, Continent>();
+            HashMap<String, Continent> continents = new HashMap<>();
             for (Tile t : getTiles()) {
                 if (!continents.containsKey(t.getContinent().getName())) {
                     continents.put(t.getContinent().getName(), t.getContinent());
@@ -157,7 +153,7 @@ public abstract class Agent implements Callable<Actions> {
     public boolean equals(Object obj) {
         if (obj instanceof Agent) {
             Agent p = (Agent) obj;
-            return p.getColor() == this.getColor();
+            return p.getColor().equals(this.getColor());
         }
         return false;
     }

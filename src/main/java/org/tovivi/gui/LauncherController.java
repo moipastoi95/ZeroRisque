@@ -36,7 +36,7 @@ public class LauncherController implements Initializable {
     @FXML
     private Spinner<Integer> territories;
     @FXML
-    private TextField troops;
+    private ComboBox<Integer> speed;
 
     /**
      * Called to initialize a controller after its root element has been completely processed
@@ -50,16 +50,15 @@ public class LauncherController implements Initializable {
         blue.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo"));
         blue.setValue("RandomAgent");
 
+
         // Set playclock value
         playclock.setItems(FXCollections.observableArrayList(10, 60, 120));
         playclock.setValue(120);
 
-        // Set the number of territories and troops according to the troops factor
+        // Set the number of territories and game speed
         territories.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 21, 14));
-        troops.setPromptText(String.valueOf(territories.getValue() * Game.TROOPS_FACTOR));
-
-        // binding the troops value to the number of territories
-        territories.valueProperty().addListener((observableValue, integer, t1) -> troops.setPromptText(String.valueOf(t1 * Game.TROOPS_FACTOR)));
+        speed.setItems(FXCollections.observableArrayList(1, 2, 5, 10, 30));
+        speed.setValue(1);
     }
 
     /**
@@ -82,7 +81,7 @@ public class LauncherController implements Initializable {
             agents.add(redAgent);
 
             // Create the game according to the inputs
-            game = new Game(agents, territories.getValue(), playclock.getValue());
+            game = new Game(agents, territories.getValue(), playclock.getValue(), speed.getValue());
 
             //Switching to the game to instantiate it
             App.getStage().hide();

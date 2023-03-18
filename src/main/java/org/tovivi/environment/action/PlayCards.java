@@ -6,10 +6,16 @@ import org.tovivi.environment.Tile;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlayCards extends Deployment {
     private ArrayList<Card> cards;
+
+    private HashMap<String, Integer> bonuses;
+
     private Agent player;
 
     /**
@@ -19,10 +25,11 @@ public class PlayCards extends Deployment {
     public PlayCards(ArrayList<Card> cards, Agent player) {
         this.player = player;
         this.cards = cards;
+        this.bonuses = Card.value(cards, player);
     }
 
     @Override
-    boolean isMoveLegal(Agent player) {
+    public boolean isMoveLegal(Agent player) {
         return this.player.equals(player) && player.getDeck().containsAll(cards) && cards.size() == 3;
     }
 
@@ -66,12 +73,27 @@ public class PlayCards extends Deployment {
 
     @Override
     public String toString() {
-        return "[Deploy:+" + Card.value(cards, player) + "]";
+        String str = "[CardPlaying:+" + Card.countOnlyCombo(cards, player) + "]";
+        if (bonuses.size()>1) {
+            str += "[Extra:";
+            for (String s : bonuses.keySet()) {
+                if (s.compareTo("Combo")!=0) {
+                    str += " (" + s + " -> +" + bonuses.get(s) + ")";
+                }
+            }
+            str += "]";
+        }
+        return str;
     }
 
     @Override
     public boolean stopDeploy() {
         return false;
+    }
+
+    @Override
+    public ArrayList<Tile> getTiles() {
+        return null;
     }
 
     /**
@@ -80,8 +102,7 @@ public class PlayCards extends Deployment {
      */
     @Override
     public int getNumTroops() {
-
-        System.out.println(Card.value(cards, player));return -Card.value(cards, player);
+        return -Card.count(cards, player);
     }
 
     @Override
@@ -89,13 +110,22 @@ public class PlayCards extends Deployment {
         return true;
     }
 
-    @Override
-    public ArrayList<Tile> getTiles() {
-        return new ArrayList<Tile>();
-    }
-
     public ArrayList<Card> getCards() {
         return cards;
+    }
+
+    public ArrayList<Deployment> autoDeploy() {
+        ArrayList<Deployment> res = new ArrayList<>();
+        for (String s : bonuses.keySet()) {
+            try {
+                if (s.compareTo("Combo")!=0) {
+                    res.add(new Deploy(bonuses.get(s), player.getGame().getTiles().get(s)));
+                }
+            } catch (IOException | URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return res;
     }
 
 }

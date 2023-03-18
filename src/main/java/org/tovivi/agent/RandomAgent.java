@@ -75,12 +75,15 @@ public class RandomAgent extends Agent{
         // if cards owned, use them
         ArrayList<Deployment> depL = new ArrayList<>();
         ArrayList<Card> goodCards = Card.chooseCards(getDeck(), this);
-        int goodCardsValue = Card.value(goodCards, this);
+        int goodCardsValue = Card.count(goodCards, this);
         if (goodCardsValue > 0) {
-            depL.add(new PlayCards(goodCards, this));
+            PlayCards pc = new PlayCards(goodCards, this);
+            depL.add(pc);
+            depL.addAll(pc.autoDeploy());
+            numTroops += Card.countOnlyCombo(goodCards, this);
         }
         // deploy all troops on this tile
-        depL.add(new Deploy(numTroops+goodCardsValue, fromTile));
+        depL.add(new Deploy(numTroops, fromTile));
         MultiDeploy deployPart = new MultiDeploy(depL);
 
         // attack a random tile next to the tile chosen

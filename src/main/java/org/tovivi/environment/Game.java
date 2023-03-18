@@ -29,7 +29,7 @@ public class Game {
     // The number of troops at the beginning of the game at each territory
     final public static int TROOPS_FACTOR = 2;
 
-    private int gameSpeed = 2;
+    private int gameSpeed;
 
     // HashMap who links the Continents to their names
     private HashMap<String, Continent> continents = new HashMap<>();
@@ -43,9 +43,10 @@ public class Game {
 
     private int playclock;
 
-    public Game(ArrayList<Agent> agents, int territories, int playclock) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
+    public Game(ArrayList<Agent> agents, int territories, int playclock, int gameSpeed) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
 
         this.playclock = playclock;
+        setGameSpeed(gameSpeed);
         setupElements(agents, territories);
     }
 
@@ -125,7 +126,7 @@ public class Game {
                                 print = a.getDeployment().toString();
                                 flag = a.performDeployment(p);
                                 System.out.println("    [Success] :: " + print);
-                                Thread.sleep(500/gameSpeed);
+                                Thread.sleep(600/gameSpeed);
                             }
                         }
                     }
@@ -142,7 +143,7 @@ public class Game {
                         if(a.getFirstOffensive() != null) {
                             print = a.getFirstOffensive().toString();
                             System.out.println("    [Success] :: " + print);
-                            Thread.sleep(500/gameSpeed);
+                            Thread.sleep(600/gameSpeed);
                         }
                     } while(a.performAttack(p));
                 } catch (SimulationRunningException e) {
@@ -158,7 +159,7 @@ public class Game {
                         print = a.getFirstOffensive().toString();
                         a.performFortify(p);
                         System.out.println("    [Success] :: " + print);
-                        Thread.sleep(500/gameSpeed);
+                        Thread.sleep(600/gameSpeed);
                     }
                 } catch (SimulationRunningException e) {
                     System.out.println("    [Failed:Simulation currently running] :: " + print);
@@ -201,7 +202,7 @@ public class Game {
                 index = 0;
             }
             try {
-                Thread.sleep(2000/gameSpeed);
+                Thread.sleep(1800/gameSpeed);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

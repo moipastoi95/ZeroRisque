@@ -34,6 +34,10 @@ public class MultiDeploy extends Deployment {
         return deploys;
     }
 
+    public void setDeploys(ArrayList<Deployment> deploys) {
+        this.deploys=deploys;
+    }
+
     @Override
     public boolean isMoveLegal(Agent player) {
         // check every object legal move
@@ -56,7 +60,6 @@ public class MultiDeploy extends Deployment {
 //        if (!isMoveLegal(player)) {
 //            return false;
 //        }
-
 
         // perform the deployment
         if (!stopDeploy()) {

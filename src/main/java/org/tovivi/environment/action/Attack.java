@@ -71,7 +71,7 @@ public class Attack extends Offensive{
         // fight
         getToTile().setInConflict(true); getFromTile().setInConflict(true);
         while(getToTile().getNumTroops() != 0 && getFromTile().getNumTroops() != 1) {
-            // throw of the dices
+            // roll the dices
             // dices of the player and the opponent
             ArrayList<Integer> dicesP = new ArrayList<>();
             ArrayList<Integer> dicesO = new ArrayList<>();

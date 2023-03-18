@@ -63,7 +63,7 @@ public class GameController implements Initializable {
                 Tile changedT = (Tile) evt.getSource();
 
                 if (!changedT.isInConflict()) {
-                    Thread.sleep(1000/game.getGameSpeed());
+                    Thread.sleep(900/game.getGameSpeed());
                     Platform.runLater(() -> {highligth(changedT);});
                 }
                 Platform.runLater(() -> {
@@ -73,7 +73,7 @@ public class GameController implements Initializable {
                 impact(changedT, earn);
 
                 if (!changedT.isInConflict()) {
-                    Thread.sleep(1000/game.getGameSpeed());
+                    Thread.sleep(900/game.getGameSpeed());
                     Platform.runLater(() -> {turnOff(changedT);});}
 
             } catch (InterruptedException e) {

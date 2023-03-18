@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -58,11 +57,11 @@
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="115.0" prefWidth="115.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Label text="Playclock" translateX="-10.0" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
@@ -74,16 +73,12 @@
                      </GridPane.margin>
                   </Label>
                   <Spinner fx:id="territories" editable="true" maxWidth="70.0" prefWidth="70.0" GridPane.columnIndex="4" />
-                  <TextField fx:id="troops" alignment="CENTER" editable="false" maxWidth="50.0" prefWidth="50.0" GridPane.columnIndex="6" GridPane.halignment="LEFT">
+                  <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="35.0" prefWidth="70.0" text="Simulation Speed" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                  <ComboBox fx:id="speed" maxWidth="70.0" minHeight="-Infinity" minWidth="70.0" prefWidth="70.0" GridPane.columnIndex="6">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin>
-                  </TextField>
-                  <Label opacity="0.5" text="Troops" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                  </Label>
+                  </ComboBox>
                </children>
                <opaqueInsets>
                   <Insets />
