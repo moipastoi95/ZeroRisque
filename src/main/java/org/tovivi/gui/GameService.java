@@ -4,6 +4,9 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.tovivi.environment.Game;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 public class GameService extends Service<Integer> {
 
     private GameController gc;
@@ -20,7 +23,7 @@ public class GameService extends Service<Integer> {
     protected Task<Integer> createTask() {
         return new Task<>() {
             @Override
-            protected Integer call() {
+            protected Integer call() throws ExecutionException, InterruptedException, TimeoutException {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

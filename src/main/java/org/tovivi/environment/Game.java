@@ -4,9 +4,7 @@ package org.tovivi.environment;
 import org.tovivi.agent.Agent;
 import org.tovivi.agent.AgentMonteCarlo;
 import org.tovivi.agent.Legume;
-import org.tovivi.agent.RandomAgent;
-import org.tovivi.environment.action.Actions;
-import org.tovivi.environment.action.Deployment;
+import org.tovivi.environment.action.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
@@ -102,6 +100,7 @@ public class Game {
     public void play() {
         // for each player --> deploy, attack, fortify
         int index = 0;
+        int pTerritories;
         ArrayList<Agent> turns = new ArrayList<>(players.values());
         ExecutorService executor = Executors.newSingleThreadExecutor();
         System.out.println("Let's begin !");
@@ -110,89 +109,92 @@ public class Game {
             System.out.println("Player " + p.getColor() + "'s turn");
             p.getDeck().forEach(System.out::println);
 
-            Future<Actions> future = executor.submit(p);
-            try {
-                Actions a = future.get(playclock, TimeUnit.SECONDS);
+            pTerritories = p.getTiles().size();
+            if (p instanceof AgentMonteCarlo) this.playAgent(p, executor);
 
-                int pTerritories = p.getTiles().size();
-
-                // deploy
-                String print = "";
+            else {
+                Future<Actions> future = executor.submit(p);
                 try {
-                    boolean flag = a.getDeployment() != null;
-                    if (flag) {
-                        if (a.getDeployment().isNumTroopsLegal(p)) {
-                            while(flag) {
-                                print = a.getDeployment().toString();
-                                flag = a.performDeployment(p);
-                                System.out.println("    [Success] :: " + print);
-                                Thread.sleep(600/gameSpeed);
+                    Actions a = future.get(playclock, TimeUnit.SECONDS);
+
+                    // deploy
+                    String print = "";
+                    try {
+                        boolean flag = a.getDeployment() != null;
+                        if (flag) {
+                            if (a.getDeployment().isNumTroopsLegal(p)) {
+                                while (flag) {
+                                    print = a.getDeployment().toString();
+                                    flag = a.performDeployment(p);
+                                    System.out.println("    [Success] :: " + print);
+                                    Thread.sleep(600 / gameSpeed);
+                                }
                             }
                         }
+                    } catch (SimulationRunningException e) {
+                        System.out.println("    [Failed:Simulation currently running] :: " + print);
+                    } catch (IllegalActionException e) {
+                        System.out.println("    [Failed:too many troops] :: " + print);
                     }
-                } catch (SimulationRunningException e) {
-                    System.out.println("    [Failed:Simulation currently running] :: " + print);
-                } catch (IllegalActionException e) {
-                    System.out.println("    [Failed:too many troops] :: " + print);
-                }
 
-                // attack
-                print = "";
-                try {
-                    do {
-                        if(a.getFirstOffensive() != null) {
+                    // attack
+                    print = "";
+                    try {
+                        do {
+                            if (a.getFirstOffensive() != null) {
+                                print = a.getFirstOffensive().toString();
+                                System.out.println("    [Success] :: " + print);
+                                Thread.sleep(600 / gameSpeed);
+                            }
+                        } while (a.performAttack(p));
+                    } catch (SimulationRunningException e) {
+                        System.out.println("    [Failed:Simulation currently running] :: " + print);
+                    } catch (IllegalActionException e) {
+                        System.out.println("    [Failed:too many troops] :: " + print);
+                    }
+
+                    // fortify
+                    print = "";
+                    try {
+                        if (a.getFirstOffensive() != null) {
                             print = a.getFirstOffensive().toString();
+                            a.performFortify(p);
                             System.out.println("    [Success] :: " + print);
-                            Thread.sleep(600/gameSpeed);
+                            Thread.sleep(600 / gameSpeed);
                         }
-                    } while(a.performAttack(p));
-                } catch (SimulationRunningException e) {
-                    System.out.println("    [Failed:Simulation currently running] :: " + print);
-                } catch (IllegalActionException e) {
-                    System.out.println("    [Failed:too many troops] :: " + print);
-                }
-
-                // fortify
-                print = "";
-                try {
-                    if(a.getFirstOffensive() != null) {
-                        print = a.getFirstOffensive().toString();
-                        a.performFortify(p);
-                        System.out.println("    [Success] :: " + print);
-                        Thread.sleep(600/gameSpeed);
+                    } catch (SimulationRunningException e) {
+                        System.out.println("    [Failed:Simulation currently running] :: " + print);
+                    } catch (IllegalActionException e) {
+                        System.out.println("    [Failed:too many troops] :: " + print);
                     }
-                } catch (SimulationRunningException e) {
-                    System.out.println("    [Failed:Simulation currently running] :: " + print);
-                } catch (IllegalActionException e) {
-                    System.out.println("    [Failed:too many troops] :: " + print);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                } catch (TimeoutException e) {
+                    throw new RuntimeException(e);
                 }
-
-
-                System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
-
-                // check if one or more of the players lose
-                Iterator<Agent> iterator = turns.iterator();
-                while (iterator.hasNext()) {
-                    Agent agent = iterator.next();
-                    if (agent.getTiles().size() == 0) {
-                        iterator.remove();
-                        System.out.println("[DEAD] The player " + agent.getColor() + " DIED like a beetroot !");
-                        // give the player the cards
-                        p.getDeck().addAll(agent.getDeck());
-                    }
-                }
-
-                // check if the player could retrieve cards
-                if (p.getTiles().size() > pTerritories && theStack.size() > 0) {
-                    p.getDeck().add(theStack.pop());
-                }
-
-            } catch (TimeoutException e) {
-                future.cancel(true);
-                System.out.println("    [TIMEOUT => ending " + p.getColor() + "'s turn]");
-            } catch (Exception e) {
-                System.out.println("    [Error] " + e);
             }
+
+            System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
+
+            // check if one or more of the players lose
+            Iterator<Agent> iterator = turns.iterator();
+            while (iterator.hasNext()) {
+                Agent agent = iterator.next();
+                if (agent.getTiles().size() == 0) {
+                    iterator.remove();
+                    System.out.println("[DEAD] The player " + agent.getColor() + " DIED like a beetroot !");
+                    // give the player the cards
+                    p.getDeck().addAll(agent.getDeck());
+                }
+            }
+
+            // check if the player could retrieve cards
+            if (p.getTiles().size() > pTerritories && theStack.size() > 0) {
+                p.getDeck().add(theStack.pop());
+            }
+
 
             // executor.shutdownNow();
 
@@ -202,13 +204,103 @@ public class Game {
                 index = 0;
             }
             try {
-                Thread.sleep(1800/gameSpeed);
+                Thread.sleep(1800 / gameSpeed);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
         }
         executor.shutdownNow();
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
+    }
+
+    private void playAgent(Agent p, ExecutorService executor)  {
+        Actuator a = null;
+        Future<Actions> future = executor.submit(p);
+        do {
+            String print = "";
+            try {
+                a = ((AgentMonteCarlo) p).actionTest();
+                //System.out.println(a.getClass().toString());
+
+                if(a instanceof MultiDeploy) {
+                    // deploy
+                    MultiDeploy md = (MultiDeploy) a;
+                    try {
+                        for(Deployment dep: md.getDeploys()){
+                            System.out.println(dep.toString());
+                            if(dep.isNumTroopsLegal(p)) {
+                                if(dep instanceof Deploy){
+                                    ((Deploy) dep).setTile(this.getTiles().get(dep.getTiles().get(0).getName()));
+                                }
+                                dep.perform(p);
+                                print = dep.toString();
+                                System.out.println("    [Success] :: " + print);
+                                Thread.sleep(600 / gameSpeed);
+                            }
+                        }
+                    } catch (SimulationRunningException e) {
+                        System.out.println("    [Failed:Simulation currently running] :: " + print);
+                    } catch (IllegalActionException e) {
+                        System.out.println("    [Failed:too many troops] :: " + print);
+                    }
+                }
+
+                else if(a instanceof Attack) {
+                    // attack
+                    print = "";
+                    Attack att = (Attack) a;
+                    try {
+                        att.setFromTile(this.getTiles().get(att.getFromTile().getName()));
+                        att.setToTile(this.getTiles().get(att.getToTile().getName()));
+                        print = att.toString();
+                        System.out.println("    [Success] :: " + print);
+                        Thread.sleep(600 / gameSpeed);
+                        att.perform(p);
+
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalActionException e) {
+                        throw new RuntimeException(e);
+                    } catch (SimulationRunningException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                /**else if(a.getFirstOffensive() instanceof Fortify) {
+                    print = "";
+                    // fortify
+                    try {
+                            print = a.getFirstOffensive().toString();
+                            a.performFortify(p);
+                            System.out.println("    [Success] :: " + print);
+                            Thread.sleep(600 / gameSpeed);
+                    } catch (SimulationRunningException e) {
+                        System.out.println("    [Failed:Simulation currently running] :: " + print);
+                    } catch (IllegalActionException e) {
+                        System.out.println("    [Failed:too many troops] :: " + print);
+                    }
+                }*/
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+
+        } while(a != null);
+
     }
 
     private void setupElements(ArrayList<Agent> agents, int territories) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
@@ -338,6 +430,16 @@ public class Game {
 
     public void setTheStack(Stack<Card> theStack) {
         this.theStack = theStack;
+    }
+
+    public int score(Agent player){
+        int scoreAgent = 0;
+        int scoreOpp = 0;
+        for(Tile t: this.getTiles().values()){
+            if(t.getOccupier().getColor() == player.getColor()){scoreAgent += t.getNumTroops();}
+            else if(t.getOccupier().getColor() != "Grey"){scoreOpp += t.getNumTroops();}
+        }
+        return scoreAgent-scoreOpp;
     }
 
     public static void main(String[] args) throws IOException {

@@ -105,6 +105,7 @@ public class Attack extends Offensive{
             getToTile().setInConflict(false); getFromTile().setInConflict(false);
             return onSucceed;
         }
+
         getToTile().setInConflict(false); getFromTile().setInConflict(false);
         return onFailed;
     }
