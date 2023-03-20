@@ -4,7 +4,9 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -31,8 +33,14 @@ public class GameController implements Initializable {
     // world is the AnchorPane that gathers all the AnchorPanes associated to the tiles
     private AnchorPane world ;
 
+    @FXML
+    // button to pause the game
+    private Button pause ;
+
     //Game that will be run
     private Game game ;
+
+    private int mem_speed;
 
     final static private Color SEA = Color.rgb(220,240,255);
 
@@ -67,6 +75,8 @@ public class GameController implements Initializable {
                     Thread.sleep(900/game.getGameSpeed());
                     Platform.runLater(() -> {highligth(changedT);});
                 }
+                while (game.getGameSpeed()<-1) Thread.sleep(50);
+
                 Platform.runLater(() -> {
                     changeNumTroops(changedT, (int) evt.getNewValue());
                 });
@@ -76,6 +86,7 @@ public class GameController implements Initializable {
                 if (!changedT.isInConflict() && game.getGameSpeed()>0) {
                     Thread.sleep(900/game.getGameSpeed());
                     Platform.runLater(() -> {turnOff(changedT);});}
+                while (game.getGameSpeed()<-1) Thread.sleep(50);
 
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -116,12 +127,23 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setGame(LauncherController.game);
+        try {
+            Image i = new Image(getClass().getResource("pause.png").toURI().toString());
+            ImageView iv = new ImageView(i);
+            iv.setFitHeight(20); iv.setFitWidth(20);
+            pause.setGraphic(iv);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
         BackgroundFill bf = new BackgroundFill(SEA, null, null);
         world.setBackground(new Background(bf));
         for (Tile t : game.getTiles().values()) {
             fill(t, t.getOccupier().getColor());
             changeNumTroops(t, t.getNumTroops());
         }
+
+        mem_speed = game.getGameSpeed();
 
         GameService gs = new GameService(this);
         gs.start();
@@ -230,7 +252,34 @@ public class GameController implements Initializable {
                     scale(l,init_scale - ((init_scale-1)*finalI/10));
                 });
                 Thread.sleep(30/game.getGameSpeed());
+                while (game.getGameSpeed()<-1) Thread.sleep(50);
             }
         }
+    }
+
+    public void pause() {
+        if (game.getGameSpeed()>-1) {
+            try {
+                Image i = new Image(getClass().getResource("play.png").toURI().toString());
+                ImageView iv = new ImageView(i);
+                iv.setFitHeight(20); iv.setFitWidth(20);
+                pause.setGraphic(iv);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+            game.setGameSpeed(-2);
+        }
+        else {
+            try {
+                Image i = new Image(getClass().getResource("pause.png").toURI().toString());
+                ImageView iv = new ImageView(i);
+                iv.setFitHeight(20); iv.setFitWidth(20);
+                pause.setGraphic(iv);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+            game.setGameSpeed(mem_speed);
+        }
+
     }
 }
