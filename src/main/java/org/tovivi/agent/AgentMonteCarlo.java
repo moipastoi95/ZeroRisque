@@ -4,16 +4,16 @@ import org.tovivi.environment.Card;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
 import org.tovivi.environment.action.*;
+import org.tovivi.environment.action.exceptions.IllegalActionException;
+import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.Math.*;
 
@@ -23,13 +23,17 @@ public class AgentMonteCarlo extends Agent {
 
     private Node actual_node;
 
-    private int E = 1;
+    private String phase = "Deploy"; //Deploy, Attack, Fortify
+
+    int num_to_deploy = 0;
+
+    private int E = 100;
     private double c = sqrt(2); //Paramètre d'exploration
     private int depth = 0; //Profondeur actuelle de la recherche
 
     public AgentMonteCarlo(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super(color, game);
-        this.root = new Node(new Game(game),0,null, this.getDeck());
+        this.root = new Node(new Game(game),0, null, this.getDeck());
     }
 
     public AgentMonteCarlo(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
@@ -46,38 +50,106 @@ public class AgentMonteCarlo extends Agent {
 
     /**Update the game copy that is stored in the root node*/
     public void setRoot() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
-        this.root = new Node(new Game(this.getGame()),0,null, this.getDeck());
+        this.root = new Node(new Game(this.getGame()),0, null, this.getDeck());
     }
 
-    @Override
+    public void setPhase(String phase) {this.phase = phase;}
+
+    public Actions action(){return null;}
+
     //TODO: while(ressource_left):
     // 0 - Choisir le nouveau noeud à partir duquel explorer (fonction traverse)
     // 1 - A partir de ce noeud parcourir l'arbre jusqu'à un état final (fonction rollout)
     // 2 - Calculer la valeur de l'état final (en fonction de qui à gagné)
     // 3 - Propager la valeur de manière récursive sur les noeuds parents (fonction backpropagate)
     // 4 - Renvoyer le meilleur child
-    public Actions action() throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Actuator actionTest() throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+
+        System.out.println(this.phase);
 
         try{
             this.root.setGame(new Game(this.getGame()));
         } catch(Exception e){
             System.out.println(e.getCause().toString());
         }
-        //System.out.println("Je crois qu'on se fout de ma gueule mais oklm ");
+
+        Random rand = new Random();
+        Actuator new_action = null;
 
         this.actual_node = this.traverse(); //Etape 0
 
+        Agent player = this.actual_node.getGame().getPlayers().get(this.getColor());
+        String OpColor = this.getColor();
+
         //On récupère les tiles correspondant au front, tiles adjacentes à des adversaires
-        HashMap<Tile, ArrayList<Tile>> front = this.getFront(actual_node);
+        HashMap<Tile, ArrayList<Tile>> front = this.getFront(actual_node.getGame(), this);
+        ArrayList<Actuator> possible_actions = new ArrayList<>();
 
-        Actions new_action = this.getNewAction(front);
+        if(this.phase == "Deploy") {
+            if(num_to_deploy == 0) num_to_deploy = this.getNumDeploy();
+            possible_actions = this.getDeployActions(front, player);
 
-        return new_action;
+            this.setPhase("Attack");
+        }
+
+        else if(this.phase == "Attack"){
+            possible_actions = this.getAttackActions(front, player);
+
+            this.setPhase("End");
+        }
+
+        int s = possible_actions.size();
+
+        while(s > 0) {
+            new_action = possible_actions.get(rand.nextInt(s));
+            possible_actions.remove(new_action);
+            actual_node.generateChilds(new_action, player);
+            Node next_node = actual_node.getNextNode(new_action);
+            int Score = this.rollout(next_node, player);
+            this.backPropagate(next_node, Score);
+            s = possible_actions.size();
+        }
+
+        return this.best_child();
     }
 
-    /**Generate a newAction
-     * @param front The tiles of the player next to an opponent tile
-     * @return The new Action generated*/
+    private ArrayList<Actuator> getAttackActions(HashMap<Tile, ArrayList<Tile>> front, Agent player) {
+        ArrayList<Actuator> actions = new ArrayList<>();
+
+        for(Tile tile: front.keySet()){
+            for(Tile oppTile: front.get(tile)){
+                if(tile.getNumTroops()-1 != 0){
+                    actions.add(new Attack(tile, oppTile, tile.getNumTroops()-1, null, null));
+                }
+            }
+        }
+        return actions;
+    }
+
+    private ArrayList<Actuator> getDeployActions(HashMap<Tile, ArrayList<Tile>> front, Agent player) {
+        ArrayList<Actuator> possible_actions= new ArrayList<>();
+
+        // if cards owned, use them
+        ArrayList<Deployment> depL = new ArrayList<>();
+        ArrayList<Card> goodCards = Card.chooseCards(this.actual_node.getDeck(), player);
+        int goodCardsValue = Card.count(goodCards, player);
+        if (goodCardsValue > 0) {
+            PlayCards pc = new PlayCards(goodCards, player);
+            depL.add(pc);
+            depL.addAll(pc.autoDeploy());
+            num_to_deploy += Card.countOnlyCombo(goodCards, this);
+        }
+
+        for(Tile tile: front.keySet()){
+            depL.add(new Deploy(num_to_deploy, tile));
+            possible_actions.add(new MultiDeploy(new ArrayList<>(depL)));
+            depL.remove(depL.size() - 1);
+        }
+
+        return possible_actions;
+    }
+
+    /**
     //TODO: Je pense ya un problème il faut rajouter le joueur avec lequelle on veut jouer dans les paramètres
     public Actions getNewAction(HashMap<Tile, ArrayList<Tile>> front) throws IOException, URISyntaxException {
         Actions act = null;
@@ -97,50 +169,20 @@ public class AgentMonteCarlo extends Agent {
         deployPart.undoSimulation();
 
         if(this.getColor() == "Red") OpColor = "Blue";
-        else if (this.getColor() == "Blue") OpColor = "Grey";
         else OpColor = "Red";
-        //Alternance entre les joueurs
-        player = this.getGame().getPlayers().get(OpColor);
+        //Alternance entre les deux joueurs
+        if(player == this) player = this.getGame().getPlayers().get(OpColor);
+        else player = this;
         //}
 
         this.convertDeploy(deployPart);
         this.convertOffensive(offensivePart);
 
         return new Actions(deployPart, offensivePart);
-    }
+    }*/
 
 
-    /**Switch the objects references in an offensive to object from the real game
-     * @param offensivePart :The offensive we want to convert
-     * */
-    private void convertOffensive(Offensive offensivePart) throws IOException, URISyntaxException {
-        if(offensivePart instanceof Attack){
-            convertOffensive(((Attack) offensivePart).getOnSucceed());
-            convertOffensive(((Attack) offensivePart).getOnFailed());
-        }
-        if (offensivePart.getFromTile() != null)
-            offensivePart.setFromTile(this.getGame().getTiles().get(offensivePart.getFromTile().getName()));
-        if (offensivePart.getToTile() != null)
-            offensivePart.setToTile(this.getGame().getTiles().get(offensivePart.getToTile().getName()));
-    }
-
-    /**Convert all the deepcopy object instances of a deployment to instance from the game
-     * @param deployPart The MultiDeploy wa want to convert
-     * */
-    private void convertDeploy(MultiDeploy deployPart) throws IOException, URISyntaxException {
-        for(Deployment deploy: deployPart.getDeploys()){
-            if(deploy instanceof Deploy){
-                ((Deploy) deploy).setTile(this.getGame().getTiles().get(deploy.getTiles().get(0).getName()));
-            }
-        }
-    }
-
-    /**Generate an Attack with a maximum number of steps for a player
-     * @param front The tiles next to opponents tiles
-     * @param actDepth Variable used for the recursive call
-     * @param maxDepth The maximum number of attack in the offensive
-     * @param player The attacker
-     * @return The offensive result*/
+    /**
     public Offensive createAttack(HashMap<Tile, ArrayList<Tile>> front, int actDepth, int maxDepth, Agent player){
         //System.out.println("Depth : " + actDepth);
         boolean flag;
@@ -176,13 +218,9 @@ public class AgentMonteCarlo extends Agent {
             }
         }
         return offensive;
-    }
+    }*/
 
-    /**Generate a "Random" MultiDeploy for the player on a given number of tiles
-     * @param front Tiles next an opponent tile
-     * @param numTroops The number of troops available for development
-     * @param player Player who is going to deploy
-     * @return The deployment to do as a MultiDeploy*/
+    /**
     private MultiDeploy createDeployment(HashMap<Tile, ArrayList<Tile>> front, int numTroops, Agent player) {
         Random rand =  new Random();
         MultiDeploy deployPart = null;
@@ -215,7 +253,7 @@ public class AgentMonteCarlo extends Agent {
         }
         deployPart = new MultiDeploy(depL);
         return deployPart;
-    }
+    }*/
 
     @Override
     public Deployment getNextDeploy() {
@@ -237,7 +275,7 @@ public class AgentMonteCarlo extends Agent {
      * */
     public Node traverse(){
         Node node = this.root;
-        Actions act = null;
+        Actuator act = null;
         while(node.getChilds().size() == 100){
                act = this.getBestChild(node);
                node = node.getNextNode(act);
@@ -255,65 +293,103 @@ public class AgentMonteCarlo extends Agent {
             return Double.MAX_VALUE;
         }
         else {
-            return E*(n.getWin()/n.getN()) + c*sqrt(log(n.getParent().getN())/n.getN());
+            return E*(n.getScore()/n.getN()) + c*sqrt(log(n.getParent().getN())/n.getN());
         }
     }
 
     /**Renvoie le meilleur enfant de la famille
      * @return Le meilleur noeud
      * */
-    public Actions getBestChild(Node n){
+    public Actuator getBestChild(Node n){
         double max = 0;
-        Actions res = null;
-        for(Actions act: n.getChilds().keySet()) {
+        Actuator res = null;
+        for(Actuator act: n.getChilds().keySet()) {
             for (Node child : n.getChilds().get(act).keySet()) {
                 double i = this.getUCT(child);
-                if (i > max) {
+                if (i > max && child.getN() > 0) {
                     max = i;
                     res = act;
                 }
             }
         }
+
         return res;
     }
 
     //TODO: Doit renvoyer la valeur du leaf node atteint à partir du noeud n
-    public int rollout(Node n){
-        return 0;
-    }
+    // Pour ce faire, parcours le jeu de manière aléatoire
+    // Pour le moment c'est de type très très nul mais oklm
+    public int rollout(Node n, Agent player){
+        Random rand = new Random();
+        int res = 0;
+        try{
+            Game simu = new Game(n.getGame());
+            Agent gamer = simu.getPlayers().get(player.getColor());
+            res = simu.score(player);
+            for(int i = 0; i < 0; i++){
+                HashMap<Tile, ArrayList<Tile>> front = getFront(simu, gamer);
+                ArrayList<Actuator> possible_actions = this.getAttackActions(front, gamer);
+                int s = possible_actions.size();
+                Attack new_action = (Attack) possible_actions.get(rand.nextInt(s));
 
-    //TODO: Doit renvoyer le prochain noeud à parcourir (Au départ un noeud random et après on pourra rajouter une genre de
-    // heuristic ou le NN pour qu'il explore pas random mais dans un ordre logique)
-    public Node rolloutPolicy(Node n){
-        return null;
+                new_action.perform(gamer);
+                res = simu.score(gamer);
+            }
+        } catch (IOException | URISyntaxException | ClassNotFoundException | InvocationTargetException |
+                 NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalActionException |
+                 SimulationRunningException e) {
+            System.out.println(e);
+            throw new RuntimeException(e);
+        }
+        return res;
     }
 
     //TODO: Doit propager la valeur du noeud final à tous les noeuds précedents déjà exploré dans l'arbre
     public void backPropagate(Node n, int result){
-
+        if(n.getParent() != null){
+            n.addScore(result);
+            n.setN(n.getN() + 1);
+            backPropagate(n.getParent(), result);
+        }
+        else{
+            n.addScore(result);
+            n.setN(n.getN() + 1);
+        }
     }
 
     //TODO: Doit renvoyer le meilleur noeuds, genre l'action que l'algo doit renvoyer en gros
-    public Action best_child(){
-        return null;
+    public Actuator best_child(){
+        if(!this.phase.equals("laEnd")) {
+            if(this.phase.equals("End")) {
+                this.phase = "laEnd";
+            }
+            return this.getBestChild(this.root);
+        }
+        else {
+            this.phase = "Deploy";
+            this.num_to_deploy = 0;
+            return null;
+        }
     }
 
 
-    /**Return the front for the agent in the game of the node n, I should probably add player as a parameter
-     * @param n The node where we want to find the frontier
+    /**Return the front for the agent in the game of the node n, I should probably add player as an parameter
+     * @param g The node where we want to find the frontier
      * @return The frontier as an HashMap(Tile, List(Tile))*/
-    public HashMap<Tile, ArrayList<Tile>> getFront(Node n) throws IOException, URISyntaxException {
+    public HashMap<Tile, ArrayList<Tile>> getFront(Game g, Agent player) throws IOException, URISyntaxException {
         // get every tile next to an opponent tile, and retrieve opponent's tile next to them
         HashMap<Tile, ArrayList<Tile>> front = new HashMap<>();
-        for (Tile t : n.getGame().getTiles().values()) {
-            if(t.getOccupier().getColor() == this.getColor()) {
+        for (Tile t : g.getTiles().values()) {
+            if(t.getOccupier().getColor() == player.getColor()) {
                 boolean flag = false;
                 ArrayList<Tile> opponentTiles = new ArrayList<>();
-                for (Tile neighbor : t.getNeighbors()) {
-                    if (neighbor.getOccupier().getColor() != this.getColor()) {
-                        flag = true;
-                        // add the real ref of tiles
-                        opponentTiles.add(n.getGame().getTiles().get(neighbor.getName()));
+                if(t.getNumTroops() > 1) {
+                    for (Tile neighbor : t.getNeighbors()) {
+                        if (neighbor.getOccupier().getColor() != player.getColor()) {
+                            flag = true;
+                            // add the real ref of tiles
+                            opponentTiles.add(g.getTiles().get(neighbor.getName()));
+                        }
                     }
                 }
                 if (flag) {
