@@ -97,10 +97,10 @@ public class AgentMonteCarlo extends Agent {
         deployPart.undoSimulation();
 
         if(this.getColor() == "Red") OpColor = "Blue";
+        else if (this.getColor() == "Blue") OpColor = "Grey";
         else OpColor = "Red";
-        //Alternance entre les deux joueurs
-        if(player == this) player = this.getGame().getPlayers().get(OpColor);
-        else player = this;
+        //Alternance entre les joueurs
+        player = this.getGame().getPlayers().get(OpColor);
         //}
 
         this.convertDeploy(deployPart);
@@ -299,7 +299,7 @@ public class AgentMonteCarlo extends Agent {
     }
 
 
-    /**Return the front for the agent in the game of the node n, I should probably add player as an parameter
+    /**Return the front for the agent in the game of the node n, I should probably add player as a parameter
      * @param n The node where we want to find the frontier
      * @return The frontier as an HashMap(Tile, List(Tile))*/
     public HashMap<Tile, ArrayList<Tile>> getFront(Node n) throws IOException, URISyntaxException {

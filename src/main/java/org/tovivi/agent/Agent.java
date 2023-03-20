@@ -81,6 +81,16 @@ public abstract class Agent implements Callable<Actions> {
      * @return A double giving the winninig probability
      * */
     public double getProba(int i, int j){
+        if (i>=50 || j>=50) {
+            if (i>=j) {
+                j = (j/i)*50;
+                i = 50;
+            }
+            else {
+                i = (i/j)*50;
+                j = 50;
+            }
+        }
         return this.proba.get(i).get(j);
     }
 

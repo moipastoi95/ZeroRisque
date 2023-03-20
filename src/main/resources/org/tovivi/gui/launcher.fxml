@@ -74,7 +74,7 @@
                   </Label>
                   <Spinner fx:id="territories" editable="true" maxWidth="70.0" prefWidth="70.0" GridPane.columnIndex="4" />
                   <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="35.0" prefWidth="70.0" text="Simulation Speed" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
-                  <ComboBox fx:id="speed" maxWidth="70.0" minHeight="-Infinity" minWidth="70.0" prefWidth="70.0" GridPane.columnIndex="6">
+                  <ComboBox fx:id="speed" maxWidth="80.0" minHeight="-Infinity" minWidth="80.0" prefWidth="80.0" GridPane.columnIndex="6">
                      <GridPane.margin>
                         <Insets left="10.0" />
                      </GridPane.margin>
