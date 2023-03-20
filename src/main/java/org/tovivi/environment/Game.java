@@ -127,6 +127,7 @@ public class Game {
                                 flag = a.performDeployment(p);
                                 System.out.println("    [Success] :: " + print);
                                 if (gameSpeed>0) Thread.sleep(600/gameSpeed);
+                                while (gameSpeed>-2) Thread.sleep(50);
                             }
                         }
                     }
@@ -144,6 +145,7 @@ public class Game {
                             print = a.getFirstOffensive().toString();
                             System.out.println("    [Success] :: " + print);
                             if (gameSpeed>0) Thread.sleep(600/gameSpeed);
+                            while (gameSpeed>-2) Thread.sleep(50);
                         }
                     } while(a.performAttack(p));
                 } catch (SimulationRunningException e) {
@@ -160,6 +162,7 @@ public class Game {
                         a.performFortify(p);
                         System.out.println("    [Success] :: " + print);
                         if (gameSpeed>0) Thread.sleep(600/gameSpeed);
+                        while (gameSpeed>-2) Thread.sleep(50);
                     }
                 } catch (SimulationRunningException e) {
                     System.out.println("    [Failed:Simulation currently running] :: " + print);
@@ -203,6 +206,7 @@ public class Game {
             }
             try {
                 if (gameSpeed>0) Thread.sleep(1800/gameSpeed);
+                while (gameSpeed>-2) Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
