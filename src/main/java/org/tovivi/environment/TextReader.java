@@ -38,6 +38,7 @@ public class TextReader {
         }
         return res;
     }
+
     public LinkedList<LinkedList<Double>> readProba(URL url) throws IOException, URISyntaxException {
 
         LinkedList<LinkedList<Double>> res = new LinkedList<>();

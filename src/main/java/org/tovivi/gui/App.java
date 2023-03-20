@@ -55,7 +55,7 @@ public class App extends Application {
      */
     static void newConf(String title, int w, int h) {
         stage.setTitle(title);
-        stage.setMinWidth(w); stage.setMinHeight(h+40);
+        stage.setMinWidth(w); stage.setMinHeight(h);
         stage.centerOnScreen();
     }
 

@@ -36,7 +36,7 @@ public class LauncherController implements Initializable {
     @FXML
     private Spinner<Integer> territories;
     @FXML
-    private ComboBox<Integer> speed;
+    private ComboBox<String> speed;
 
     /**
      * Called to initialize a controller after its root element has been completely processed
@@ -57,8 +57,8 @@ public class LauncherController implements Initializable {
 
         // Set the number of territories and game speed
         territories.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 21, 14));
-        speed.setItems(FXCollections.observableArrayList(1, 2, 5, 10, 30));
-        speed.setValue(1);
+        speed.setItems(FXCollections.observableArrayList("1", "2", "5", "30", "MAX"));
+        speed.setValue("1");
     }
 
     /**
@@ -81,7 +81,15 @@ public class LauncherController implements Initializable {
             agents.add(redAgent);
 
             // Create the game according to the inputs
-            game = new Game(agents, territories.getValue(), playclock.getValue(), speed.getValue());
+            // Before we look at "speed" which can be equals to MAX)
+            int sp ;
+            if (speed.getValue().compareTo("MAX")==0) {
+                sp = -1;
+            }
+            else {
+                sp = Integer.valueOf(speed.getValue());
+            }
+            game = new Game(agents, territories.getValue(), playclock.getValue(), sp);
 
             //Switching to the game to instantiate it
             App.getStage().hide();

@@ -89,7 +89,7 @@ public class Card {
     }
 
     /**
-     * Suppose that the sum of the 3 int has a value of 3
+     * Suppose that the sum of the 3 int representing the card type has a value of 3
      * @param typeCount array of the type counts
      * @return the value of the combo
      */
@@ -147,6 +147,12 @@ public class Card {
         return cards;
     }
 
+    /**
+     * Especially used to find the best set for the player
+     * @param cards the set of cards
+     * @param player the player that plays the cards
+     * @return The number of troop earned thanks to the cards
+     */
     public static int count(ArrayList<Card> cards, Agent player) {
         HashMap<String, Integer> bonuses = Card.value(cards, player);
         int res = 0;
@@ -156,6 +162,12 @@ public class Card {
         return res;
     }
 
+    /**
+     * Used to know how many troops the player can deploy on all of his tiles.
+     * @param cards the set of cards
+     * @param player the player that plays the cards
+     * @return The number of troop earned thanks to the cards without the extra troops due to the territory
+     */
     public static int countOnlyCombo(ArrayList<Card> cards, Agent player) {
         HashMap<String, Integer> bonuses = Card.value(cards, player);
         return bonuses.get("Combo");

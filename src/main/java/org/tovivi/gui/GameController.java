@@ -13,6 +13,7 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Label;
 
+import javafx.util.Duration;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
@@ -62,7 +63,7 @@ public class GameController implements Initializable {
             try {
                 Tile changedT = (Tile) evt.getSource();
 
-                if (!changedT.isInConflict()) {
+                if (!changedT.isInConflict() && game.getGameSpeed()>0) {
                     Thread.sleep(900/game.getGameSpeed());
                     Platform.runLater(() -> {highligth(changedT);});
                 }
@@ -72,7 +73,7 @@ public class GameController implements Initializable {
                 boolean earn = ((int) evt.getNewValue()) > ((int) evt.getOldValue());
                 impact(changedT, earn);
 
-                if (!changedT.isInConflict()) {
+                if (!changedT.isInConflict() && game.getGameSpeed()>0) {
                     Thread.sleep(900/game.getGameSpeed());
                     Platform.runLater(() -> {turnOff(changedT);});}
 
@@ -121,6 +122,7 @@ public class GameController implements Initializable {
             fill(t, t.getOccupier().getColor());
             changeNumTroops(t, t.getNumTroops());
         }
+
         GameService gs = new GameService(this);
         gs.start();
         App.getStage().show();
@@ -217,17 +219,18 @@ public class GameController implements Initializable {
     }
 
     public void impact(Tile t, boolean earn) throws InterruptedException {
-        // Searching for the AnchorPane link to Tile t
-        AnchorPane aT = (AnchorPane) world.lookup("#"+t.getName());
-        Label l = (Label) aT.getChildren().get(2);
-        double init_scale = earn ? 2 : 0.5;
-        for (int i=0; i<=10; i++) {
-            int finalI = i;
-            Platform.runLater(() -> {
-                scale(l,init_scale - ((init_scale-1)*finalI/10));
-            });
-            Thread.sleep(30/game.getGameSpeed());
+        if (game.getGameSpeed()>0) {
+            // Searching for the AnchorPane link to Tile t
+            AnchorPane aT = (AnchorPane) world.lookup("#"+t.getName());
+            Label l = (Label) aT.getChildren().get(2);
+            double init_scale = earn ? 3 : 0.3;
+            for (int i=0; i<=10; i++) {
+                int finalI = i;
+                Platform.runLater(() -> {
+                    scale(l,init_scale - ((init_scale-1)*finalI/10));
+                });
+                Thread.sleep(30/game.getGameSpeed());
+            }
         }
-
     }
 }
