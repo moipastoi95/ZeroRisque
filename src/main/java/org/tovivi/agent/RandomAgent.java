@@ -90,7 +90,7 @@ public class RandomAgent extends Agent{
         ArrayList<Tile> frontValue = front.get(fromTile);
         Tile toTile = frontValue.get((int)(Math.random() * frontValue.size()));
 
-        Offensive offensivePart = new Attack(fromTile, toTile, fromTile.getNumTroops()+numTroops+goodCardsValue-1, new Fortify(), new Fortify());
+        Offensive offensivePart = new Attack(fromTile, toTile, fromTile.getNumTroops()+numTroops-1, new Fortify(), new Fortify());
 
         return new Actions(deployPart, offensivePart);
     }

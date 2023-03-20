@@ -47,9 +47,12 @@ public class Node {
                     if(dep instanceof Deploy){
                         ((Deploy) dep).setTile(next.getTiles().get(dep.getTiles().get(0).getName()));
                     }
+                    if(dep instanceof PlayCards){
+                        ((PlayCards) dep).setPlayer(next.getPlayers().get(player.getColor()));
+                    }
                     dep.perform(next.getPlayers().get(player.getColor()));
                 }
-                childs.put(new Node(next, 0,  this, null), 1.0);
+                childs.put(new Node(next, 0,  this, next.getPlayers().get(player.getColor()).getDeck()), 1.0);
                 this.getChilds().put(action, childs);
             }
 
@@ -79,8 +82,9 @@ public class Node {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGame(Game game, Agent player) {
         this.game = game;
+        this.deck = player.getDeck();
         this.childs.clear();
     }
 
@@ -95,6 +99,8 @@ public class Node {
     public ArrayList<Card> getDeck(){return this.deck;}
 
     public int getScore(){return this.score;}
+
+    public void resetScore(){this.score = 0;}
 
     public void addScore(int value){this.score += value;}
 
@@ -112,7 +118,7 @@ public class Node {
 
     public void addChild(Actuator act, HashMap<Node, Double> val){this.childs.put(act, val);}
 
-    public boolean isChild(Actions action){return this.childs.containsKey(action);}
+    public boolean isChild(Actuator action){return this.childs.containsKey(action);}
 
     /**@return Node - One of the childs node of the node taking into account probabilities*/
     public Node getNextNode(Actuator act) {

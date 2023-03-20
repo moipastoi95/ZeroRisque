@@ -27,7 +27,7 @@ public class AgentMonteCarlo extends Agent {
 
     int num_to_deploy = 0;
 
-    private int E = 100;
+    private int E = 10;
     private double c = sqrt(2); //Paramètre d'exploration
     private int depth = 0; //Profondeur actuelle de la recherche
 
@@ -65,12 +65,13 @@ public class AgentMonteCarlo extends Agent {
     // 4 - Renvoyer le meilleur child
     public Actuator actionTest() throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        System.out.println(this.phase);
+        this.root.setN(0);
+        this.root.resetScore();
 
         try{
-            this.root.setGame(new Game(this.getGame()));
+            this.root.setGame(new Game(this.getGame()), this);
         } catch(Exception e){
-            System.out.println(e.getCause().toString());
+            throw new RuntimeException(e);
         }
 
         Random rand = new Random();
@@ -79,16 +80,13 @@ public class AgentMonteCarlo extends Agent {
         this.actual_node = this.traverse(); //Etape 0
 
         Agent player = this.actual_node.getGame().getPlayers().get(this.getColor());
-        String OpColor = this.getColor();
 
-        //On récupère les tiles correspondant au front, tiles adjacentes à des adversaires
         HashMap<Tile, ArrayList<Tile>> front = this.getFront(actual_node.getGame(), this);
         ArrayList<Actuator> possible_actions = new ArrayList<>();
 
         if(this.phase == "Deploy") {
             if(num_to_deploy == 0) num_to_deploy = this.getNumDeploy();
             possible_actions = this.getDeployActions(front, player);
-
             this.setPhase("Attack");
         }
 
@@ -100,6 +98,7 @@ public class AgentMonteCarlo extends Agent {
 
         int s = possible_actions.size();
 
+
         while(s > 0) {
             new_action = possible_actions.get(rand.nextInt(s));
             possible_actions.remove(new_action);
@@ -110,7 +109,9 @@ public class AgentMonteCarlo extends Agent {
             s = possible_actions.size();
         }
 
-        return this.best_child();
+        new_action = this.best_child();
+
+        return new_action;
     }
 
     private ArrayList<Actuator> getAttackActions(HashMap<Tile, ArrayList<Tile>> front, Agent player) {
@@ -137,11 +138,12 @@ public class AgentMonteCarlo extends Agent {
             PlayCards pc = new PlayCards(goodCards, player);
             depL.add(pc);
             depL.addAll(pc.autoDeploy());
-            num_to_deploy += Card.countOnlyCombo(goodCards, this);
+            num_to_deploy += Card.countOnlyCombo(goodCards, player);
         }
 
         for(Tile tile: front.keySet()){
             depL.add(new Deploy(num_to_deploy, tile));
+            //System.out.println(depL);
             possible_actions.add(new MultiDeploy(new ArrayList<>(depL)));
             depL.remove(depL.size() - 1);
         }
@@ -301,18 +303,20 @@ public class AgentMonteCarlo extends Agent {
      * @return Le meilleur noeud
      * */
     public Actuator getBestChild(Node n){
-        double max = 0;
+        double max = -Double.MAX_VALUE;
         Actuator res = null;
         for(Actuator act: n.getChilds().keySet()) {
             for (Node child : n.getChilds().get(act).keySet()) {
+                //System.out.print("Calcul de luct");
                 double i = this.getUCT(child);
                 if (i > max && child.getN() > 0) {
                     max = i;
                     res = act;
                 }
+                //System.out.println(" - " + i + " max = " + max + " - Ca s'est bien passé..." + act);
             }
         }
-
+        //if(res != null) System.out.print(" - " + res);
         return res;
     }
 

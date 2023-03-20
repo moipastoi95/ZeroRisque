@@ -53,7 +53,7 @@ public class Game {
             return;
         }
 
-        //Create a copy of all the players
+        //System.out.println("Create a copy of all the players");
         for(String key : Game.getPlayers().keySet()){
             Constructor<Agent> constr;
             //Instantiate the agents
@@ -63,9 +63,7 @@ public class Game {
             this.players.get(key).setGame(this);
         }
 
-
-
-        //Copy of all the continents of the game
+        //System.out.println("Copy of all the continents of the game");
         for(String key : Game.getContinents().keySet()){
             Continent cont = Game.getContinents().get(key);
             this.continents.put(key, new Continent(cont));
@@ -73,7 +71,7 @@ public class Game {
                 this.continents.get(key).setOccupier(this.players.get(cont.getOccupier().getColor()));
         }
 
-        //Copy of all the tile of the game
+        //System.out.println("DeepCopy of all the tile of the game");
         for(String key : Game.getTiles().keySet()){
             Tile til = Game.getTiles().get(key);
 
@@ -86,13 +84,21 @@ public class Game {
             }
         }
 
-        //DeepCopy des voisins d'une tile
+        //System.out.println("DeepCopy des voisins d'une tile");
         for(String key: this.tiles.keySet()){
             ArrayList<Tile> neigh = new ArrayList<>();
             for(Tile t: this.tiles.get(key).getNeighbors()){
                 neigh.add(this.tiles.get(t.getName()));
             }
             this.tiles.get(key).setNeighbors(neigh);
+        }
+
+        //System.out.println("DeepCopy des bonus tiles des decks");
+        for(Agent player: this.getPlayers().values()){
+            for(Card c: player.getDeck()){
+                if(c.getType() != CardType.JOKER)
+                    c.setBonusTile(this.getTiles().get(c.getBonusTile().getName()));
+            }
         }
 
     }
@@ -220,6 +226,7 @@ public class Game {
         do {
             String print = "";
             try {
+                //System.out.println("Appel de l'agent pour créer une action");
                 a = ((AgentMonteCarlo) p).actionTest();
                 //System.out.println(a.getClass().toString());
 
@@ -227,11 +234,13 @@ public class Game {
                     // deploy
                     MultiDeploy md = (MultiDeploy) a;
                     try {
-                        for(Deployment dep: md.getDeploys()){
-                            System.out.println(dep.toString());
-                            if(dep.isNumTroopsLegal(p)) {
+                        if(md.isNumTroopsLegal(p)){
+                             for(Deployment dep: md.getDeploys()){
                                 if(dep instanceof Deploy){
                                     ((Deploy) dep).setTile(this.getTiles().get(dep.getTiles().get(0).getName()));
+                                }
+                                if(dep instanceof PlayCards){
+                                    ((PlayCards) dep).setPlayer(this.getPlayers().get(((PlayCards) dep).getPlayer().getColor()));
                                 }
                                 dep.perform(p);
                                 print = dep.toString();
@@ -298,7 +307,7 @@ public class Game {
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
-
+            //System.out.println("Si l'agent envoie encore une action on continue a jouer");
         } while(a != null);
 
     }
