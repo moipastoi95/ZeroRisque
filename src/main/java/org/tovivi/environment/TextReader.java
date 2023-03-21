@@ -132,7 +132,7 @@ public class TextReader {
                 res.add(c);
             }
         }
-        res.add(new Card(CardType.JOKER, null)); res.add(new Card(CardType.JOKER, null));
+        res.add(new Card(CardType.JOKER, new Tile("joker1", null))); res.add(new Card(CardType.JOKER, new Tile("joker2", null)));
         Collections.shuffle(res);
         return res;
     }

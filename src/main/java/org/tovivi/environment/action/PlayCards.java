@@ -43,7 +43,7 @@ public class PlayCards extends Deployment {
             throw new IllegalActionException();
         }
 
-        player.getDeck().removeAll(cards);
+        player.removeAllCards(cards);
         return null;
     }
 
@@ -102,6 +102,10 @@ public class PlayCards extends Deployment {
     @Override
     public ArrayList<Tile> getTiles() {
         return null;
+    }
+
+    public void setCards(ArrayList<Card> cards) {
+        this.cards = cards;
     }
 
     /**

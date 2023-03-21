@@ -1,25 +1,32 @@
 package org.tovivi.gui;
 
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Label;
 
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 import org.tovivi.agent.Agent;
+import org.tovivi.environment.Card;
+import org.tovivi.environment.CardType;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
@@ -29,8 +36,10 @@ public class GameController implements Initializable {
     private AnchorPane world ;
 
     @FXML
-    // button to pause the game
-    private Button pause ;
+    private VBox players;
+
+    @FXML
+    private ImageView pause ;
 
     //Game that will be run
     private Game game ;
@@ -98,15 +107,45 @@ public class GameController implements Initializable {
                 }
             });
         }
+        if (evt.getPropertyName().compareTo("deckChange")==0) {
+            Agent p = (Agent) evt.getSource();
+            Platform.runLater(() -> {
+                VBox pVB = (VBox) players.lookup("#"+p.getColor());
+                if (evt.getOldValue()==null) {
+                    Card c = (Card) evt.getNewValue();
+                    Label l = new Label(c.toString());
+                    l.setId((c.getBonusTile().getName()+"Card")); // we had Card to make the difference between tiles id and cards id
+                    l.setFont(Font.font(10));
+                    pVB.getChildren().add(l);
+                }
+                else {
+                    Card c = (Card) evt.getOldValue();
+                    String str = "#" + (c.getBonusTile().getName()+"Card");
+                    pVB.getChildren().remove(pVB.lookup(str));
+                }
+            });
+        }
+        if (evt.getPropertyName().compareTo("newTurn")==0) {
+            Platform.runLater(() -> {
+                Agent pNew = (Agent) evt.getNewValue() ; Agent pOld = (Agent) evt.getOldValue();
+                VBox pNewVB = (VBox) players.lookup("#"+pNew.getColor());
+                VBox pOldVB = (VBox) players.lookup("#"+pOld.getColor());
+                Label l = (Label) pNewVB.getChildren().get(0); l.setFont(Font.font("System", FontWeight.BOLD, 14));
+                l = (Label) pOldVB.getChildren().get(0) ; l.setFont(Font.font("System", FontWeight.NORMAL, 13));
+            });
+        }
     };
 
     /**
      * @param game the game to set
      */
     public void setGame(Game game) {
-        this.game = game;
+        this.game = game; game.addPropertyChangeListener(pcl);
         for (Tile t : game.getTiles().values()) {
             t.addPropertyChangeListener(pcl);
+        }
+        for (Agent p : game.getPlayers().values()) {
+            p.addPropertyChangeListener(pcl);
         }
     }
 
@@ -122,20 +161,15 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setGame(LauncherController.game);
-        /**try {
-            Image i = new Image(getClass().getResource("org/tovivi/environment/pause.png").toURI().toString());
-            ImageView iv = new ImageView(i);
-            iv.setFitHeight(20); iv.setFitWidth(20);
-            pause.setGraphic(iv);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }*/
 
         BackgroundFill bf = new BackgroundFill(SEA, null, null);
         world.setBackground(new Background(bf));
         for (Tile t : game.getTiles().values()) {
             fill(t, t.getOccupier().getColor());
             changeNumTroops(t, t.getNumTroops());
+        }
+        for (Node n : world.getChildren()) {
+
         }
 
         mem_speed = game.getGameSpeed();
@@ -256,9 +290,7 @@ public class GameController implements Initializable {
         if (game.getGameSpeed()>-1) {
             try {
                 Image i = new Image(getClass().getResource("play.png").toURI().toString());
-                ImageView iv = new ImageView(i);
-                iv.setFitHeight(20); iv.setFitWidth(20);
-                pause.setGraphic(iv);
+                pause.setImage(i);
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
@@ -266,15 +298,12 @@ public class GameController implements Initializable {
         }
         else {
             try {
-                Image i = new Image(getClass().getResource("org/tovivi/environment/pause.png").toURI().toString());
-                ImageView iv = new ImageView(i);
-                iv.setFitHeight(20); iv.setFitWidth(20);
-                pause.setGraphic(iv);
+                Image i = new Image(getClass().getResource("pause.png").toURI().toString());
+                pause.setImage(i);
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
             game.setGameSpeed(mem_speed);
         }
-
     }
 }
