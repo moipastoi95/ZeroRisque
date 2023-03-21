@@ -25,7 +25,7 @@
                      <children>
                         <AnchorPane fx:id="world" prefHeight="200.0" prefWidth="1085.0">
                            <children>
-                              <AnchorPane fx:id="North_America" prefHeight="300.0" prefWidth="280.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="30.0">
+                              <AnchorPane fx:id="North_America" prefHeight="300.0" prefWidth="280.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="30.0">
                                  <children>
                                     <AnchorPane fx:id="Alaska" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
@@ -165,7 +165,7 @@
                                     </Label>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="South_America" prefHeight="180.0" prefWidth="271.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="450.0">
+                              <AnchorPane fx:id="South_America" prefHeight="180.0" prefWidth="271.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="450.0">
                                  <children>
                                     <AnchorPane fx:id="Venezuela" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
@@ -231,7 +231,7 @@
                                     <Line endX="10.0" layoutX="120.0" layoutY="87.0" stroke="#88598a" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="135.0" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="Europe" prefHeight="300.0" prefWidth="280.0" AnchorPane.leftAnchor="390.0" AnchorPane.topAnchor="90.0">
+                              <AnchorPane fx:id="Europe" prefHeight="300.0" prefWidth="280.0" AnchorPane.leftAnchor="375.0" AnchorPane.topAnchor="90.0">
                                  <children>
                                     <AnchorPane fx:id="Iceland" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
@@ -341,7 +341,7 @@
                                     <Line layoutX="140.0" layoutY="107.0" startY="10.0" stroke="#467183" strokeWidth="10.0" AnchorPane.leftAnchor="235.0" AnchorPane.topAnchor="180.0" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="Africa" prefHeight="270.0" prefWidth="261.0" AnchorPane.leftAnchor="490.0" AnchorPane.topAnchor="390.0">
+                              <AnchorPane fx:id="Africa" prefHeight="270.0" prefWidth="261.0" AnchorPane.leftAnchor="475.0" AnchorPane.topAnchor="390.0">
                                  <children>
                                     <AnchorPane fx:id="North_Africa" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
@@ -445,7 +445,7 @@
                                     <Line layoutX="150.0" layoutY="117.0" startX="10.0" stroke="#9e4a4a" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="235.0" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="Asia" prefHeight="300.0" prefWidth="280.0" AnchorPane.leftAnchor="690.0" AnchorPane.topAnchor="20.0">
+                              <AnchorPane fx:id="Asia" prefHeight="300.0" prefWidth="280.0" AnchorPane.leftAnchor="675.0" AnchorPane.topAnchor="20.0">
                                  <children>
                                     <AnchorPane fx:id="Ural" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="100.0">
                                        <children>
@@ -656,7 +656,7 @@
                                     <Line layoutX="160.0" layoutY="127.0" startX="10.0" stroke="#4e8a57" strokeWidth="10.0" AnchorPane.leftAnchor="280.0" AnchorPane.topAnchor="235.0" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="Australia" prefHeight="226.0" prefWidth="164.0" AnchorPane.leftAnchor="890.0" AnchorPane.topAnchor="420.0">
+                              <AnchorPane fx:id="Australia" prefHeight="226.0" prefWidth="164.0" AnchorPane.leftAnchor="875.0" AnchorPane.topAnchor="420.0">
                                  <children>
                                     <AnchorPane fx:id="Indonesia" prefHeight="80.0" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
@@ -714,20 +714,20 @@
                                     <Line layoutX="140.0" layoutY="107.0" startX="10.0" stroke="#b9b936" strokeWidth="10.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="135.0" />
                                  </children>
                               </AnchorPane>
-                              <Line startY="30.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" AnchorPane.topAnchor="410.0" />
-                              <Line startX="76.0" startY="30.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="77.0" />
-                              <Line startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="525.0" AnchorPane.topAnchor="370.0" />
-                              <Line startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="625.0" AnchorPane.topAnchor="370.0" />
-                              <Line endX="37.0" startY="37.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="555.0" AnchorPane.topAnchor="355.0" />
-                              <Line endY="50.0" startX="272.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="207.0" AnchorPane.topAnchor="430.0" />
-                              <Line endX="26.0" startY="19.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="660.0" AnchorPane.topAnchor="378.0" />
-                              <Line startX="15.0" startY="4.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="664.0" AnchorPane.topAnchor="340.0" />
-                              <Line startX="15.0" startY="4.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="664.0" AnchorPane.topAnchor="240.0" />
-                              <Line endX="48.0" endY="58.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="647.0" AnchorPane.topAnchor="260.0" />
-                              <Line endX="26.0" startY="19.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="661.0" AnchorPane.topAnchor="180.0" />
-                              <Line endX="52.0" startY="96.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="650.0" AnchorPane.topAnchor="392.0" />
-                              <Line startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="925.0" AnchorPane.topAnchor="400.0" />
-                              <Polyline fill="#80ff0000" points="690.0, -130.0, 690.0, -237.0, -269.0, -237.0, -269.0, -220.0" stroke="#bcbcbc" strokeLineCap="BUTT" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" />
+                              <Line startY="30.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="410.0" />
+                              <Line startX="76.0" startY="30.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="77.0" />
+                              <Line startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="510.0" AnchorPane.topAnchor="370.0" />
+                              <Line startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="610.0" AnchorPane.topAnchor="370.0" />
+                              <Line endX="37.0" startY="37.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="540.0" AnchorPane.topAnchor="355.0" />
+                              <Line endY="50.0" startX="272.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="192.0" AnchorPane.topAnchor="430.0" />
+                              <Line endX="26.0" startY="19.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="645.0" AnchorPane.topAnchor="378.0" />
+                              <Line startX="15.0" startY="4.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="649.0" AnchorPane.topAnchor="340.0" />
+                              <Line startX="15.0" startY="4.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="649.0" AnchorPane.topAnchor="240.0" />
+                              <Line endX="48.0" endY="58.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="632.0" AnchorPane.topAnchor="260.0" />
+                              <Line endX="26.0" startY="19.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="646.0" AnchorPane.topAnchor="180.0" />
+                              <Line endX="52.0" startY="96.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="635.0" AnchorPane.topAnchor="392.0" />
+                              <Line startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="910.0" AnchorPane.topAnchor="400.0" />
+                              <Polyline fill="#80ff0000" layoutX="325.0" layoutY="250.0" points="690.0, -130.0, 690.0, -237.0, -269.0, -237.0, -269.0, -220.0" stroke="#bcbcbc" strokeLineCap="BUTT" strokeWidth="10.0" AnchorPane.leftAnchor="50.0" />
                            </children>
                         </AnchorPane>
                         <Line endY="700.0" strokeLineCap="ROUND" strokeWidth="2.0" />
@@ -820,12 +820,15 @@
                                     <Insets top="10.0" />
                                  </padding>
                               </Separator>
-                              <VBox alignment="CENTER" prefHeight="305.0" prefWidth="194.0">
+                              <VBox fx:id="phaseInf" alignment="CENTER" prefHeight="305.0" prefWidth="194.0">
                                  <children>
                                     <Label fx:id="phase" text="Starting">
                                        <font>
                                           <Font size="17.0" />
                                        </font>
+                                       <padding>
+                                          <Insets bottom="10.0" />
+                                       </padding>
                                     </Label>
                                  </children>
                               </VBox>

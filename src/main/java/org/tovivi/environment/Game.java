@@ -116,7 +116,7 @@ public class Game {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         System.out.println("Let's begin !");
         while(turns.size() > 1) {
-            support.firePropertyChange("newTurn", turns.get(Math.floorMod(index-1,3)), turns.get(index));
+            support.firePropertyChange("newTurn", turns.get(Math.floorMod(index-1,turns.size())), turns.get(index));
             Agent p = turns.get(index); // Perry the platypus
             System.out.println("Player " + p.getColor() + "'s turn");
             p.getDeck().forEach(System.out::println);
@@ -163,7 +163,7 @@ public class Game {
                     print = "";
                     try {
                         do {
-                            if (a.getFirstOffensive(p) != null) {
+                            if (a.getFirstOffensive(p) instanceof Attack) {
                                 support.firePropertyChange("newPhase", "", "Attacking");
                                 print = a.getFirstOffensive(p).toString();
                                 System.out.println("    [Success] :: " + print);
@@ -219,14 +219,18 @@ public class Game {
             }
             // check if the player could retrieve cards
             if (p.getTiles().size() > pTerritories) {
-                p.addCard(theStack.pop());
+                if (gameSpeed > 0) {
+                    support.firePropertyChange("newPhase", "", "Drawing a card");
+                    p.addCard(theStack.pop());
+                }
+
             }
 
 
             // executor.shutdownNow();
 
             // next player
-            index = Math.floorMod(index+1,3);
+            index = Math.floorMod(index+1,turns.size());
             try {
                 if (gameSpeed>0) Thread.sleep(1800/gameSpeed);
                 while (gameSpeed<-1) Thread.sleep(50);
@@ -237,83 +241,6 @@ public class Game {
         }
         executor.shutdownNow();
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
-    }
-
-    private void playAgent(Agent p, ExecutorService executor)  {
-        Actuator a = null;
-        Future<Actions> future = executor.submit(p);
-        do {
-            String print = "";
-            try {
-                //System.out.println("Appel de l'agent pour créer une action");
-                a = ((AgentMonteCarlo) p).actionTest();
-                //System.out.println(a.getClass().toString());
-
-                if(a instanceof MultiDeploy) {
-                    // deploy
-                    MultiDeploy md = (MultiDeploy) a;
-                    try {
-                        if(md.isNumTroopsLegal(p)){
-                             for(Deployment dep: md.getDeploys()){
-                                if(dep instanceof Deploy){
-                                    ((Deploy) dep).setTile(this.getTiles().get(dep.getTiles().get(0).getName()));
-                                }
-                                if(dep instanceof PlayCards){
-                                    ((PlayCards) dep).setPlayer(this.getPlayers().get(((PlayCards) dep).getPlayer().getColor()));
-                                }
-                                dep.perform(p);
-                                print = dep.toString();
-                                System.out.println("    [Success] :: " + print);
-                                Thread.sleep(600 / gameSpeed);
-                                while (gameSpeed<-1) Thread.sleep(50);
-                            }
-                        }
-                    } catch (SimulationRunningException e) {
-                        System.out.println("    [Failed:Simulation currently running] :: " + print);
-                    } catch (IllegalActionException e) {
-                        System.out.println("    [Failed:too many troops] :: " + print);
-                    }
-                }
-
-                else if(a instanceof Attack) {
-                    // attack
-                    print = "";
-                    Attack att = (Attack) a;
-                    try {
-                        att.setFromTile(this.getTiles().get(att.getFromTile().getName()));
-                        att.setToTile(this.getTiles().get(att.getToTile().getName()));
-                        print = att.toString();
-                        System.out.println("    [Success] :: " + print);
-                        Thread.sleep(600 / gameSpeed);
-                        att.perform(p);
-
-                    } catch (InterruptedException | IllegalActionException | SimulationRunningException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                /**else if(a.getFirstOffensive() instanceof Fortify) {
-                    print = "";
-                    // fortify
-                    try {
-                            print = a.getFirstOffensive().toString();
-                            a.performFortify(p);
-                            System.out.println("    [Success] :: " + print);
-                            Thread.sleep(600 / gameSpeed);
-                    } catch (SimulationRunningException e) {
-                        System.out.println("    [Failed:Simulation currently running] :: " + print);
-                    } catch (IllegalActionException e) {
-                        System.out.println("    [Failed:too many troops] :: " + print);
-                    }
-                }*/
-            } catch (InterruptedException | IOException | URISyntaxException | ClassNotFoundException |
-                     InvocationTargetException | NoSuchMethodException | InstantiationException |
-                     IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            //System.out.println("Si l'agent envoie encore une action on continue a jouer");
-        } while(a != null);
-
     }
 
     private void setupElements(ArrayList<Agent> agents, int territories) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {

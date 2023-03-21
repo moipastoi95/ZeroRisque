@@ -53,23 +53,15 @@ public class Actions {
      * @throws SimulationRunningException
      */
     public boolean performAttack(Agent player) throws IllegalActionException, SimulationRunningException {
-        if (onLiveAction) {
-            if(firstOffensive != null) firstOffensive = (Offensive) firstOffensive.perform(player);
-            System.out.println(firstOffensive);
-            return firstOffensive != null;
+        if (firstOffensive instanceof Fortify) {
+            return false;
         }
         firstOffensive = (Offensive) firstOffensive.perform(player);
         return firstOffensive != null && firstOffensive instanceof Attack;
     }
 
-    public boolean performFortify(Agent player) throws IllegalActionException, SimulationRunningException {
-        if (onLiveAction) {
-            firstOffensive = player.getFortify();
-            if(firstOffensive != null) firstOffensive.perform(player);
-            return firstOffensive != null;
-        }
+    public void performFortify(Agent player) throws IllegalActionException, SimulationRunningException {
         firstOffensive = (Offensive) firstOffensive.perform(player);
-        return firstOffensive != null;
     }
 
     public Deployment getDeployment(Agent player) throws IOException, URISyntaxException, IllegalActionException, SimulationRunningException {

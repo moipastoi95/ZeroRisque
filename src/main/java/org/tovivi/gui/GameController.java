@@ -2,10 +2,14 @@ package org.tovivi.gui;
 
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -18,6 +22,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.tovivi.agent.Agent;
+import org.tovivi.agent.RealAgent;
 import org.tovivi.environment.Card;
 import org.tovivi.environment.CardType;
 import org.tovivi.environment.Game;
@@ -41,9 +46,17 @@ public class GameController implements Initializable {
     private ImageView pause ;
     @FXML
     private Label phase ;
+    @FXML
+    private VBox phaseInf ;
+
 
     //Game that will be run
     private Game game ;
+
+    private ArrayList<String> selectedTiles = new ArrayList<>();
+
+    private boolean realAgentTurn = false;
+    private String realAgentPhase;
 
     private int mem_speed;
 
@@ -142,6 +155,11 @@ public class GameController implements Initializable {
         if (evt.getPropertyName().compareTo("newTurn")==0) {
             Platform.runLater(() -> {
                 Agent pNew = (Agent) evt.getNewValue() ; Agent pOld = (Agent) evt.getOldValue();
+
+                // We unselect potential selections
+                realAgentTurn = pNew instanceof RealAgent;
+                unselect();
+
                 phase.setTextFill(Color.valueOf(pNew.getColor()));
                 VBox pNewVB = (VBox) players.lookup("#"+pNew.getColor());
                 VBox pOldVB = (VBox) players.lookup("#"+pOld.getColor());
@@ -152,6 +170,11 @@ public class GameController implements Initializable {
         if (evt.getPropertyName().compareTo("newPhase")==0) {
             Platform.runLater(() -> {
                 phase.setText((String) evt.getNewValue());
+            });
+        }
+        if (evt.getPropertyName().compareTo("realDeploy")==0) {
+            Platform.runLater(() -> {
+
             });
         }
     };
@@ -189,9 +212,15 @@ public class GameController implements Initializable {
         for (Tile t : game.getTiles().values()) {
             fill(t, t.getOccupier().getColor());
             changeNumTroops(t, t.getNumTroops());
-        }
 
+            Node n = world.lookup("#"+t.getName());
+            n.setOnMouseClicked(evt -> select(t));
+        }
         for (Agent p : game.getPlayers().values()) {
+
+            if (p instanceof RealAgent) {
+                p.addPropertyChangeListener(pcl);
+            }
             Label lTerritories = (Label) players.lookup("#territories"+p.getColor());
             Label lTroops = (Label) players.lookup("#troops"+p.getColor());
             lTerritories.setText(String.valueOf(game.getPlayers().get(p.getColor()).getTiles().size()));
@@ -241,7 +270,6 @@ public class GameController implements Initializable {
         AnchorPane cT = (AnchorPane) world.lookup("#"+t.getContinent().getName());
 
         if (cT!=null && aT!=null) {
-            Circle c = (Circle) aT.getChildren().get(0);
             Circle h = new Circle(aT.getLayoutX()+RADIUS, aT.getLayoutY()+RADIUS, RADIUS+STROKE-1);
             h.setFill(new Color(0,0,0,0));
             h.setStrokeWidth(2*STROKE);
@@ -330,6 +358,52 @@ public class GameController implements Initializable {
             }
             game.setGameSpeed(mem_speed);
         }
+    }
+
+    /**
+     * Function which manages how to select tiles with the mouse according to the phase and turn
+     * @param t
+     */
+    public void select(Tile t) {
+        if (realAgentTurn) {
+            switch (realAgentPhase) {
+                case "Deployment":
+                    if (selectedTiles.size()==0) {
+                        highligth(t);
+                        selectedTiles.add(t.getName());
+                    }
+                    else {
+                        turnOff(game.getTiles().get(selectedTiles.get(0)));
+                        selectedTiles.remove(0);
+                        select(t);
+                    }
+            }
+        }
+    }
+
+    /**
+     * Create the input for deploymentInit
+     * @param p
+     * @param numDeploy
+     */
+    public void deploymentInit(Agent p, int numDeploy) {
+
+        if (phaseInf.getChildren().size()>1 && phaseInf.getChildren().get(1).getId().compareTo("deployInput")!=0) {
+            phaseInf.getChildren().remove(1);
+        }
+        if (phaseInf.getChildren().size()<=1) {
+            selectedTiles.add(p.getTiles().get(0).getName());
+            VBox deployInput = new VBox(); deployInput.setId("deployInput"); deployInput.setAlignment(Pos.CENTER);
+            ComboBox cb = new ComboBox(); cb.setId("deployTile"); deployInput.getChildren().add(cb);
+            cb.setItems(FXCollections.observableArrayList(p.getTiles().stream().map(Tile::getName)));
+            cb.setValue(selectedTiles.get(0));
+        }
+
+    }
+
+    public void unselect() {
+        selectedTiles.forEach(s -> turnOff(game.getTiles().get(s)));
+        selectedTiles = new ArrayList<>();
     }
 
 }
