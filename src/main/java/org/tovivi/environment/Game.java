@@ -116,75 +116,75 @@ public class Game {
             p.getDeck().forEach(System.out::println);
 
             pTerritories = p.getTiles().size();
-            if (p instanceof AgentMonteCarlo) this.playAgent(p, executor);
+            //if (p instanceof AgentMonteCarlo) this.playAgent(p, executor);
 
-            else {
-                Future<Actions> future = executor.submit(p);
+            Future<Actions> future = executor.submit(p);
+            try {
+                Actions a = future.get(playclock, TimeUnit.SECONDS);
+
+                pTerritories = p.getTiles().size();
+
+                // deploy
+                String print = "";
                 try {
-                    Actions a = future.get(playclock, TimeUnit.SECONDS);
-
-                    pTerritories = p.getTiles().size();
-
-                    // deploy
-                    String print = "";
-                    try {
-                        boolean flag = a.getDeployment() != null;
-                        if (flag) {
-                            if (a.getDeployment().isNumTroopsLegal(p)) {
-                                while (flag) {
-                                    print = a.getDeployment().toString();
-                                    flag = a.performDeployment(p);
-                                    System.out.println("    [Success] :: " + print);
-                                    if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
-                                    while (gameSpeed < -1) Thread.sleep(50);
-                                }
-                            }
-                        }
-                    } catch (SimulationRunningException e) {
-                        System.out.println("    [Failed:Simulation currently running] :: " + print);
-                    } catch (IllegalActionException e) {
-                        System.out.println("    [Failed:too many troops] :: " + print);
-                    }
-
-                    // attack
-                    print = "";
-                    try {
-                        do {
-                            if (a.getFirstOffensive() != null) {
-                                print = a.getFirstOffensive().toString();
+                    boolean flag = a.getDeployment(p) != null;
+                    if (flag) {
+                        if (a.getDeployment(p).isNumTroopsLegal(p)) {
+                            while (flag) {
+                                print = a.getDeployment(p).toString();
+                                flag = a.performDeployment(p);
                                 System.out.println("    [Success] :: " + print);
                                 if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
                                 while (gameSpeed < -1) Thread.sleep(50);
                             }
-                        } while (a.performAttack(p));
-                    } catch (SimulationRunningException e) {
-                        System.out.println("    [Failed:Simulation currently running] :: " + print);
-                    } catch (IllegalActionException e) {
-                        System.out.println("    [Failed:too many troops] :: " + print);
+                        }
                     }
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
+                } catch (IOException | URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
 
-                    // fortify
-                    print = "";
-                    try {
-                        if (a.getFirstOffensive() != null) {
-                            print = a.getFirstOffensive().toString();
-                            a.performFortify(p);
+                // attack
+                print = "";
+                try {
+                    do {
+                        if (a.getFirstOffensive(p) != null) {
+                            print = a.getFirstOffensive(p).toString();
                             System.out.println("    [Success] :: " + print);
                             if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
                             while (gameSpeed < -1) Thread.sleep(50);
                         }
-                    } catch (SimulationRunningException e) {
-                        System.out.println("    [Failed:Simulation currently running] :: " + print);
-                    } catch (IllegalActionException e) {
-                        System.out.println("    [Failed:too many troops] :: " + print);
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                } catch (TimeoutException e) {
-                    throw new RuntimeException(e);
+                    } while (a.performAttack(p));
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
                 }
+
+                // fortify
+                print = "";
+                try {
+                    if (a.getFirstOffensive(p) != null) {
+                        print = a.getFirstOffensive(p).toString();
+                        a.performFortify(p);
+                        System.out.println("    [Success] :: " + print);
+                        if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
+                        while (gameSpeed < -1) Thread.sleep(50);
+                    }
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
             }
 
             System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
