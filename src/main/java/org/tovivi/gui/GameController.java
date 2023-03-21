@@ -4,6 +4,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,6 +14,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.control.Label;
 
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Card;
@@ -111,7 +113,7 @@ public class GameController implements Initializable {
                 VBox pVB = (VBox) players.lookup("#"+p.getColor());
                 if (evt.getOldValue()==null) {
                     Card c = (Card) evt.getNewValue();
-                    Label l = new Label("    " + c.toString());
+                    Label l = new Label(c.toString());
                     l.setId((c.getBonusTile().getName()+"Card")); // we had Card to make the difference between tiles id and cards id
                     l.setFont(Font.font(10));
                     pVB.getChildren().add(l);
@@ -123,13 +125,22 @@ public class GameController implements Initializable {
                 }
             });
         }
+        if (evt.getPropertyName().compareTo("newTurn")==0) {
+            Platform.runLater(() -> {
+                Agent pNew = (Agent) evt.getNewValue() ; Agent pOld = (Agent) evt.getOldValue();
+                VBox pNewVB = (VBox) players.lookup("#"+pNew.getColor());
+                VBox pOldVB = (VBox) players.lookup("#"+pOld.getColor());
+                Label l = (Label) pNewVB.getChildren().get(0); l.setFont(Font.font("System", FontWeight.BOLD, 14));
+                l = (Label) pOldVB.getChildren().get(0) ; l.setFont(Font.font("System", FontWeight.NORMAL, 13));
+            });
+        }
     };
 
     /**
      * @param game the game to set
      */
     public void setGame(Game game) {
-        this.game = game;
+        this.game = game; game.addPropertyChangeListener(pcl);
         for (Tile t : game.getTiles().values()) {
             t.addPropertyChangeListener(pcl);
         }
@@ -156,6 +167,9 @@ public class GameController implements Initializable {
         for (Tile t : game.getTiles().values()) {
             fill(t, t.getOccupier().getColor());
             changeNumTroops(t, t.getNumTroops());
+        }
+        for (Node n : world.getChildren()) {
+
         }
 
         mem_speed = game.getGameSpeed();
@@ -291,6 +305,5 @@ public class GameController implements Initializable {
             }
             game.setGameSpeed(mem_speed);
         }
-
     }
 }

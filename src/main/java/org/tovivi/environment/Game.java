@@ -8,6 +8,8 @@ import org.tovivi.environment.action.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 
 import java.lang.reflect.Constructor;
@@ -28,6 +30,8 @@ public class Game {
     final public static int TROOPS_FACTOR = 2;
 
     private int gameSpeed;
+
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     // HashMap who links the Continents to their names
     private HashMap<String, Continent> continents = new HashMap<>();
@@ -106,6 +110,7 @@ public class Game {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         System.out.println("Let's begin !");
         while(turns.size() > 1) {
+            support.firePropertyChange("newTurn", turns.get(Math.floorMod(index-1,3)), turns.get(index));
             Agent p = turns.get(index); // Perry the platypus
             System.out.println("Player " + p.getColor() + "'s turn");
             p.getDeck().forEach(System.out::println);
@@ -212,10 +217,7 @@ public class Game {
             // executor.shutdownNow();
 
             // next player
-            index += 1;
-            if (index >= turns.size()) {
-                index = 0;
-            }
+            index = Math.floorMod(index+1,3);
             try {
                 if (gameSpeed>0) Thread.sleep(1800/gameSpeed);
                 while (gameSpeed<-1) Thread.sleep(50);
@@ -437,6 +439,9 @@ public class Game {
         return scoreAgent-scoreOpp;
     }
 
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        support.addPropertyChangeListener(pcl);
+    }
     public static void main(String[] args) throws IOException {
         // this main function will just start the game, with parameters (list of player, list of tiles)
         // the Game object will make players play, and restrict time for turn. It will end by giving the winner
