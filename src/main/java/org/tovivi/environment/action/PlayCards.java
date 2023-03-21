@@ -91,6 +91,14 @@ public class PlayCards extends Deployment {
         return false;
     }
 
+    public Agent getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Agent player) {
+        this.player = player;
+    }
+
     @Override
     public ArrayList<Tile> getTiles() {
         return null;

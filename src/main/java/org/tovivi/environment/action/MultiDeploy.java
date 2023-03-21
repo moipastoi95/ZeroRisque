@@ -104,15 +104,11 @@ public class MultiDeploy extends Deployment {
 
     @Override
     public String toString() {
-        /*String msg = "";
+        String msg = "";
         for(Deployment dep : deploys) {
             msg += dep; // + "\n";
         }
-        return msg;*/
-        if (deploys.size() > 0) {
-            return deploys.get(0).toString();
-        }
-        return "";
+        return msg;
     }
 
     @Override

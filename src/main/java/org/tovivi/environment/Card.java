@@ -22,7 +22,11 @@ public class Card {
 
     public Card(Card c) {
         this.type = c.getType();
-        this.bonusTile = new Tile(bonusTile);
+        this.bonusTile = c.getBonusTile();
+    }
+
+    public void setBonusTile(Tile tile){
+        this.bonusTile = tile;
     }
 
     public CardType getType() {
