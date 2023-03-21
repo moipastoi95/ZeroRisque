@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
@@ -735,7 +736,11 @@
                         <Label text="Neutral" textFill="#5e5e5e" />
                      </children>
                   </VBox>
-                  <Button fx:id="pause" layoutX="1152.0" layoutY="18.0" mnemonicParsing="false" onAction="#pause" />
+                  <ImageView fx:id="pause" fitHeight="30.0" fitWidth="30.0" layoutX="1021.0" layoutY="120.0" onMousePressed="#pause" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="5.0">
+                     <image>
+                        <Image url="@pause.png" />
+                     </image>
+                  </ImageView>
                </children></AnchorPane>
             </content>
         </Tab>

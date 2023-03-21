@@ -34,8 +34,7 @@ public class GameController implements Initializable {
     private AnchorPane world ;
 
     @FXML
-    // button to pause the game
-    private Button pause ;
+    private ImageView pause ;
 
     //Game that will be run
     private Game game ;
@@ -127,14 +126,6 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setGame(LauncherController.game);
-        try {
-            Image i = new Image(getClass().getResource("pause.png").toURI().toString());
-            ImageView iv = new ImageView(i);
-            iv.setFitHeight(20); iv.setFitWidth(20);
-            pause.setGraphic(iv);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
 
         BackgroundFill bf = new BackgroundFill(SEA, null, null);
         world.setBackground(new Background(bf));
@@ -261,9 +252,7 @@ public class GameController implements Initializable {
         if (game.getGameSpeed()>-1) {
             try {
                 Image i = new Image(getClass().getResource("play.png").toURI().toString());
-                ImageView iv = new ImageView(i);
-                iv.setFitHeight(20); iv.setFitWidth(20);
-                pause.setGraphic(iv);
+                pause.setImage(i);
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
@@ -272,9 +261,7 @@ public class GameController implements Initializable {
         else {
             try {
                 Image i = new Image(getClass().getResource("pause.png").toURI().toString());
-                ImageView iv = new ImageView(i);
-                iv.setFitHeight(20); iv.setFitWidth(20);
-                pause.setGraphic(iv);
+                pause.setImage(i);
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
