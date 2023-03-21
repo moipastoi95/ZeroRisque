@@ -7,10 +7,7 @@ import org.tovivi.environment.action.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -33,7 +30,7 @@ public class AgentMonteCarlo extends Agent {
 
     public AgentMonteCarlo(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super(color, game);
-        this.root = new Node(new Game(game),0, null, this.getDeck());
+        this.root = new Node(new Game(game),0, null, this.getDeck(), this);
     }
 
     public AgentMonteCarlo(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
@@ -50,7 +47,7 @@ public class AgentMonteCarlo extends Agent {
 
     /**Update the game copy that is stored in the root node*/
     public void setRoot() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
-        this.root = new Node(new Game(this.getGame()),0, null, this.getDeck());
+        this.root = new Node(new Game(this.getGame()),0, null, this.getDeck(), this);
     }
 
     public void setPhase(String phase) {this.phase = phase;}
@@ -67,6 +64,7 @@ public class AgentMonteCarlo extends Agent {
 
         this.root.setN(0);
         this.root.resetScore();
+        depth = 0;
 
         try{
             this.root.setGame(new Game(this.getGame()), this);
@@ -75,41 +73,52 @@ public class AgentMonteCarlo extends Agent {
         }
 
         Random rand = new Random();
-        Actuator new_action = null;
+        Actuator new_action;
 
-        this.actual_node = this.traverse(); //Etape 0
+        while(depth < 2 && this.phase != "Fortify"){
+            depth = 0;
+            this.traverse(); //Etape 0
 
-        Agent player = this.actual_node.getGame().getPlayers().get(this.getColor());
+            Agent player = this.actual_node.getGame().getPlayers().get(this.getColor());
 
-        HashMap<Tile, ArrayList<Tile>> front = this.getFront(actual_node.getGame(), this);
-        ArrayList<Actuator> possible_actions = new ArrayList<>();
+            HashMap<Tile, ArrayList<Tile>> front = this.getFront(actual_node.getGame(), this);
+            ArrayList<Actuator> possible_actions = new ArrayList<>();
 
-        if(this.phase == "Deploy") {
-            if(num_to_deploy == 0) num_to_deploy = this.getNumDeploy();
-            possible_actions = this.getDeployActions(front, player);
-            this.setPhase("Attack");
-        }
+            if(this.phase == "Deploy") {
+                if(num_to_deploy == 0) num_to_deploy = this.getNumDeploy();
+                possible_actions = this.getDeployActions(front, player);
+            }
 
-        else if(this.phase == "Attack"){
-            possible_actions = this.getAttackActions(front, player);
+            else if(this.phase == "Attack" || this.phase == "DepAttack"){
+                possible_actions = this.getAttackActions(front, player);
+            }
 
-            this.setPhase("End");
-        }
+            ArrayList<Actuator> redundant = new ArrayList<>();
+            for (Actuator act: actual_node.getChilds().keySet()) {
+                for (Actuator newact : possible_actions) {
+                    if (act.toString().equals(newact.toString()))
+                        redundant.add(newact);
+                }
+            }
+            possible_actions.removeAll(redundant);
 
-        int s = possible_actions.size();
-
-
-        while(s > 0) {
+            int s = possible_actions.size();
             new_action = possible_actions.get(rand.nextInt(s));
-            possible_actions.remove(new_action);
             actual_node.generateChilds(new_action, player);
             Node next_node = actual_node.getNextNode(new_action);
             int Score = this.rollout(next_node, player);
             this.backPropagate(next_node, Score);
-            s = possible_actions.size();
+
+            if(this.phase == "DepAttack") this.phase = "Deploy";
         }
 
         new_action = this.best_child();
+
+        if(this.phase == "Deploy" || this.phase == "DepAttack") this.phase = "Attack";
+        else if(this.phase == "Attack") this.phase = "Fortify";
+        else if(this.phase == "Fortify") this.phase = "Deploy";
+
+        this.depth = 0;
 
         return new_action;
     }
@@ -129,7 +138,6 @@ public class AgentMonteCarlo extends Agent {
 
     private ArrayList<Actuator> getDeployActions(HashMap<Tile, ArrayList<Tile>> front, Agent player) {
         ArrayList<Actuator> possible_actions= new ArrayList<>();
-
         // if cards owned, use them
         ArrayList<Deployment> depL = new ArrayList<>();
         ArrayList<Card> goodCards = Card.chooseCards(this.actual_node.getDeck(), player);
@@ -275,27 +283,46 @@ public class AgentMonteCarlo extends Agent {
     /**Parcours l'arbre actuel jusqu'au meilleur leaf node actuel
      * @return le meilleur noeud feuille
      * */
-    public Node traverse(){
-        Node node = this.root;
+    public void traverse() throws IOException, URISyntaxException {
+        actual_node = this.root;
         Actuator act = null;
-        while(node.getChilds().size() == 100){
-               act = this.getBestChild(node);
-               node = node.getNextNode(act);
+        if(Objects.equals(this.phase, "Deploy")){
+            if(num_to_deploy == 0) num_to_deploy = this.getNumDeploy();
+            if (actual_node.getChilds().size() ==
+                    this.getDeployActions(this.getFront(actual_node.getGame(), actual_node.getPlayer()), actual_node.getPlayer()).size()) {
+                depth += 1;
+                act = this.getBestChild(actual_node);
+                actual_node = actual_node.getNextNode(act);
+                this.phase = "DepAttack";
+            }
+            num_to_deploy = 0;
         }
-        return node;
+        if(Objects.equals(this.phase, "Attack") || this.phase == "DepAttack") {
+            Agent player = this.actual_node.getGame().getPlayers().get(this.getColor());
+            while (actual_node.getChilds().size() ==
+                    this.getAttackActions(this.getFront(actual_node.getGame(), this), player).size()) {
+                depth += 1;
+                act = this.getBestChild(actual_node);
+                actual_node = actual_node.getNextNode(act);
+                player = this.actual_node.getGame().getPlayers().get(this.getColor());
+            }
+        }
     }
 
-    /**Calcul la valeur UCT d'un Node n en fonction du nombre de fois ou il a été visité et du nombre de fois ou son noeud parent
-     *a été visité.
-     * @param n : noeud dont on vaut calculer la valeur
+    /**
+     * Calcul la valeur UCT d'un Node n en fonction du nombre de fois ou il a été visité et du nombre de fois ou son noeud parent
+     * a été visité.
+     *
+     * @param n       : noeud dont on vaut calculer la valeur
+     * @param prob
      * @return La valeur sous forme d'un double
-     * */
-    public double getUCT(Node n){
+     */
+    public double getUCT(Node n, Double prob){
         if(n.getN() == 0){
             return Double.MAX_VALUE;
         }
         else {
-            return E*(n.getScore()/n.getN()) + c*sqrt(log(n.getParent().getN())/n.getN());
+            return E*prob*(n.getScore()/n.getN()) + c*sqrt(log(n.getParent().getN())/n.getN());
         }
     }
 
@@ -308,7 +335,7 @@ public class AgentMonteCarlo extends Agent {
         for(Actuator act: n.getChilds().keySet()) {
             for (Node child : n.getChilds().get(act).keySet()) {
                 //System.out.print("Calcul de luct");
-                double i = this.getUCT(child);
+                double i = this.getUCT(child, n.getChilds().get(act).get(child));
                 if (i > max && child.getN() > 0) {
                     max = i;
                     res = act;

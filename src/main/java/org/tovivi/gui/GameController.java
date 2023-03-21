@@ -1,6 +1,5 @@
 package org.tovivi.gui;
 
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,21 +9,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Label;
 
-import javafx.util.Duration;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
@@ -127,14 +122,14 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setGame(LauncherController.game);
-        try {
-            Image i = new Image(getClass().getResource("pause.png").toURI().toString());
+        /**try {
+            Image i = new Image(getClass().getResource("org/tovivi/environment/pause.png").toURI().toString());
             ImageView iv = new ImageView(i);
             iv.setFitHeight(20); iv.setFitWidth(20);
             pause.setGraphic(iv);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
         BackgroundFill bf = new BackgroundFill(SEA, null, null);
         world.setBackground(new Background(bf));
@@ -271,7 +266,7 @@ public class GameController implements Initializable {
         }
         else {
             try {
-                Image i = new Image(getClass().getResource("pause.png").toURI().toString());
+                Image i = new Image(getClass().getResource("org/tovivi/environment/pause.png").toURI().toString());
                 ImageView iv = new ImageView(i);
                 iv.setFitHeight(20); iv.setFitWidth(20);
                 pause.setGraphic(iv);
