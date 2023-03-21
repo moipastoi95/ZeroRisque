@@ -193,7 +193,12 @@ public class Card {
     public String toString() {
         String str = type.toString();
         if (type!=CardType.JOKER) {
-            str = str.substring(0,3) + ":" + bonusTile.getName();
+            String name = bonusTile.getName();
+            if (name.contains("_")) {
+                String pref = name.substring(0,name.indexOf("_"));
+                name = pref.substring(0,1) + "_" + name.substring(name.indexOf("_")+1);
+            }
+            str = str.substring(0,3) + ":" + name;
         }
         return str;
     }

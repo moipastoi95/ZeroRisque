@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Card;
@@ -34,12 +35,12 @@ public class GameController implements Initializable {
     @FXML
     // world is the AnchorPane that gathers all the AnchorPanes associated to the tiles
     private AnchorPane world ;
-
     @FXML
     private VBox players;
-
     @FXML
     private ImageView pause ;
+    @FXML
+    private Label phase ;
 
     //Game that will be run
     private Game game ;
@@ -67,8 +68,18 @@ public class GameController implements Initializable {
         //New Occupier : called if a tile of the continent has been claimed by a new player
         if (evt.getPropertyName().compareTo("newOccupier")==0) {
             Tile changedT = (Tile) evt.getSource();
+            String newC = ((Agent) evt.getNewValue()).getColor();
+            String oldC = ((Agent) evt.getOldValue()).getColor();
+            Label lOldP = (Label) players.lookup("#territories"+oldC);
+            Label lNewP = (Label) players.lookup("#territories"+newC);
+            Label lOldP_deploy = (Label) players.lookup("#troops"+oldC);
+            Label lNewP_deploy = (Label) players.lookup("#troops"+newC);
             Platform.runLater(() -> {
-                fill(changedT, ((Agent) evt.getNewValue()).getColor());
+                fill(changedT, newC); // Change the color
+                lOldP.setText(String.valueOf(Integer.valueOf(lOldP.getText())-1)); // Change the number of territories
+                lNewP.setText(String.valueOf(Integer.valueOf(lNewP.getText())+1));
+                lOldP_deploy.setText((lOldP_deploy.getText().substring(0,lOldP_deploy.getText().indexOf("+")+1) + game.getPlayers().get(oldC).getNumDeploy() + ")"));
+                lNewP_deploy.setText((lNewP_deploy.getText().substring(0,lNewP_deploy.getText().indexOf("+")+1) + game.getPlayers().get(newC).getNumDeploy() + ")"));
             });
         }
         if (evt.getPropertyName().compareTo("newNumTroops")==0) {
@@ -80,9 +91,12 @@ public class GameController implements Initializable {
                     Platform.runLater(() -> {highligth(changedT);});
                 }
                 while (game.getGameSpeed()<-1) Thread.sleep(50);
-
+                String c = changedT.getOccupier().getColor();
+                Label lTroops = (Label) players.lookup("#troops"+c);
                 Platform.runLater(() -> {
                     changeNumTroops(changedT, (int) evt.getNewValue());
+                    int diff = ((int) evt.getNewValue()) - ((int) evt.getOldValue());
+                    lTroops.setText(String.valueOf(Integer.valueOf(lTroops.getText().substring(0,lTroops.getText().indexOf(" "))) + diff) + lTroops.getText().substring(lTroops.getText().indexOf(" ")));
                 });
                 boolean earn = ((int) evt.getNewValue()) > ((int) evt.getOldValue());
                 impact(changedT, earn);
@@ -110,7 +124,7 @@ public class GameController implements Initializable {
         if (evt.getPropertyName().compareTo("deckChange")==0) {
             Agent p = (Agent) evt.getSource();
             Platform.runLater(() -> {
-                VBox pVB = (VBox) players.lookup("#"+p.getColor());
+                VBox pVB = (VBox) players.lookup("#"+p.getColor()+"Cards"); // VBox for the cards
                 if (evt.getOldValue()==null) {
                     Card c = (Card) evt.getNewValue();
                     Label l = new Label(c.toString());
@@ -128,13 +142,20 @@ public class GameController implements Initializable {
         if (evt.getPropertyName().compareTo("newTurn")==0) {
             Platform.runLater(() -> {
                 Agent pNew = (Agent) evt.getNewValue() ; Agent pOld = (Agent) evt.getOldValue();
+                phase.setTextFill(Color.valueOf(pNew.getColor()));
                 VBox pNewVB = (VBox) players.lookup("#"+pNew.getColor());
                 VBox pOldVB = (VBox) players.lookup("#"+pOld.getColor());
                 Label l = (Label) pNewVB.getChildren().get(0); l.setFont(Font.font("System", FontWeight.BOLD, 14));
                 l = (Label) pOldVB.getChildren().get(0) ; l.setFont(Font.font("System", FontWeight.NORMAL, 13));
             });
         }
+        if (evt.getPropertyName().compareTo("newPhase")==0) {
+            Platform.runLater(() -> {
+                phase.setText((String) evt.getNewValue());
+            });
+        }
     };
+
 
     /**
      * @param game the game to set
@@ -164,12 +185,17 @@ public class GameController implements Initializable {
 
         BackgroundFill bf = new BackgroundFill(SEA, null, null);
         world.setBackground(new Background(bf));
+
         for (Tile t : game.getTiles().values()) {
             fill(t, t.getOccupier().getColor());
             changeNumTroops(t, t.getNumTroops());
         }
-        for (Node n : world.getChildren()) {
 
+        for (Agent p : game.getPlayers().values()) {
+            Label lTerritories = (Label) players.lookup("#territories"+p.getColor());
+            Label lTroops = (Label) players.lookup("#troops"+p.getColor());
+            lTerritories.setText(String.valueOf(game.getPlayers().get(p.getColor()).getTiles().size()));
+            lTroops.setText(game.getPlayers().get(p.getColor()).getTiles().size() * Game.TROOPS_FACTOR + " (+" + p.getNumDeploy() + ")");
         }
 
         mem_speed = game.getGameSpeed();
@@ -287,7 +313,7 @@ public class GameController implements Initializable {
     }
 
     public void pause() {
-        if (game.getGameSpeed()>-1) {
+        if (game.getGameSpeed() > -1) {
             try {
                 Image i = new Image(getClass().getResource("play.png").toURI().toString());
                 pause.setImage(i);
@@ -295,8 +321,7 @@ public class GameController implements Initializable {
                 throw new RuntimeException(e);
             }
             game.setGameSpeed(-2);
-        }
-        else {
+        } else {
             try {
                 Image i = new Image(getClass().getResource("pause.png").toURI().toString());
                 pause.setImage(i);
@@ -306,4 +331,5 @@ public class GameController implements Initializable {
             game.setGameSpeed(mem_speed);
         }
     }
+
 }

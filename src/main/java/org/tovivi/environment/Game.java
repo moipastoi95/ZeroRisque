@@ -136,6 +136,7 @@ public class Game {
                     try {
                         boolean flag = a.getDeployment() != null;
                         if (flag) {
+                            support.firePropertyChange("newPhase", "", "Deployment");
                             if (a.getDeployment().isNumTroopsLegal(p)) {
                                 while (flag) {
                                     print = a.getDeployment().toString();
@@ -162,6 +163,7 @@ public class Game {
                     try {
                         do {
                             if (a.getFirstOffensive() != null) {
+                                support.firePropertyChange("newPhase", "", "Attacking");
                                 print = a.getFirstOffensive().toString();
                                 System.out.println("    [Success] :: " + print);
                                 if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
@@ -178,6 +180,7 @@ public class Game {
                     print = "";
                     try {
                         if (a.getFirstOffensive() != null) {
+                            support.firePropertyChange("newPhase", "", "Fortifying");
                             print = a.getFirstOffensive().toString();
                             a.performFortify(p);
                             System.out.println("    [Success] :: " + print);

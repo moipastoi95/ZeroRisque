@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
@@ -729,6 +730,7 @@
                               <Polyline fill="#80ff0000" points="690.0, -130.0, 690.0, -237.0, -269.0, -237.0, -269.0, -220.0" stroke="#bcbcbc" strokeLineCap="BUTT" strokeWidth="10.0" AnchorPane.leftAnchor="65.0" />
                            </children>
                         </AnchorPane>
+                        <Line endY="700.0" strokeLineCap="ROUND" strokeWidth="2.0" />
                         <VBox fx:id="players" alignment="TOP_CENTER" prefWidth="195.0">
                            <children>
                               <ImageView fx:id="pause" fitHeight="30.0" fitWidth="30.0" onMousePressed="#pause">
@@ -739,32 +741,98 @@
                                     <Insets bottom="50.0" top="20.0" />
                                  </VBox.margin>
                               </ImageView>
-                              <VBox fx:id="Red" alignment="TOP_CENTER" prefHeight="14.0" prefWidth="100.0">
+                              <VBox fx:id="Red" alignment="TOP_CENTER" prefWidth="195.0">
                                  <children>
-                                    <Label text="Red Player" textFill="#da1313" />
+                                    <Label text="Red Player" textFill="#da1313">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font></Label>
+                                    <HBox alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="108.0">
+                                       <children>
+                                          <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="80.0">
+                                             <children>
+                                                <Label fx:id="troopsRed" text="150" />
+                                                <Label fx:id="territoriesRed" text="3" />
+                                             </children>
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                             <padding>
+                                                <Insets right="3.0" />
+                                             </padding>
+                                          </VBox>
+                                          <Separator orientation="VERTICAL" prefHeight="200.0">
+                                             <opaqueInsets>
+                                                <Insets left="5.0" right="5.0" />
+                                             </opaqueInsets>
+                                          </Separator>
+                                          <VBox fx:id="RedCards" alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" />
+                                       </children>
+                                    </HBox>
                                  </children>
                                  <padding>
-                                    <Insets bottom="10.0" />
+                                    <Insets bottom="20.0" />
                                  </padding>
                               </VBox>
-                              <VBox fx:id="Blue" alignment="CENTER" prefHeight="16.0" prefWidth="112.0">
+                              <VBox fx:id="Blue" alignment="CENTER" prefWidth="195.0">
                                  <children>
                                     <Label alignment="CENTER" prefHeight="16.0" prefWidth="178.0" text="Blue Player" textFill="#1707eb" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="108.0">
+                                       <children>
+                                          <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="80.0">
+                                             <children>
+                                                <Label fx:id="troopsBlue" text="150" />
+                                                <Label fx:id="territoriesBlue" text="3" />
+                                             </children>
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                             <padding>
+                                                <Insets right="3.0" />
+                                             </padding>
+                                          </VBox>
+                                          <Separator orientation="VERTICAL" prefHeight="200.0">
+                                             <opaqueInsets>
+                                                <Insets left="5.0" right="5.0" />
+                                             </opaqueInsets>
+                                          </Separator>
+                                          <VBox fx:id="BlueCards" alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" />
+                                       </children>
+                                    </HBox>
                                  </children>
                                  <padding>
                                     <Insets bottom="10.0" />
                                  </padding>
                               </VBox>
-                              <VBox fx:id="Grey" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                              <VBox fx:id="Grey" alignment="TOP_CENTER" prefHeight="12.0" prefWidth="194.0">
                                  <children>
-                                    <Label text="Neutral" textFill="#5e5e5e" />
+                                    <Label text="Neutral" textFill="#5e5e5e">
+                                       <padding>
+                                          <Insets bottom="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="troopsGrey" text="150(+17)" />
+                                    <Label fx:id="territoriesGrey" text="3" />
+                                 </children>
+                              </VBox>
+                              <Separator prefWidth="200.0">
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                              </Separator>
+                              <VBox alignment="CENTER" prefHeight="305.0" prefWidth="194.0">
+                                 <children>
+                                    <Label fx:id="phase" text="Starting">
+                                       <font>
+                                          <Font size="17.0" />
+                                       </font>
+                                    </Label>
                                  </children>
                               </VBox>
                            </children>
                         </VBox>
                      </children>
                   </HBox>
-                  <Line endY="680.0" layoutX="1094.0" startY="5.0" strokeLineCap="ROUND" strokeWidth="2.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="1085.0" AnchorPane.topAnchor="5.0" />
                </children>
             </AnchorPane>
             </content>

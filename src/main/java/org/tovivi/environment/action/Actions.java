@@ -65,7 +65,6 @@ public class Actions {
     }
 
     public Deployment getDeployment() {
-
         return deployment;
     }
 
