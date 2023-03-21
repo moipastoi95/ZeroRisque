@@ -3,6 +3,8 @@ package org.tovivi.agent;
 import org.tovivi.environment.*;
 import org.tovivi.environment.action.*;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -15,6 +17,8 @@ public abstract class Agent implements Callable<Actions> {
     private ArrayList<Tile> tiles;
     private Game game;
     private ArrayList<Card> deck;
+
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
     private LinkedList<LinkedList<Double>> proba = new LinkedList<>();
 
     /**
@@ -120,6 +124,15 @@ public abstract class Agent implements Callable<Actions> {
         return deck;
     }
 
+    public void addCard(Card c) {
+        support.firePropertyChange("deckChange", null, c);
+        deck.add(c);
+    }
+
+    public void addAllCards(Collection<Card> cards) {
+        cards.forEach(this::addCard);
+    }
+
     /**
      * Get the number of troops the player is able to deploy at each turn
      * @return the number of troops
@@ -153,6 +166,10 @@ public abstract class Agent implements Callable<Actions> {
     public abstract Deployment getNextDeploy();
     public abstract Attack getNextAttack();
     public abstract Fortify getFortify();
+
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        support.addPropertyChangeListener(pcl);
+    }
 
     @Override
     public String toString() {

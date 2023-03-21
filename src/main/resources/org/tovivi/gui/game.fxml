@@ -721,19 +721,19 @@
                   <Line endX="52.0" layoutX="688.0" layoutY="400.0" startY="96.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="680.9289321899414" AnchorPane.topAnchor="392.9289321899414" />
                   <Line layoutX="495.0" layoutY="428.0" startY="10.0" stroke="#bcbcbc" strokeWidth="10.0" AnchorPane.leftAnchor="955.0" AnchorPane.topAnchor="400.0" />
                   <Polyline fill="#80ff0000" layoutX="370.0" layoutY="250.0" points="690.0, -130.0, 690.0, -237.0, -269.0, -237.0, -269.0, -220.0" stroke="#bcbcbc" strokeLineCap="BUTT" strokeWidth="10.0" />
-                  <VBox fx:id="informations" layoutX="1152.0" layoutY="49.0" prefHeight="200.0" prefWidth="98.0">
+                  <VBox fx:id="players" layoutX="1152.0" layoutY="49.0" prefHeight="200.0" prefWidth="136.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0">
                      <children>
-                        <VBox prefHeight="14.0" prefWidth="100.0">
+                        <VBox fx:id="Red" prefHeight="14.0" prefWidth="100.0">
                            <children>
                               <Label text="Red Player" textFill="#da1313" />
                            </children>
                         </VBox>
-                        <VBox prefHeight="12.0" prefWidth="100.0">
+                        <VBox fx:id="Blue" prefHeight="12.0" prefWidth="100.0">
                            <children>
                               <Label prefHeight="34.0" prefWidth="74.0" text="Blue Player" textFill="#1707eb" />
                            </children>
                         </VBox>
-                        <Label text="Neutral" textFill="#5e5e5e" />
+                        <Label fx:id="Grey" text="Neutral" textFill="#5e5e5e" />
                      </children>
                   </VBox>
                   <ImageView fx:id="pause" fitHeight="30.0" fitWidth="30.0" layoutX="1021.0" layoutY="120.0" onMousePressed="#pause" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="5.0">

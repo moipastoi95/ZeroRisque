@@ -191,13 +191,13 @@ public class Game {
                     iterator.remove();
                     System.out.println("[DEAD] The player " + agent.getColor() + " DIED like a beetroot !");
                     // give the player the cards
-                    p.getDeck().addAll(agent.getDeck());
+                    p.addAllCards(agent.getDeck());
                 }
             }
 
             // check if the player could retrieve cards
             if (p.getTiles().size() > pTerritories && theStack.size() > 0) {
-                p.getDeck().add(theStack.pop());
+                p.addCard(theStack.pop());
             }
 
 

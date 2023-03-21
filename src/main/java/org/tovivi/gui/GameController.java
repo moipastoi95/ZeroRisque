@@ -7,16 +7,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.Label;
 
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 import org.tovivi.agent.Agent;
+import org.tovivi.environment.Card;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
 
@@ -32,6 +31,9 @@ public class GameController implements Initializable {
     @FXML
     // world is the AnchorPane that gathers all the AnchorPanes associated to the tiles
     private AnchorPane world ;
+
+    @FXML
+    private VBox players;
 
     @FXML
     private ImageView pause ;
@@ -102,6 +104,19 @@ public class GameController implements Initializable {
                 }
             });
         }
+        if (evt.getPropertyName().compareTo("deckChange")==0) {
+            Agent p = (Agent) evt.getSource();
+            System.out.println("test");
+            Platform.runLater(() -> {
+                VBox pVB = (VBox) players.lookup("#"+p.getColor());
+                if (evt.getOldValue()==null) {
+                    Label l = new Label("    " + evt.getNewValue().toString());
+                    l.setWrapText(true);
+                    l.setFont(Font.font(10));
+                    pVB.getChildren().add(l);
+                }
+            });
+        }
     };
 
     /**
@@ -111,6 +126,9 @@ public class GameController implements Initializable {
         this.game = game;
         for (Tile t : game.getTiles().values()) {
             t.addPropertyChangeListener(pcl);
+        }
+        for (Agent p : game.getPlayers().values()) {
+            p.addPropertyChangeListener(pcl);
         }
     }
 
