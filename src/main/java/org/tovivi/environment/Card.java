@@ -192,7 +192,7 @@ public class Card {
             str = str.substring(0,3);
         }
         if (bonusTile!=null) {
-            str += " - " + bonusTile.getName();
+            str += ":" + bonusTile.getName();
         }
         return str;
     }

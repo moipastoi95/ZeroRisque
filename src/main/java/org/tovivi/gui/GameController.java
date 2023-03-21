@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 import org.tovivi.agent.Agent;
 import org.tovivi.environment.Card;
+import org.tovivi.environment.CardType;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
 
@@ -106,14 +107,20 @@ public class GameController implements Initializable {
         }
         if (evt.getPropertyName().compareTo("deckChange")==0) {
             Agent p = (Agent) evt.getSource();
-            System.out.println("test");
             Platform.runLater(() -> {
                 VBox pVB = (VBox) players.lookup("#"+p.getColor());
                 if (evt.getOldValue()==null) {
-                    Label l = new Label("    " + evt.getNewValue().toString());
-                    l.setWrapText(true);
+                    Card c = (Card) evt.getNewValue();
+                    Label l = new Label("    " + c.toString());
+                    l.setId((c.getBonusTile()!=null) ? c.getBonusTile().getName()+"Card" : CardType.JOKER.toString());
+                    System.out.println(l.getId());
                     l.setFont(Font.font(10));
                     pVB.getChildren().add(l);
+                }
+                else {
+                    Card c = (Card) evt.getOldValue();
+                    String str = "#" + ((c.getBonusTile()!=null) ? c.getBonusTile().getName()+"Card" : CardType.JOKER.toString());
+                    pVB.getChildren().remove(pVB.lookup(str));
                 }
             });
         }

@@ -43,7 +43,7 @@ public class PlayCards extends Deployment {
             throw new IllegalActionException();
         }
 
-        player.getDeck().removeAll(cards);
+        player.removeAllCards(cards);
         return null;
     }
 

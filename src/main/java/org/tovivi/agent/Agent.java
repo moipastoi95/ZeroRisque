@@ -133,6 +133,15 @@ public abstract class Agent implements Callable<Actions> {
         cards.forEach(this::addCard);
     }
 
+    public void removeCard(Card c) {
+        support.firePropertyChange("deckChange", c, null);
+        deck.remove(deck.indexOf(c));
+    }
+
+    public void removeAllCards(Collection<Card> cards) {
+        cards.forEach(this::removeCard);
+    }
+
     /**
      * Get the number of troops the player is able to deploy at each turn
      * @return the number of troops
