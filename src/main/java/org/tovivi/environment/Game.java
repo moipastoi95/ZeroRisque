@@ -38,6 +38,7 @@ public class Game {
     //HashMap of the players
     private HashMap<String, Agent> players = new HashMap<>();
     private Stack<Card> theStack = new Stack<>();
+    private Stack<Card> theDiscardPile = new Stack<>();
 
     private int playclock;
 
@@ -127,6 +128,11 @@ public class Game {
                             if (a.getDeployment().isNumTroopsLegal(p)) {
                                 while (flag) {
                                     print = a.getDeployment().toString();
+                                    // In case of playing cards
+                                    if (a.getDeployment() instanceof MultiDeploy && ((MultiDeploy) a.getDeployment()).getDeploys().get(0) instanceof PlayCards) {
+                                        ArrayList<Card> cards = ((PlayCards) ((MultiDeploy) a.getDeployment()).getDeploys().get(0)).getCards();
+                                        theDiscardPile.addAll(cards);
+                                    }
                                     flag = a.performDeployment(p);
                                     System.out.println("    [Success] :: " + print);
                                     if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
@@ -172,11 +178,7 @@ public class Game {
                     } catch (IllegalActionException e) {
                         System.out.println("    [Failed:too many troops] :: " + print);
                     }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                } catch (TimeoutException e) {
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -195,8 +197,14 @@ public class Game {
                 }
             }
 
+            // Check if the stack is empty or not and then refuel the Stack with the DiscardPile
+            if (theStack.isEmpty()) {
+                theStack.addAll(theDiscardPile);
+                theDiscardPile = new Stack<>();
+                Collections.shuffle(theStack);
+            }
             // check if the player could retrieve cards
-            if (p.getTiles().size() > pTerritories && theStack.size() > 0) {
+            if (p.getTiles().size() > pTerritories) {
                 p.addCard(theStack.pop());
             }
 
@@ -265,11 +273,7 @@ public class Game {
                         Thread.sleep(600 / gameSpeed);
                         att.perform(p);
 
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalActionException e) {
-                        throw new RuntimeException(e);
-                    } catch (SimulationRunningException e) {
+                    } catch (InterruptedException | IllegalActionException | SimulationRunningException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -288,21 +292,9 @@ public class Game {
                         System.out.println("    [Failed:too many troops] :: " + print);
                     }
                 }*/
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
+            } catch (InterruptedException | IOException | URISyntaxException | ClassNotFoundException |
+                     InvocationTargetException | NoSuchMethodException | InstantiationException |
+                     IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
 
@@ -328,11 +320,7 @@ public class Game {
             // Randomly distribute the tiles among the players
             distributeTiles(agents.get(0), grey, agents.get(1), territories);
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException |
-                 IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
+                 IllegalAccessException | IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
 

@@ -96,6 +96,10 @@ public class PlayCards extends Deployment {
         return null;
     }
 
+    public void setCards(ArrayList<Card> cards) {
+        this.cards = cards;
+    }
+
     /**
      * reduce the number of troops
      * @return

@@ -189,10 +189,7 @@ public class Card {
     public String toString() {
         String str = type.toString();
         if (type!=CardType.JOKER) {
-            str = str.substring(0,3);
-        }
-        if (bonusTile!=null) {
-            str += ":" + bonusTile.getName();
+            str = str.substring(0,3) + ":" + bonusTile.getName();
         }
         return str;
     }

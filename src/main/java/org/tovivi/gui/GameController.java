@@ -112,14 +112,13 @@ public class GameController implements Initializable {
                 if (evt.getOldValue()==null) {
                     Card c = (Card) evt.getNewValue();
                     Label l = new Label("    " + c.toString());
-                    l.setId((c.getBonusTile()!=null) ? c.getBonusTile().getName()+"Card" : CardType.JOKER.toString());
-                    System.out.println(l.getId());
+                    l.setId((c.getBonusTile().getName()+"Card")); // we had Card to make the difference between tiles id and cards id
                     l.setFont(Font.font(10));
                     pVB.getChildren().add(l);
                 }
                 else {
                     Card c = (Card) evt.getOldValue();
-                    String str = "#" + ((c.getBonusTile()!=null) ? c.getBonusTile().getName()+"Card" : CardType.JOKER.toString());
+                    String str = "#" + (c.getBonusTile().getName()+"Card");
                     pVB.getChildren().remove(pVB.lookup(str));
                 }
             });
