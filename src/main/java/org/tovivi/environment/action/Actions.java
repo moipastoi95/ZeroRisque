@@ -4,6 +4,9 @@ import org.tovivi.agent.Agent;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 public class Actions {
     private Deployment deployment;
     private Offensive firstOffensive;
@@ -31,9 +34,10 @@ public class Actions {
      * @throws IllegalActionException
      * @throws SimulationRunningException
      */
-    public boolean performDeployment(Agent player) throws IllegalActionException, SimulationRunningException {
+    public boolean performDeployment(Agent player) throws IllegalActionException, SimulationRunningException, IOException, URISyntaxException {
         if (onLiveAction) {
-            player.getNextDeploy().perform(player);
+            if(deployment != null) deployment = (Deployment) deployment.perform(player);
+            return deployment != null;
         }
         if (deployment != null) {
             deployment = (Deployment) deployment.perform(player);
@@ -50,7 +54,9 @@ public class Actions {
      */
     public boolean performAttack(Agent player) throws IllegalActionException, SimulationRunningException {
         if (onLiveAction) {
-            player.getNextAttack().perform(player);
+            if(firstOffensive != null) firstOffensive = (Offensive) firstOffensive.perform(player);
+            System.out.println(firstOffensive);
+            return firstOffensive != null;
         }
         firstOffensive = (Offensive) firstOffensive.perform(player);
         return firstOffensive != null && firstOffensive instanceof Attack;
@@ -58,17 +64,25 @@ public class Actions {
 
     public boolean performFortify(Agent player) throws IllegalActionException, SimulationRunningException {
         if (onLiveAction) {
-            player.getFortify().perform(player);
+            firstOffensive = player.getFortify();
+            if(firstOffensive != null) firstOffensive.perform(player);
+            return firstOffensive != null;
         }
         firstOffensive = (Offensive) firstOffensive.perform(player);
         return firstOffensive != null;
     }
 
-    public Deployment getDeployment() {
+    public Deployment getDeployment(Agent player) throws IOException, URISyntaxException, IllegalActionException, SimulationRunningException {
+        if (onLiveAction) {
+            if(deployment == null) deployment = player.getNextDeploy();
+        }
         return deployment;
     }
 
-    public Offensive getFirstOffensive() {
+    public Offensive getFirstOffensive(Agent player) {
+        if(onLiveAction) {
+            if(firstOffensive == null) firstOffensive = player.getNextAttack();
+        }
         return firstOffensive;
     }
 }

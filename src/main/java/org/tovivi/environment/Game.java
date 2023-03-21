@@ -122,27 +122,26 @@ public class Game {
             p.getDeck().forEach(System.out::println);
 
             pTerritories = p.getTiles().size();
-            if (p instanceof AgentMonteCarlo) this.playAgent(p, executor);
+            //if (p instanceof AgentMonteCarlo) this.playAgent(p, executor);
 
-            else {
-                Future<Actions> future = executor.submit(p);
-                try {
-                    Actions a = future.get(playclock, TimeUnit.SECONDS);
+            Future<Actions> future = executor.submit(p);
+            try {
+                Actions a = future.get(playclock, TimeUnit.SECONDS);
 
-                    pTerritories = p.getTiles().size();
+                pTerritories = p.getTiles().size();
 
                     // deploy
                     String print = "";
                     try {
-                        boolean flag = a.getDeployment() != null;
+                        boolean flag = a.getDeployment(p) != null;
                         if (flag) {
                             support.firePropertyChange("newPhase", "", "Deployment");
-                            if (a.getDeployment().isNumTroopsLegal(p)) {
+                            if (a.getDeployment(p).isNumTroopsLegal(p)) {
                                 while (flag) {
-                                    print = a.getDeployment().toString();
+                                    print = a.getDeployment(p).toString();
                                     // In case of playing cards
-                                    if (a.getDeployment() instanceof MultiDeploy && ((MultiDeploy) a.getDeployment()).getDeploys().get(0) instanceof PlayCards) {
-                                        ArrayList<Card> cards = ((PlayCards) ((MultiDeploy) a.getDeployment()).getDeploys().get(0)).getCards();
+                                    if (a.getDeployment(p) instanceof MultiDeploy && ((MultiDeploy) a.getDeployment(p)).getDeploys().get(0) instanceof PlayCards) {
+                                        ArrayList<Card> cards = ((PlayCards) ((MultiDeploy) a.getDeployment(p)).getDeploys().get(0)).getCards();
                                         theDiscardPile.addAll(cards);
                                     }
                                     flag = a.performDeployment(p);
@@ -156,15 +155,17 @@ public class Game {
                         System.out.println("    [Failed:Simulation currently running] :: " + print);
                     } catch (IllegalActionException e) {
                         System.out.println("    [Failed:too many troops] :: " + print);
+                    } catch (IOException | URISyntaxException e) {
+                        throw new RuntimeException(e);
                     }
 
                     // attack
                     print = "";
                     try {
                         do {
-                            if (a.getFirstOffensive() != null) {
+                            if (a.getFirstOffensive(p) != null) {
                                 support.firePropertyChange("newPhase", "", "Attacking");
-                                print = a.getFirstOffensive().toString();
+                                print = a.getFirstOffensive(p).toString();
                                 System.out.println("    [Success] :: " + print);
                                 if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
                                 while (gameSpeed < -1) Thread.sleep(50);
@@ -176,25 +177,28 @@ public class Game {
                         System.out.println("    [Failed:too many troops] :: " + print);
                     }
 
-                    // fortify
-                    print = "";
-                    try {
-                        if (a.getFirstOffensive() != null) {
-                            support.firePropertyChange("newPhase", "", "Fortifying");
-                            print = a.getFirstOffensive().toString();
-                            a.performFortify(p);
-                            System.out.println("    [Success] :: " + print);
-                            if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
-                            while (gameSpeed < -1) Thread.sleep(50);
-                        }
-                    } catch (SimulationRunningException e) {
-                        System.out.println("    [Failed:Simulation currently running] :: " + print);
-                    } catch (IllegalActionException e) {
-                        System.out.println("    [Failed:too many troops] :: " + print);
+                // fortify
+                print = "";
+                try {
+                    if (a.getFirstOffensive(p) != null) {
+                        support.firePropertyChange("newPhase", "", "Fortifying");
+                        print = a.getFirstOffensive(p).toString();
+                        a.performFortify(p);
+                        System.out.println("    [Success] :: " + print);
+                        if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
+                        while (gameSpeed < -1) Thread.sleep(50);
                     }
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    throw new RuntimeException(e);
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
                 }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (TimeoutException e) {
+                throw new RuntimeException(e);
             }
 
             System.out.println("    [TOTAL TERRITORIES : " + p.getTiles().size() + "]");
@@ -287,7 +291,11 @@ public class Game {
                         Thread.sleep(600 / gameSpeed);
                         att.perform(p);
 
-                    } catch (InterruptedException | IllegalActionException | SimulationRunningException e) {
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalActionException e) {
+                        throw new RuntimeException(e);
+                    } catch (SimulationRunningException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -306,9 +314,21 @@ public class Game {
                         System.out.println("    [Failed:too many troops] :: " + print);
                     }
                 }*/
-            } catch (InterruptedException | IOException | URISyntaxException | ClassNotFoundException |
-                     InvocationTargetException | NoSuchMethodException | InstantiationException |
-                     IllegalAccessException e) {
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
             //System.out.println("Si l'agent envoie encore une action on continue a jouer");
@@ -334,7 +354,11 @@ public class Game {
             // Randomly distribute the tiles among the players
             distributeTiles(agents.get(0), grey, agents.get(1), territories);
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | InstantiationException |
-                 IllegalAccessException | IOException | URISyntaxException e) {
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
