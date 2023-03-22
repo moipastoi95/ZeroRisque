@@ -1,6 +1,7 @@
 package org.tovivi.environment.action;
 
 import org.tovivi.agent.Agent;
+import org.tovivi.environment.Tile;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
@@ -56,7 +57,14 @@ public class Actions {
         if (firstOffensive instanceof Fortify) {
             return false;
         }
-        firstOffensive = (Offensive) firstOffensive.perform(player);
+        if (firstOffensive==null) {
+            return false;
+        }
+        Tile toTile = firstOffensive.getToTile(); Tile fromTile = firstOffensive.getToTile(); int numTroops = firstOffensive.getNumTroops();
+        firstOffensive = (Attack) firstOffensive.perform(player);
+        if (numTroops==0) { // Ask for troops to move if the agent has not specified the number
+            player.getFortify(fromTile, toTile).perform(player);
+        }
         return firstOffensive != null && firstOffensive instanceof Attack;
     }
 

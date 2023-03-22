@@ -45,9 +45,9 @@ public class LauncherController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         // Set the agents
-        red.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo"));
+        red.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo", "RealAgent"));
         red.setValue("AgentMonteCarlo");
-        blue.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo"));
+        blue.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo", "RealAgent"));
         blue.setValue("RandomAgent");
 
 

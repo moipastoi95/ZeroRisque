@@ -98,9 +98,11 @@ public class Attack extends Offensive{
 
         // fail the defence
         if (getToTile().getNumTroops() == 0) {
-            int troopsReallyMoved = min(getNumTroops(), getFromTile().getNumTroops()-1);
-            getFromTile().setNumTroops(getFromTile().getNumTroops()-troopsReallyMoved);
-            getToTile().setOccupier(player, troopsReallyMoved);
+            if (getNumTroops()>0) { // if the number of troops has been specified
+                int troopsReallyMoved = min(getNumTroops(), getFromTile().getNumTroops() - 1);
+                getFromTile().setNumTroops(getFromTile().getNumTroops() - troopsReallyMoved);
+                getToTile().setOccupier(player, troopsReallyMoved);
+            }
 
             getToTile().setInConflict(false); getFromTile().setInConflict(false);
             return onSucceed;

@@ -4,18 +4,18 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
-import javafx.scene.control.Label;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -27,6 +27,10 @@ import org.tovivi.environment.Card;
 import org.tovivi.environment.CardType;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
+import org.tovivi.environment.action.Attack;
+import org.tovivi.environment.action.Deploy;
+import org.tovivi.environment.action.Deployment;
+import org.tovivi.environment.action.MultiDeploy;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -49,14 +53,14 @@ public class GameController implements Initializable {
     @FXML
     private VBox phaseInf ;
 
-
     //Game that will be run
     private Game game ;
-
     private ArrayList<String> selectedTiles = new ArrayList<>();
-
-    private boolean realAgentTurn = false;
+    private String realAgentTurn = "";
     private String realAgentPhase;
+    private MultiDeploy md = new MultiDeploy();
+
+    private Attack a ;
 
     private int mem_speed;
 
@@ -156,8 +160,9 @@ public class GameController implements Initializable {
             Platform.runLater(() -> {
                 Agent pNew = (Agent) evt.getNewValue() ; Agent pOld = (Agent) evt.getOldValue();
 
-                // We unselect potential selections
-                realAgentTurn = pNew instanceof RealAgent;
+                // We unselect potential selections and set variables for the potential real agent
+                realAgentTurn = (pNew instanceof RealAgent) ? pNew.getColor() : "";
+                realAgentPhase = "";
                 unselect();
 
                 phase.setTextFill(Color.valueOf(pNew.getColor()));
@@ -169,12 +174,20 @@ public class GameController implements Initializable {
         }
         if (evt.getPropertyName().compareTo("newPhase")==0) {
             Platform.runLater(() -> {
+                unselect();
                 phase.setText((String) evt.getNewValue());
             });
         }
         if (evt.getPropertyName().compareTo("realDeploy")==0) {
             Platform.runLater(() -> {
-
+                realAgentPhase = "Deployment"; md = new MultiDeploy();
+                deploymentInit((Agent) evt.getSource(),(int) evt.getNewValue());
+            });
+        }
+        if (evt.getPropertyName().compareTo("realDeploy")==0) {
+            Platform.runLater(() -> {
+                realAgentPhase = "Attacking";
+                attackInit((Agent) evt.getSource());
             });
         }
     };
@@ -214,13 +227,9 @@ public class GameController implements Initializable {
             changeNumTroops(t, t.getNumTroops());
 
             Node n = world.lookup("#"+t.getName());
-            n.setOnMouseClicked(evt -> select(t));
+            n.setOnMouseClicked(mouseEvent -> select(t));
         }
         for (Agent p : game.getPlayers().values()) {
-
-            if (p instanceof RealAgent) {
-                p.addPropertyChangeListener(pcl);
-            }
             Label lTerritories = (Label) players.lookup("#territories"+p.getColor());
             Label lTroops = (Label) players.lookup("#troops"+p.getColor());
             lTerritories.setText(String.valueOf(game.getPlayers().get(p.getColor()).getTiles().size()));
@@ -365,14 +374,15 @@ public class GameController implements Initializable {
      * @param t
      */
     public void select(Tile t) {
-        if (realAgentTurn) {
+        if (realAgentTurn.compareTo("")!=0) {
             switch (realAgentPhase) {
                 case "Deployment":
-                    if (selectedTiles.size()==0) {
+                    if (selectedTiles.size()==0 && t.getOccupier().getColor().compareTo(realAgentTurn)==0) {
                         highligth(t);
                         selectedTiles.add(t.getName());
+                        ((Label) phaseInf.lookup("#deployTile")).setText(t.getName());
                     }
-                    else {
+                    else if (selectedTiles.size()>0) {
                         turnOff(game.getTiles().get(selectedTiles.get(0)));
                         selectedTiles.remove(0);
                         select(t);
@@ -382,7 +392,7 @@ public class GameController implements Initializable {
     }
 
     /**
-     * Create the input for deploymentInit
+     * Create or modify the inputs for the deployment of RealAgent
      * @param p
      * @param numDeploy
      */
@@ -391,13 +401,80 @@ public class GameController implements Initializable {
         if (phaseInf.getChildren().size()>1 && phaseInf.getChildren().get(1).getId().compareTo("deployInput")!=0) {
             phaseInf.getChildren().remove(1);
         }
+        Spinner<Integer> sp; Button b;
         if (phaseInf.getChildren().size()<=1) {
             selectedTiles.add(p.getTiles().get(0).getName());
+
             VBox deployInput = new VBox(); deployInput.setId("deployInput"); deployInput.setAlignment(Pos.CENTER);
-            ComboBox cb = new ComboBox(); cb.setId("deployTile"); deployInput.getChildren().add(cb);
-            cb.setItems(FXCollections.observableArrayList(p.getTiles().stream().map(Tile::getName)));
-            cb.setValue(selectedTiles.get(0));
+
+            HBox hb = new HBox(); deployInput.getChildren().add(hb); hb.setAlignment(Pos.CENTER); hb.setSpacing(10);
+
+            Label tile = new Label(p.getTiles().get(0).getName()); tile.setId("deployTile"); hb.getChildren().add(tile);
+
+            sp = new Spinner<>(1,numDeploy,numDeploy); sp.setId("deployTroops");
+            sp.setPrefWidth(60); hb.getChildren().add(sp);
+
+            b = new Button("Deploy"); deployInput.getChildren().add(b); b.setId("deploy"); deployInput.setSpacing(5);
+
+
+            phaseInf.getChildren().add(deployInput);
         }
+        else {
+            sp = (Spinner<Integer>) phaseInf.lookup("#deployTroops");
+            b = (Button) phaseInf.lookup("#deploy");
+        }
+        sp.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, numDeploy, numDeploy));
+        b.setOnMouseClicked(evt -> deploy(selectedTiles.get(0), sp.getValue(), numDeploy, (RealAgent) p));
+    }
+
+    public void deploy(String nameTile, int numTroops, int maxTroops, RealAgent p) {
+
+        md.getDeploys().add(new Deploy(numTroops, game.getTiles().get(nameTile)));
+        Label dep = new Label(nameTile + " + " + numTroops + " ==> " + (game.getTiles().get(nameTile).getNumTroops()+numTroops));
+        ((VBox) phaseInf.lookup("#deployInput")).getChildren().add(dep);
+        if ((maxTroops-numTroops)==0) {
+            p.setAction(md);
+            p.setResponse(true);
+            phaseInf.getChildren().remove(1);
+        }
+        else {
+            deploymentInit(p, maxTroops-numTroops);
+        }
+    }
+
+    /**
+     * Create or modify the inputs for the deployment of RealAgent
+     * @param p
+     */
+    public void attackInit(Agent p) {
+
+        if (phaseInf.getChildren().size()>1 && phaseInf.getChildren().get(1).getId().compareTo("attackInput")!=0) {
+            phaseInf.getChildren().remove(1);
+        }
+        Button bA, bS;
+        if (phaseInf.getChildren().size()<=1) {
+            selectedTiles.add(p.getTiles().get(0).getName());
+
+            VBox attackInput = new VBox(); attackInput.setId("attackInput"); attackInput.setAlignment(Pos.CENTER); attackInput.setSpacing(5);
+
+            Label tileFrom = new Label(p.getTiles().get(0).getName()); tileFrom.setId("tileFrom"); attackInput.getChildren().add(tileFrom);
+            attackInput.getChildren().add(new Label("VS"));
+            Label tileTo = new Label(p.getTiles().get(0).getNeighbors().get(0).getName()); tileTo.setId("tileTo"); attackInput.getChildren().add(tileTo);
+
+            HBox hb = new HBox(); hb.setSpacing(10); attackInput.getChildren().add(hb);
+            bA = new Button("Attack"); hb.getChildren().add(bA); bA.setId("attack");
+            bS = new Button("Skip"); hb.getChildren().add(bS); bS.setId("skip");
+
+
+            phaseInf.getChildren().add(attackInput);
+        }
+        else {
+            bA = (Button) phaseInf.lookup("#attack");
+        }
+        //bS.setOnMouseClicked(evt -> deploy(selectedTiles.get(0), sp.getValue(), numDeploy, (RealAgent) p));
+    }
+
+    public void attack(String fromTile, String toTile, RealAgent p) {
 
     }
 

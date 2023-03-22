@@ -133,9 +133,9 @@ public class Game {
                     // deploy
                     String print = "";
                     try {
+                        support.firePropertyChange("newPhase", "", "Deployment");
                         boolean flag = a.getDeployment(p) != null;
                         if (flag) {
-                            support.firePropertyChange("newPhase", "", "Deployment");
                             if (a.getDeployment(p).isNumTroopsLegal(p)) {
                                 while (flag) {
                                     print = a.getDeployment(p).toString();
