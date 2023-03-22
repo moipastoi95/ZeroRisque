@@ -375,7 +375,18 @@ public class Game {
             if(t.getOccupier().getColor() == player.getColor()){scoreAgent += t.getNumTroops();}
             else if(t.getOccupier().getColor() != "Grey"){scoreOpp += t.getNumTroops();}
         }
-        return scoreAgent-scoreOpp;
+        int res = scoreAgent - scoreOpp;
+
+        if(res > 0){
+            if(res > 50) res = 100;
+            else res = res+50;
+        }
+        else {
+            if(res < -50) res = 0;
+            else res = res + 50;
+        }
+
+        return res;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener pcl) {

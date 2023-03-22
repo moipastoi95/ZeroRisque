@@ -56,6 +56,13 @@ public class Actions {
         if (firstOffensive instanceof Fortify) {
             return false;
         }
+        if(onLiveAction){
+            if(firstOffensive == null) return false;
+            firstOffensive.perform(player);
+            firstOffensive = player.getNextAttack();
+            System.out.println(firstOffensive);
+            return firstOffensive != null && firstOffensive instanceof Attack;
+        }
         firstOffensive = (Offensive) firstOffensive.perform(player);
         return firstOffensive != null && firstOffensive instanceof Attack;
     }

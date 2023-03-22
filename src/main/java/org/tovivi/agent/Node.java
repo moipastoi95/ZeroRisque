@@ -84,7 +84,7 @@ public class Node {
             else if(action instanceof Attack){
                 Attack att = (Attack) action;
                 double prob = player.getProba(att.getFromTile().getNumTroops()%50, att.getToTile().getNumTroops()%50);
-
+                if(prob < 0.4) prob = 0.0;
                 Game nextLoose = new Game(this.game);
                 nextLoose.getTiles().get(att.getFromTile().getName()).setNumTroops(1);
                 childs.put(new Node(nextLoose, 0, this, null, player, "Attack"), 1 - prob);
@@ -92,10 +92,15 @@ public class Node {
                 Game nextWin = new Game(nextLoose);
                 int troopMoved = (int) ((att.getFromTile().getNumTroops()-1)*prob);
                 if(troopMoved == 0) troopMoved = 1;
-                nextWin.getTiles().get(att.getFromTile().getName()).setNumTroops(att.getFromTile().getNumTroops()-troopMoved);
+                //nextWin.getTiles().get(att.getFromTile().getName()).setNumTroops(1);
                 nextWin.getTiles().get(att.getToTile().getName()).setOccupier(player,troopMoved);
                 childs.put(new Node(nextWin, 0, this, null, player, "Attack"), prob);
 
+                this.getChilds().put(action, childs);
+            }
+            else if(action == null){
+                Game next_game = new Game(this.game);
+                childs.put(new Node(next_game, 0, this, null, this.getOpp(), "Deploy"), 1.0);
                 this.getChilds().put(action, childs);
             }
 
@@ -104,6 +109,11 @@ public class Node {
                  IllegalActionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Agent getOpp(){
+        if(this.player == "Red") return this.getGame().getPlayers().get("Blue");
+        else return this.getGame().getPlayers().get("Red");
     }
 
     public int getN() {
@@ -115,6 +125,8 @@ public class Node {
     }
 
     public void setPhase(String phase){this.phase = phase;}
+
+    public String getPhase(){return this.phase;}
 
     public ArrayList<Card> getDeck(){return this.deck;}
 
@@ -201,7 +213,7 @@ public class Node {
         int num_to_deploy = this.getPlayer().getNumDeploy();
         // if cards owned, use them
         ArrayList<Deployment> depL = new ArrayList<>();
-        ArrayList<Card> goodCards = Card.chooseCards(this.getDeck(), player);
+        ArrayList<Card> goodCards = Card.chooseCards(this.getPlayer().getDeck(), player);
         int goodCardsValue = Card.count(goodCards, player);
         if (goodCardsValue > 0) {
             PlayCards pc = new PlayCards(goodCards, player);
@@ -232,6 +244,7 @@ public class Node {
                 }
             }
         }
+        actions.add(null);
         return actions;
     }
 

@@ -20,9 +20,10 @@ public class AgentMonteCarlo extends Agent {
     private Node root;
 
     private Node actual_node;
-
-    private int E = 10;
-    private double c = sqrt(2); //Paramètre d'exploration
+    private int nbActions = 0;
+    private long timeLimit = 5000;
+    private int E = 1;
+    private double c = sqrt(1.5); //Paramètre d'exploration
     private int depth = 0; //Profondeur actuelle de la recherche
 
     public AgentMonteCarlo(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
@@ -65,37 +66,61 @@ public class AgentMonteCarlo extends Agent {
         Actuator new_action;
         ArrayList<Actuator> possible_actions;
 
-        while (depth < 1) {
+        int actualD = 0;
+        System.out.println("Profondeur en cours : " + actualD);
+
+        Long time = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - time < timeLimit) {
             depth = 0;
             this.traverse();
+            /*if(depth != actualD){
+                actualD = depth;
+                System.out.println("Profondeur en cour" + actualD);
+            }*/
 
             possible_actions = this.actual_node.getActions();
-
             ArrayList<Actuator> redundant = new ArrayList<>();
             for (Actuator act : actual_node.getChilds().keySet()) {
                 for (Actuator newAct : possible_actions) {
-                    if (act.toString().equals(newAct.toString())) {
-                        redundant.add(newAct);
+                    if(act != null && newAct != null) {
+                        if (act.toString().equals(newAct.toString())) {
+                            redundant.add(newAct);
+                        }
                     }
+                    else if(act == null && newAct == null) redundant.add(null);
                 }
             }
-
             possible_actions.removeAll(redundant);
 
             int s = possible_actions.size();
             new_action = possible_actions.get(rand.nextInt(s));
-
             actual_node.generateChilds(new_action);
-            Node next_node = actual_node.getNextNode(new_action);
-            int Score = this.rollout(next_node);
-            this.backPropagate(next_node, Score);
 
+            //System.out.println("Debug 1");
+            int Score;
+            Node next_node = actual_node.getNextNode(new_action);
+            //System.out.println("Debug 2");
+            Score = this.rollout(next_node);
+            //System.out.println("Debug 3");
+            //System.out.println(Score);
+            this.backPropagate(next_node, Score);
+            //System.out.println("?");
             if(s == 1) actual_node.setNoMoreChild();
+            //System.out.println("Debug 4");
+
+            Actuator best_action = this.best_child();
+            System.out.println();
+            System.out.println("Meilleur action actuel " + best_action + "\n" +
+                    "Score de celui ci" + root.getNextNode(best_action).getScore() + "\n"
+                    + "N = " + root.getNextNode(best_action).getN());
         }
 
         new_action = this.best_child();
 
         this.depth = 0;
+
+        System.out.println(new_action);
 
         return new_action;
     }
@@ -144,12 +169,18 @@ public class AgentMonteCarlo extends Agent {
             throw new RuntimeException(e);
         }
 
+
         try {
+            int scoreAct = this.getGame().score(this);
+            System.out.println(scoreAct);
             Actuator actionToPerfom = this.actionTest();
+            //System.out.println(actionToPerfom);
+            if(actionToPerfom == null) return null;
             Attack att = (Attack) actionToPerfom;
             att.setFromTile(this.getGame().getTiles().get(att.getFromTile().getName()));
             att.setToTile(this.getGame().getTiles().get(att.getToTile().getName()));
-            return (Attack) att;
+            this.nbActions += 1;
+            return att;
         } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException |
                  IllegalAccessException | IOException | URISyntaxException e) {
             throw new RuntimeException(e);
@@ -172,6 +203,7 @@ public class AgentMonteCarlo extends Agent {
         while (actual_node.getNoMoreChild()) {
             depth += 1;
             act = this.getBestChild(actual_node);
+            //if(act == null) System.out.println("null cool");
             this.actual_node = actual_node.getNextNode(act);
         }
     }
@@ -188,7 +220,7 @@ public class AgentMonteCarlo extends Agent {
         if (n.getN() == 0) {
             return Double.MAX_VALUE;
         } else {
-            return E * prob * (n.getScore() / n.getN()) + c * sqrt(log(n.getParent().getN()) / n.getN());
+            return E * (n.getScore() / n.getN()) + c * sqrt(log(n.getParent().getN()) / n.getN());
         }
     }
 
@@ -226,13 +258,28 @@ public class AgentMonteCarlo extends Agent {
             Game simu = new Game(n.getGame());
             Agent gamer = simu.getPlayers().get(player.getColor());
             res = simu.score(player);
-            for (int i = 0; i < 0; i++) {
-                Node next = new Node(simu, 0, null, gamer.getDeck(), gamer, "Attack");
+            Node next = null;
+            boolean oppTurn = false;
+            for (int i = 0; i < 10; i++) {
+                if((Objects.equals(n.getPhase(), "Deploy") && i == 0) || oppTurn) {
+                    if(!oppTurn) oppTurn = true;
+                    else {
+                        oppTurn = false;
+                        gamer = next.getOpp();
+                    }
+                    next = new Node(simu, 0, null, gamer.getDeck(), gamer, n.getPhase());
+                }
+                else {
+                    next = new Node(simu, 0, null, gamer.getDeck(), gamer, "Attack");
+                }
                 ArrayList<Actuator> possible_actions = next.getActions();
                 int s = possible_actions.size();
-                Attack new_action = (Attack) possible_actions.get(rand.nextInt(s));
+                if(s == 0) return simu.score(gamer);
+                Actuator new_action = possible_actions.get(rand.nextInt(s));
+                if(i == 3 && gamer.getColor() == this.getColor()) new_action = null;
 
-                new_action.perform(gamer);
+                if(new_action != null) new_action.perform(gamer);
+                else oppTurn = true;
                 res = simu.score(gamer);
             }
         } catch (IOException | URISyntaxException | ClassNotFoundException | InvocationTargetException |
@@ -249,6 +296,8 @@ public class AgentMonteCarlo extends Agent {
         if (n.getParent() != null) {
             n.addScore(result);
             n.setN(n.getN() + 1);
+            if(n.getParent().getPlayer().getColor() != n.getPlayer().getColor())
+                backPropagate(n.getParent(), 1-result);
             backPropagate(n.getParent(), result);
         } else {
             n.addScore(result);
