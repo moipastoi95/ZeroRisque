@@ -161,6 +161,11 @@ public class AgentMonteCarlo extends Agent {
         return null;
     }
 
+    @Override
+    public Fortify getFortify(Tile fromTile, Tile toTile) {
+        return null;
+    }
+
     /**
      * Parcours l'arbre actuel jusqu'au meilleur leaf node actuel
      *

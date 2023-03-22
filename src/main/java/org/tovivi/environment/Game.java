@@ -163,9 +163,9 @@ public class Game {
                     print = "";
                     try {
                         do {
-                            if (a.getFirstOffensive(p) instanceof Attack) {
-                                support.firePropertyChange("newPhase", "", "Attacking");
-                                print = a.getFirstOffensive(p).toString();
+                            support.firePropertyChange("newPhase", "", "Attacking");
+                            if (a.getFirstOffensive(p,"Attacking") instanceof Attack) {
+                                print = a.getFirstOffensive(p, "Attacking").toString();
                                 System.out.println("    [Success] :: " + print);
                                 if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
                                 while (gameSpeed < -1) Thread.sleep(50);
@@ -180,9 +180,9 @@ public class Game {
                 // fortify
                 print = "";
                 try {
-                    if (a.getFirstOffensive(p) != null) {
-                        support.firePropertyChange("newPhase", "", "Fortifying");
-                        print = a.getFirstOffensive(p).toString();
+                    support.firePropertyChange("newPhase", "", "Fortifying");
+                    if (a.getFirstOffensive(p,"Fortifying") != null) {
+                        print = a.getFirstOffensive(p,"Fortifying").toString();
                         a.performFortify(p);
                         System.out.println("    [Success] :: " + print);
                         if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);

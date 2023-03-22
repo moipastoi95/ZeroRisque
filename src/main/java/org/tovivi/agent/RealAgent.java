@@ -56,7 +56,7 @@ public class RealAgent extends Agent {
     @Override
     public Attack getNextAttack() {
         response = false;
-        support.firePropertyChange("realAttack",0, 0);
+        support.firePropertyChange("realAttack",0, 1);
         while (!response) {
             try {
                 Thread.sleep(20);
@@ -69,14 +69,30 @@ public class RealAgent extends Agent {
 
     @Override
     public Fortify getFortify() {
-        // TODO call GUI
-        return null;
+        response = false;
+        support.firePropertyChange("realFortify",0,1);
+        while (!response) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return (Fortify) action;
     }
 
     @Override
     public Fortify getFortify(Tile fromTile, Tile toTile) {
-        // TODO call GUI
-        return null;
+        response = false;
+        support.firePropertyChange("realFortifyAfterAttack",fromTile, toTile);
+        while (!response) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return (Fortify) action;
     }
 
     public Actuator getAction() {

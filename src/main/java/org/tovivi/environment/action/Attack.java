@@ -39,7 +39,7 @@ public class Attack extends Offensive{
 
     @Override
     public String toString() {
-        return "[Attack:" + getFromTile().getName() + " -" + getNumTroops() + "-> " + getToTile().getName() + "]";
+        return "[Attack:" + getFromTile().getName() + " -" + (getFromTile().getNumTroops()-1) + "-> " + getToTile().getName() + "]";
     }
 
     @Override
@@ -50,8 +50,8 @@ public class Attack extends Offensive{
             return false;
         }
 
-        // make sure it cannot move all the troops
-        if (getNumTroops() >= getFromTile().getNumTroops()) {
+        // make sure it cannot move all the troops (except in the case that the player has not specified the right number
+        if (getNumTroops()!=0 && getNumTroops() >= getFromTile().getNumTroops()) {
             return false;
         }
 
@@ -103,7 +103,10 @@ public class Attack extends Offensive{
                 getFromTile().setNumTroops(getFromTile().getNumTroops() - troopsReallyMoved);
                 getToTile().setOccupier(player, troopsReallyMoved);
             }
-
+            else {
+                getToTile().setOccupier(player, 1);
+                getFromTile().setNumTroops(getFromTile().getNumTroops() - 1);
+            }
             getToTile().setInConflict(false); getFromTile().setInConflict(false);
             return onSucceed;
         }

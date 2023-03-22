@@ -1,10 +1,6 @@
 package org.tovivi.gui;
 
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -12,27 +8,19 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.util.Duration;
 import org.tovivi.agent.Agent;
 import org.tovivi.agent.RealAgent;
 import org.tovivi.environment.Card;
-import org.tovivi.environment.CardType;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
-import org.tovivi.environment.action.Attack;
-import org.tovivi.environment.action.Deploy;
-import org.tovivi.environment.action.Deployment;
-import org.tovivi.environment.action.MultiDeploy;
+import org.tovivi.environment.action.*;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -59,8 +47,6 @@ public class GameController implements Initializable {
     private String realAgentTurn = "";
     private String realAgentPhase;
     private MultiDeploy md = new MultiDeploy();
-
-    private Attack a ;
 
     private int mem_speed;
 
@@ -184,10 +170,42 @@ public class GameController implements Initializable {
                 deploymentInit((Agent) evt.getSource(),(int) evt.getNewValue());
             });
         }
-        if (evt.getPropertyName().compareTo("realDeploy")==0) {
+        if (evt.getPropertyName().compareTo("realAttack")==0) {
             Platform.runLater(() -> {
+                unselect();
                 realAgentPhase = "Attacking";
-                attackInit((Agent) evt.getSource());
+                RealAgent p = (RealAgent) evt.getSource();
+                Tile biggestF = biggestTileAtFront(p);
+                if (biggestF.getNumTroops()==1) {
+                    p.setAction(null);
+                    p.setResponse(true);
+                }
+                else {
+                    attackInit((Agent) evt.getSource());
+                }
+
+            });
+        }
+        if (evt.getPropertyName().compareTo("realFortifyAfterAttack")==0) {
+            Platform.runLater(() -> {
+                unselect();
+                realAgentPhase = "FortifyAfterAttack";
+                fortifyInit((Agent) evt.getSource(), (Tile) evt.getOldValue(), (Tile) evt.getNewValue());
+            });
+        }
+        if (evt.getPropertyName().compareTo("realFortify")==0) {
+            Platform.runLater(() -> {
+                unselect();
+                realAgentPhase = "Fortifying";
+                RealAgent p = (RealAgent) evt.getSource();
+                Tile biggestNF = biggestTileNotAtFront(p);
+                if (biggestNF.getNumTroops()==1) {
+                    p.setAction(null);
+                    p.setResponse(true);
+                }
+                else {
+                    fortifyInit( p, biggestNF, lowestConnexTile(biggestNF));
+                }
             });
         }
     };
@@ -285,6 +303,7 @@ public class GameController implements Initializable {
             h.setId(aT.getId() + "_highlight");
 
             h.setStroke(HIGHLIGHT);
+            h.setOnMouseClicked(mouseEvent -> select(t));
             cT.toFront();
             cT.getChildren().add(h);
 
@@ -377,16 +396,77 @@ public class GameController implements Initializable {
         if (realAgentTurn.compareTo("")!=0) {
             switch (realAgentPhase) {
                 case "Deployment":
-                    if (selectedTiles.size()==0 && t.getOccupier().getColor().compareTo(realAgentTurn)==0) {
+                    if (t.getOccupier().getColor().compareTo(realAgentTurn)==0) {
+                        if (selectedTiles.size()==0) {
+                            highligth(t);
+                            selectedTiles.add(t.getName());
+                            ((Label) phaseInf.lookup("#deployTile")).setText(t.getName());
+                        }
+                        else {
+                            turnOff(game.getTiles().get(selectedTiles.get(0)));
+                            selectedTiles.remove(0);
+                            select(t);
+                        }
+                    }
+                    break;
+                case "Attacking":
+                    if (selectedTiles.size()==0) {
                         highligth(t);
                         selectedTiles.add(t.getName());
-                        ((Label) phaseInf.lookup("#deployTile")).setText(t.getName());
+                        Label l = (Label) phaseInf.lookup("#fromTile");
+                        (l).setText(t.getName()); l.setTextFill(Color.valueOf(t.getOccupier().getColor()));
+                        select(atTheFront(t));
                     }
-                    else if (selectedTiles.size()>0) {
-                        turnOff(game.getTiles().get(selectedTiles.get(0)));
-                        selectedTiles.remove(0);
-                        select(t);
+                    else if (selectedTiles.size()==1) {
+                        highligth(t);
+                        selectedTiles.add(t.getName());
+                        Label l = (Label) phaseInf.lookup("#toTile");
+                        (l).setText(t.getName()); l.setTextFill(Color.valueOf(t.getOccupier().getColor()));
                     }
+                    else if (selectedTiles.size()==2) {
+                        if (t.getOccupier().getColor().compareTo(realAgentTurn)!=0 && (game.getTiles().get(selectedTiles.get(0)).getNeighbors().contains(t))) {
+                            turnOff(game.getTiles().get(selectedTiles.get(1)));
+                            selectedTiles.remove(1);
+                            select(t);
+                        }
+                        else if (t.getOccupier().getColor().compareTo(realAgentTurn)==0 && t.getName().compareTo(selectedTiles.get(0))!=0 && atTheFront(t)!=null && t.getNumTroops()>1) {
+                            turnOff(game.getTiles().get(selectedTiles.get(1))); turnOff(game.getTiles().get(selectedTiles.get(0)));
+                            selectedTiles = new ArrayList<>();
+                            select(t);
+                        }
+                    }
+                    break;
+                case "Fortifying":
+                    if (selectedTiles.size()==0) {
+                        highligth(t);
+                        selectedTiles.add(t.getName());
+                        Label l = (Label) phaseInf.lookup("#moveFromTile");
+                        (l).setText(t.getName()); l.setTextFill(Color.valueOf(t.getOccupier().getColor()));
+                        select(lowestConnexTile(t));
+                    }
+                    else if (selectedTiles.size()==1) {
+                        highligth(t);
+                        selectedTiles.add(t.getName());
+                        Label l = (Label) phaseInf.lookup("#moveToTile");
+                        (l).setText(t.getName()); l.setTextFill(Color.valueOf(t.getOccupier().getColor()));
+                    }
+                    else if (selectedTiles.size()==2) {
+                        System.out.println("oui");
+                        if (t.getName().compareTo(selectedTiles.get(0))==0 || t.getName().compareTo(selectedTiles.get(1))==0) {
+                            System.out.println("oui");
+                            unselect();
+                        }
+                        else if (Fortify.connexTiles(game.getTiles().get(selectedTiles.get(0))).contains(t)) {
+                            turnOff(game.getTiles().get(selectedTiles.get(1)));
+                            selectedTiles.remove(1);
+                            select(t);
+                        }
+                    }
+                    break;
+                case "FortifyAfterAttack":
+                    highligth(t);
+                    selectedTiles.add(t.getName());
+                    break;
             }
         }
     }
@@ -403,7 +483,6 @@ public class GameController implements Initializable {
         }
         Spinner<Integer> sp; Button b;
         if (phaseInf.getChildren().size()<=1) {
-            selectedTiles.add(p.getTiles().get(0).getName());
 
             VBox deployInput = new VBox(); deployInput.setId("deployInput"); deployInput.setAlignment(Pos.CENTER);
 
@@ -418,6 +497,7 @@ public class GameController implements Initializable {
 
 
             phaseInf.getChildren().add(deployInput);
+            select(biggestTileAtFront(p));
         }
         else {
             sp = (Spinner<Integer>) phaseInf.lookup("#deployTroops");
@@ -453,29 +533,150 @@ public class GameController implements Initializable {
         }
         Button bA, bS;
         if (phaseInf.getChildren().size()<=1) {
-            selectedTiles.add(p.getTiles().get(0).getName());
 
-            VBox attackInput = new VBox(); attackInput.setId("attackInput"); attackInput.setAlignment(Pos.CENTER); attackInput.setSpacing(5);
+            Tile front = biggestTileAtFront(p);
 
-            Label tileFrom = new Label(p.getTiles().get(0).getName()); tileFrom.setId("tileFrom"); attackInput.getChildren().add(tileFrom);
-            attackInput.getChildren().add(new Label("VS"));
-            Label tileTo = new Label(p.getTiles().get(0).getNeighbors().get(0).getName()); tileTo.setId("tileTo"); attackInput.getChildren().add(tileTo);
+            VBox attackInput = new VBox(); attackInput.setId("attackInput"); attackInput.setAlignment(Pos.CENTER); attackInput.setSpacing(10);
 
-            HBox hb = new HBox(); hb.setSpacing(10); attackInput.getChildren().add(hb);
+            VBox names = new VBox() ; attackInput.getChildren().add(names); names.setSpacing(5); names.setAlignment(Pos.CENTER);
+
+            Label lFromTile = new Label(p.getTiles().get(0).getName()); lFromTile.setId("fromTile"); names.getChildren().add(lFromTile);
+            names.getChildren().add(new Label("VS"));
+            Label lToTile = new Label(p.getTiles().get(0).getNeighbors().get(0).getName()); lToTile.setId("toTile"); names.getChildren().add(lToTile);
+
+            HBox hb = new HBox(); hb.setSpacing(10); hb.setAlignment(Pos.CENTER); attackInput.getChildren().add(hb);
             bA = new Button("Attack"); hb.getChildren().add(bA); bA.setId("attack");
             bS = new Button("Skip"); hb.getChildren().add(bS); bS.setId("skip");
 
-
             phaseInf.getChildren().add(attackInput);
+            select(front);
         }
         else {
             bA = (Button) phaseInf.lookup("#attack");
+            bS = (Button) phaseInf.lookup("#skip");
         }
-        //bS.setOnMouseClicked(evt -> deploy(selectedTiles.get(0), sp.getValue(), numDeploy, (RealAgent) p));
+        bS.setOnMouseClicked(evt -> attack(null, null, (RealAgent) p));
+        bA.setOnMouseClicked(evt -> attack(selectedTiles.get(0), selectedTiles.get(1), (RealAgent) p));
     }
 
     public void attack(String fromTile, String toTile, RealAgent p) {
 
+        if (fromTile==null || toTile==null) {
+            p.setAction(null);
+            p.setResponse(true);
+        }
+        else {
+            p.setAction(new Attack(game.getTiles().get(fromTile),game.getTiles().get(toTile),0,null,null));
+            p.setResponse(true);
+        }
+        phaseInf.getChildren().remove(1);
+    }
+
+    public Tile atTheFront(Tile t) {
+        Tile res = null;
+        for (Tile n : t.getNeighbors()) {
+            if (n.getOccupier().getColor().compareTo(t.getOccupier().getColor())!=0) {
+                if (res==null || res.getNumTroops()>n.getNumTroops()) {
+                    res = n;
+                }
+            }
+        }
+        return res;
+    }
+
+    public void fortifyInit(Agent p, Tile fromTile, Tile toTile) {
+
+        if (phaseInf.getChildren().size()>1 && phaseInf.getChildren().get(1).getId().compareTo("moveInput")!=0) {
+            phaseInf.getChildren().remove(1);
+        }
+        Spinner<Integer> sp;
+        Button b; Button bS;
+        if (phaseInf.getChildren().size()<=1) {
+            VBox moveInput = new VBox(); moveInput.setId("moveInput"); moveInput.setAlignment(Pos.CENTER); moveInput.setSpacing(10);
+
+            HBox hb = new HBox(); hb.setSpacing(5); hb.setAlignment(Pos.CENTER); moveInput.getChildren().add(hb);
+            Label lFromTile = new Label("MOVE"); hb.getChildren().add(lFromTile);
+            sp = new Spinner<>(1,fromTile.getNumTroops()-1,fromTile.getNumTroops()-1); sp.setPrefWidth(60) ;sp.setId("moveNum"); hb.getChildren().add(sp);
+            Label lToTile = new Label("FROM"); hb.getChildren().add(lToTile);
+
+            VBox names = new VBox() ; moveInput.getChildren().add(names); names.setSpacing(5); names.setAlignment(Pos.CENTER);
+
+            lFromTile = new Label(fromTile.getName()); lFromTile.setId("moveFromTile"); names.getChildren().add(lFromTile);
+            lFromTile.setTextFill(Color.valueOf(fromTile.getOccupier().getColor()));
+            names.getChildren().add(new Label("TO"));
+            lToTile = new Label(toTile.getName()); lToTile.setId("moveToTile"); names.getChildren().add(lToTile);
+            lToTile.setTextFill(Color.valueOf(toTile.getOccupier().getColor()));
+
+            HBox hb2 = new HBox(); hb2.setSpacing(10); moveInput.getChildren().add(hb2); hb2.setAlignment(Pos.CENTER);
+            b = new Button("Move"); hb2.getChildren().add(b); b.setId("move");
+            bS = new Button("Skip"); hb2.getChildren().add(bS); bS.setId("moveSkip");
+
+            phaseInf.getChildren().add(moveInput);
+            select(fromTile);
+            if (realAgentPhase.compareTo("FortifyAfterAttack")==0) {
+                select(toTile);
+            }
+        }
+        else {
+            b = (Button) phaseInf.lookup("#move");
+            bS = (Button) phaseInf.lookup("#moveSkip");
+            sp = (Spinner<Integer>) phaseInf.lookup("#moveNum");
+        }
+        b.setOnMouseClicked(evt -> move(game.getTiles().get(selectedTiles.get(0)), game.getTiles().get(selectedTiles.get(1)), (RealAgent) p,sp.getValue()));
+        bS.setOnMouseClicked(evt -> move(null, null, (RealAgent) p,sp.getValue()));
+    }
+
+    public void move(Tile fromTile, Tile toTile, RealAgent p, int numTroops) {
+        if (fromTile==null || toTile==null) {
+            p.setAction(null);
+        }
+        else {
+            p.setAction(new Fortify(fromTile, toTile, numTroops));
+        }
+        p.setResponse(true);
+        phaseInf.getChildren().remove(1,2);
+    }
+
+    public Tile biggestTileNotAtFront(Agent p) {
+        int maxTroops = 1;
+        Tile res = null;
+        for (Tile t : p.getTiles()) {
+            if (t.getNumTroops()>maxTroops && atTheFront(t)==null) {
+                maxTroops = t.getNumTroops();
+                res = t;
+            }
+        }
+        //If no tiles which are not at the front have been found, search at the front
+        if (res==null) {
+            res = biggestTileAtFront(p);
+        }
+        return res;
+    }
+
+    public Tile biggestTileAtFront(Agent p) {
+        int maxTroops = 1;
+        Tile res = null;
+        for (Tile t : p.getTiles()) {
+            if (t.getNumTroops()>=maxTroops && atTheFront(t)!=null) {
+                maxTroops = t.getNumTroops();
+                res = t;
+            }
+        }
+        return res;
+    }
+
+    public Tile lowestConnexTile(Tile t) {
+        ArrayList<Tile> cT = Fortify.connexTiles(t);
+        int min = Integer.MAX_VALUE;
+        Tile res = null;
+        // We prioritize frontiers to fortify
+        for (Tile n : cT) {
+            if (n.getNumTroops() < min && atTheFront(n) != null) {
+                min = n.getNumTroops();
+                res = n;
+            }
+        }
+        return res;
     }
 
     public void unselect() {

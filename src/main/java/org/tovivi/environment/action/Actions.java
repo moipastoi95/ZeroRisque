@@ -60,10 +60,14 @@ public class Actions {
         if (firstOffensive==null) {
             return false;
         }
-        Tile toTile = firstOffensive.getToTile(); Tile fromTile = firstOffensive.getToTile(); int numTroops = firstOffensive.getNumTroops();
-        firstOffensive = (Attack) firstOffensive.perform(player);
-        if (numTroops==0) { // Ask for troops to move if the agent has not specified the number
-            player.getFortify(fromTile, toTile).perform(player);
+        Tile toTile = firstOffensive.getToTile(); Tile fromTile = firstOffensive.getFromTile(); int numTroops = firstOffensive.getNumTroops();
+        firstOffensive = (Offensive) firstOffensive.perform(player);
+        if (numTroops==0 && toTile.getOccupier().equals(fromTile.getOccupier()) && fromTile.getNumTroops()>1) { // Ask for troops to move if the agent has not specified the number and if its attack succeed
+            Fortify localFortify = player.getFortify(fromTile, toTile);
+            if (localFortify!=null) localFortify.perform(player);
+        }
+        if (onLiveAction) {
+            firstOffensive = player.getNextAttack();
         }
         return firstOffensive != null && firstOffensive instanceof Attack;
     }
@@ -79,9 +83,10 @@ public class Actions {
         return deployment;
     }
 
-    public Offensive getFirstOffensive(Agent player) {
-        if(onLiveAction) {
-            if(firstOffensive == null) firstOffensive = player.getNextAttack();
+    public Offensive getFirstOffensive(Agent player, String phase) {
+        if(onLiveAction && firstOffensive==null) {
+            if(phase.compareTo("Attacking")==0) firstOffensive = player.getNextAttack();
+            else firstOffensive = player.getFortify();
         }
         return firstOffensive;
     }
