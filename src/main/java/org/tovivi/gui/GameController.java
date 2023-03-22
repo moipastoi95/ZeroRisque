@@ -437,7 +437,7 @@ public class GameController implements Initializable {
                     }
                     break;
                 case "Fortifying":
-                    if (selectedTiles.size()==0) {
+                    if (selectedTiles.size()==0 && Fortify.connexTiles(t).size()>1) {
                         highligth(t);
                         selectedTiles.add(t.getName());
                         Label l = (Label) phaseInf.lookup("#moveFromTile");
@@ -451,10 +451,13 @@ public class GameController implements Initializable {
                         (l).setText(t.getName()); l.setTextFill(Color.valueOf(t.getOccupier().getColor()));
                     }
                     else if (selectedTiles.size()==2) {
-                        System.out.println("oui");
                         if (t.getName().compareTo(selectedTiles.get(0))==0 || t.getName().compareTo(selectedTiles.get(1))==0) {
-                            System.out.println("oui");
                             unselect();
+                            Label l = (Label) phaseInf.lookup("#moveFromTile");
+                            l.setText("Select a tile...");
+                            l = (Label) phaseInf.lookup("#moveToTile");
+                            l.setText("Select a tile...");
+
                         }
                         else if (Fortify.connexTiles(game.getTiles().get(selectedTiles.get(0))).contains(t)) {
                             turnOff(game.getTiles().get(selectedTiles.get(1)));
@@ -556,7 +559,12 @@ public class GameController implements Initializable {
             bS = (Button) phaseInf.lookup("#skip");
         }
         bS.setOnMouseClicked(evt -> attack(null, null, (RealAgent) p));
-        bA.setOnMouseClicked(evt -> attack(selectedTiles.get(0), selectedTiles.get(1), (RealAgent) p));
+        if (selectedTiles.size()<2) {
+            bA.setOnMouseClicked(evt -> attack(null, null, (RealAgent) p));
+        }
+        else {
+            bA.setOnMouseClicked(evt -> attack(selectedTiles.get(0), selectedTiles.get(1), (RealAgent) p));
+        }
     }
 
     public void attack(String fromTile, String toTile, RealAgent p) {
@@ -641,7 +649,7 @@ public class GameController implements Initializable {
         int maxTroops = 1;
         Tile res = null;
         for (Tile t : p.getTiles()) {
-            if (t.getNumTroops()>maxTroops && atTheFront(t)==null) {
+            if (t.getNumTroops()>maxTroops && atTheFront(t)==null && (Fortify.connexTiles(t).size()>1)) {
                 maxTroops = t.getNumTroops();
                 res = t;
             }
