@@ -442,6 +442,8 @@ public class GameController implements Initializable {
                         selectedTiles.add(t.getName());
                         Label l = (Label) phaseInf.lookup("#moveFromTile");
                         (l).setText(t.getName()); l.setTextFill(Color.valueOf(t.getOccupier().getColor()));
+                        Spinner<Integer> sp = (Spinner<Integer>) phaseInf.lookup("#moveNum");
+                        sp.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, t.getNumTroops()-1,t.getNumTroops()-1));
                         select(lowestConnexTile(t));
                     }
                     else if (selectedTiles.size()==1) {
@@ -455,6 +457,8 @@ public class GameController implements Initializable {
                             unselect();
                             Label l = (Label) phaseInf.lookup("#moveFromTile");
                             l.setText("Select a tile...");
+                            Spinner<Integer> sp = (Spinner<Integer>) phaseInf.lookup("#moveNum");
+                            sp.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1,1));
                             l = (Label) phaseInf.lookup("#moveToTile");
                             l.setText("Select a tile...");
 
@@ -679,7 +683,7 @@ public class GameController implements Initializable {
         Tile res = null;
         // We prioritize frontiers to fortify
         for (Tile n : cT) {
-            if (n.getNumTroops() < min && atTheFront(n) != null) {
+            if (n.getNumTroops() < min && atTheFront(n) != null && !n.equals(t)) {
                 min = n.getNumTroops();
                 res = n;
             }
