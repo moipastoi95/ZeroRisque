@@ -3,6 +3,7 @@ package org.tovivi.gui;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -25,6 +26,8 @@ import java.beans.PropertyChangeListener;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class GameController implements Initializable {
@@ -166,7 +169,7 @@ public class GameController implements Initializable {
         }
         if (evt.getPropertyName().compareTo("realDeploy")==0) {
             Platform.runLater(() -> {
-                realAgentPhase = "Deployment"; md = new MultiDeploy();
+                realAgentPhase = "Deployment";
                 deploymentInit((Agent) evt.getSource(),(int) evt.getNewValue());
             });
         }
@@ -206,6 +209,14 @@ public class GameController implements Initializable {
                 else {
                     fortifyInit( p, biggestNF, lowestConnexTile(biggestNF));
                 }
+            });
+        }
+        if (evt.getPropertyName().compareTo("realPlayCards")==0) {
+            Platform.runLater(() -> {
+                unselect();
+                realAgentPhase = "PlayingCards";
+                RealAgent p = (RealAgent) evt.getSource();
+                cardsInit(p, (LinkedList<ArrayList<Card>>) evt.getNewValue(), 0);
             });
         }
     };
@@ -471,8 +482,10 @@ public class GameController implements Initializable {
                     }
                     break;
                 case "FortifyAfterAttack":
-                    highligth(t);
-                    selectedTiles.add(t.getName());
+                    if (selectedTiles.size()<2) {
+                        highligth(t);
+                        selectedTiles.add(t.getName());
+                    }
                     break;
             }
         }
@@ -502,6 +515,12 @@ public class GameController implements Initializable {
 
             b = new Button("Deploy"); deployInput.getChildren().add(b); b.setId("deploy"); deployInput.setSpacing(5);
 
+            for (Deployment d : md.getDeploys()) {
+                if (d instanceof Deploy) {
+                    Label dep = new Label(((Deploy) d).toShortString());
+                    deployInput.getChildren().add(dep);
+                }
+            }
 
             phaseInf.getChildren().add(deployInput);
             select(biggestTileAtFront(p));
@@ -516,13 +535,15 @@ public class GameController implements Initializable {
 
     public void deploy(String nameTile, int numTroops, int maxTroops, RealAgent p) {
 
-        md.getDeploys().add(new Deploy(numTroops, game.getTiles().get(nameTile)));
-        Label dep = new Label(nameTile + " + " + numTroops + " ==> " + (game.getTiles().get(nameTile).getNumTroops()+numTroops));
+        Deploy d = new Deploy(numTroops, game.getTiles().get(nameTile));
+        md.getDeploys().add(d);
+        Label dep = new Label(d.toShortString());
         ((VBox) phaseInf.lookup("#deployInput")).getChildren().add(dep);
         if ((maxTroops-numTroops)==0) {
-            p.setAction(md);
+            p.setAction(new MultiDeploy(md.getDeploys()));
             p.setResponse(true);
             phaseInf.getChildren().remove(1);
+            md = new MultiDeploy();
         }
         else {
             deploymentInit(p, maxTroops-numTroops);
@@ -688,12 +709,86 @@ public class GameController implements Initializable {
                 res = n;
             }
         }
+        if (res==null) {
+            for (Tile n : cT) {
+                if (n.getNumTroops() < min) {
+                    min = n.getNumTroops();
+                    res = n;
+                }
+            }
+        }
         return res;
+    }
+
+    public void cardsInit(RealAgent p, LinkedList<ArrayList<Card>> sets, int index) {
+
+        if (phaseInf.getChildren().size()>1 && phaseInf.getChildren().get(1).getId().compareTo("cardsInput")!=0) {
+            phaseInf.getChildren().remove(1);
+        }
+        Button bPrev; Button bNext; Button play; Button skip;
+        VBox vb;
+        if (phaseInf.getChildren().size()<=1) {
+
+            VBox cardsInput = new VBox(); cardsInput.setId("moveInput"); cardsInput.setAlignment(Pos.CENTER); cardsInput.setSpacing(10);
+
+            vb = new VBox(); vb.setSpacing(5); vb.setAlignment(Pos.CENTER); cardsInput.getChildren().add(vb); vb.setId("vBoxCards");
+            VBox vb2 = new VBox(); vb2.setSpacing(5); vb2.setAlignment(Pos.CENTER); cardsInput.getChildren().add(vb2);
+
+            HBox hb = new HBox(); hb.setSpacing(10); hb.setAlignment(Pos.CENTER); vb2.getChildren().add(hb);
+            bPrev = new Button("Previous"); hb.getChildren().add(bPrev); bPrev.setId("prev");
+            if (index==0) bPrev.setDisable(true); else bPrev.setDisable(false);
+            bNext = new Button("Next"); hb.getChildren().add(bNext); bNext.setId("next");
+            if (index==sets.size()-1) bNext.setDisable(true); else bNext.setDisable(false);
+
+            Label l2 = new Label("Troops : "+ Card.count(sets.get(index), p)); l2.setId("troopsCard"); vb2.getChildren().add(l2);
+
+            HBox hb3 = new HBox(); hb3.setSpacing(10); hb3.setAlignment(Pos.CENTER); vb2.getChildren().add(hb3);
+            play = new Button("Play Cards"); hb3.getChildren().add(play); bNext.setId("playCards");
+            skip = new Button("Skip"); hb3.getChildren().add(skip); bNext.setId("skipCards");
+            if (p.getDeck().size()>=5) skip.setDisable(true); else skip.setDisable(false);
+
+            phaseInf.getChildren().add(cardsInput);
+        }
+        else {
+            bPrev = (Button) phaseInf.lookup("#prev");
+            bNext = (Button) phaseInf.lookup("#next");
+            play = (Button) phaseInf.lookup("#playCards");
+            skip = (Button) phaseInf.lookup("#skipCards");
+            vb = (VBox) phaseInf.lookup("#vBoxCards");
+        }
+
+        HashMap<String,Integer> hm = Card.value(sets.get(index),p);
+        for (Card c : sets.get(index)) {
+            String str = (hm.keySet().contains(c.getBonusTile().getName())) ? " (+2)" : "";
+            Label l = new Label(c + str);
+            vb.getChildren().add(l);
+        }
+
+        bPrev.setOnMouseClicked(evt -> cardsInit(p, sets, index-1));
+        bNext.setOnMouseClicked(evt -> cardsInit(p, sets, index+1));
+        play.setOnMouseClicked(evt -> playCards(sets.get(index), p));
+        skip.setOnMouseClicked(evt -> playCards(null, p));
+    }
+
+    public void playCards(ArrayList<Card> cards, RealAgent p) {
+
+        if (cards==null) {
+            p.setAction(null);
+        }
+        else {
+            PlayCards pc = new PlayCards(cards, p);
+            md.getDeploys().add(pc); md.getDeploys().addAll(pc.autoDeploy());
+            p.setAction(md);
+        }
+        p.setResponse(true);
+        phaseInf.getChildren().remove(1);
     }
 
     public void unselect() {
         selectedTiles.forEach(s -> turnOff(game.getTiles().get(s)));
         selectedTiles = new ArrayList<>();
     }
+
+
 
 }

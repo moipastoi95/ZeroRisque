@@ -1,6 +1,7 @@
 package org.tovivi.environment.action;
 
 import org.tovivi.agent.Agent;
+import org.tovivi.environment.Card;
 import org.tovivi.environment.Tile;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;

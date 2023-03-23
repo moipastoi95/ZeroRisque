@@ -2,9 +2,7 @@ package org.tovivi.environment;
 
 import org.tovivi.agent.Agent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.*;
 
 public class Card {
     private CardType type;
@@ -149,6 +147,35 @@ public class Card {
         cards.add(deck.get(maxJ));
         cards.add(deck.get(maxK));
         return cards;
+    }
+
+    public static LinkedList<ArrayList<Card>> getAllSets(Agent player) {
+        ArrayList<Card> deck = new ArrayList<>(player.getDeck());
+        LinkedList<ArrayList<Card>> sets = new LinkedList<>();
+        while (!deck.isEmpty()) {
+            Card c = deck.remove(0);
+            for (int i=0; i<deck.size()-1; i++) {
+                for (int j=i+1; j< deck.size(); j++) {
+                    ArrayList<Card> cards = new ArrayList<>(); cards.add(c); cards.add(deck.get(i)); cards.add(deck.get(j));
+                    int count = count(cards, player);
+                    if (count>0) {
+                        Iterator<ArrayList<Card>> it = sets.iterator();
+                        boolean added = false;
+                        while (it.hasNext() && !added) {
+                            ArrayList<Card> otherCards = it.next();
+                            if (count(otherCards,player)<count) {
+                                sets.add(sets.indexOf(otherCards), cards);
+                                added=true;
+                            }
+                        }
+                        if (!it.hasNext()) {
+                            sets.add(cards);
+                        }
+                    }
+                }
+            }
+        }
+        return sets;
     }
 
     /**

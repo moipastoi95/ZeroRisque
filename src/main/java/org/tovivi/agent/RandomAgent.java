@@ -114,5 +114,10 @@ public class RandomAgent extends Agent{
     public Fortify getFortify(Tile fromTile, Tile toTile) {
         return null;
     }
+
+    @Override
+    public MultiDeploy getPlayCards() {
+        return null;
+    }
 }
 

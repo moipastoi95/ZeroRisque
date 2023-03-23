@@ -130,52 +130,52 @@ public class Game {
 
                 pTerritories = p.getTiles().size();
 
-                    // deploy
-                    String print = "";
-                    try {
-                        support.firePropertyChange("newPhase", "", "Deployment");
-                        boolean flag = a.getDeployment(p) != null;
-                        if (flag) {
-                            if (a.getDeployment(p).isNumTroopsLegal(p)) {
-                                while (flag) {
-                                    print = a.getDeployment(p).toString();
-                                    // In case of playing cards
-                                    if (a.getDeployment(p) instanceof MultiDeploy && ((MultiDeploy) a.getDeployment(p)).getDeploys().get(0) instanceof PlayCards) {
-                                        ArrayList<Card> cards = ((PlayCards) ((MultiDeploy) a.getDeployment(p)).getDeploys().get(0)).getCards();
-                                        theDiscardPile.addAll(cards);
-                                    }
-                                    flag = a.performDeployment(p);
-                                    System.out.println("    [Success] :: " + print);
-                                    if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
-                                    while (gameSpeed < -1) Thread.sleep(50);
+                // deploy
+                String print = "";
+                try {
+                    support.firePropertyChange("newPhase", "", "Deployment");
+                    boolean flag = a.getDeployment(p) != null;
+                    if (flag) {
+                        if (a.getDeployment(p).isNumTroopsLegal(p)) {
+                            while (flag) {
+                                print = a.getDeployment(p).toString();
+                                // In case of playing cards
+                                if (a.getDeployment(p) instanceof MultiDeploy && ((MultiDeploy) a.getDeployment(p)).getDeploys().get(0) instanceof PlayCards) {
+                                    ArrayList<Card> cards = ((PlayCards) ((MultiDeploy) a.getDeployment(p)).getDeploys().get(0)).getCards();
+                                    theDiscardPile.addAll(cards);
                                 }
-                            }
-                        }
-                    } catch (SimulationRunningException e) {
-                        System.out.println("    [Failed:Simulation currently running] :: " + print);
-                    } catch (IllegalActionException e) {
-                        System.out.println("    [Failed:too many troops] :: " + print);
-                    } catch (IOException | URISyntaxException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    // attack
-                    print = "";
-                    try {
-                        do {
-                            support.firePropertyChange("newPhase", "", "Attacking");
-                            if (a.getFirstOffensive(p,"Attacking") instanceof Attack) {
-                                print = a.getFirstOffensive(p, "Attacking").toString();
+                                flag = a.performDeployment(p);
                                 System.out.println("    [Success] :: " + print);
                                 if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
                                 while (gameSpeed < -1) Thread.sleep(50);
                             }
-                        } while (a.performAttack(p));
-                    } catch (SimulationRunningException e) {
-                        System.out.println("    [Failed:Simulation currently running] :: " + print);
-                    } catch (IllegalActionException e) {
-                        System.out.println("    [Failed:too many troops] :: " + print);
+                        }
                     }
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
+                } catch (IOException | URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // attack
+                print = "";
+                try {
+                    do {
+                        support.firePropertyChange("newPhase", "", "Attacking");
+                        if (a.getFirstOffensive(p,"Attacking") instanceof Attack) {
+                            print = a.getFirstOffensive(p, "Attacking").toString();
+                            System.out.println("    [Success] :: " + print);
+                            if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
+                            while (gameSpeed < -1) Thread.sleep(50);
+                        }
+                    } while (a.performAttack(p));
+                } catch (SimulationRunningException e) {
+                    System.out.println("    [Failed:Simulation currently running] :: " + print);
+                } catch (IllegalActionException e) {
+                    System.out.println("    [Failed:too many troops] :: " + print);
+                }
 
                 // fortify
                 print = "";

@@ -178,6 +178,8 @@ public abstract class Agent implements Callable<Actions> {
 
     public abstract Fortify getFortify(Tile fromTile, Tile toTile);
 
+    public abstract MultiDeploy getPlayCards();
+
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
         support.addPropertyChangeListener(pcl);
     }
