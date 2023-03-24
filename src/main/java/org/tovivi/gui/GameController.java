@@ -1,6 +1,13 @@
 package org.tovivi.gui;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
@@ -15,6 +22,7 @@ import javafx.scene.shape.Circle;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 import org.tovivi.agent.Agent;
 import org.tovivi.agent.RealAgent;
 import org.tovivi.environment.Card;
@@ -25,10 +33,7 @@ import org.tovivi.environment.action.*;
 import java.beans.PropertyChangeListener;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class GameController implements Initializable {
 
@@ -43,6 +48,11 @@ public class GameController implements Initializable {
     private Label phase ;
     @FXML
     private VBox phaseInf ;
+    @FXML
+    private ProgressBar time;
+
+    private DoubleProperty timer = new SimpleDoubleProperty(1);
+    private Timeline tl ;
 
     //Game that will be run
     private Game game ;
@@ -93,7 +103,7 @@ public class GameController implements Initializable {
                 Tile changedT = (Tile) evt.getSource();
 
                 if (!changedT.isInConflict() && game.getGameSpeed()>0) {
-                    Thread.sleep(900/game.getGameSpeed());
+                    Thread.sleep(300/game.getGameSpeed());
                     Platform.runLater(() -> {highligth(changedT);});
                 }
                 while (game.getGameSpeed()<-1) Thread.sleep(50);
@@ -108,7 +118,7 @@ public class GameController implements Initializable {
                 impact(changedT, earn);
 
                 if (!changedT.isInConflict() && game.getGameSpeed()>0) {
-                    Thread.sleep(900/game.getGameSpeed());
+                    Thread.sleep(600/game.getGameSpeed());
                     Platform.runLater(() -> {turnOff(changedT);});}
                 while (game.getGameSpeed()<-1) Thread.sleep(50);
 
@@ -149,6 +159,15 @@ public class GameController implements Initializable {
             Platform.runLater(() -> {
                 Agent pNew = (Agent) evt.getNewValue() ; Agent pOld = (Agent) evt.getOldValue();
 
+                tl.stop();
+                timer.setValue(1);
+                time.setStyle("-fx-accent: "+pNew.getColor().toLowerCase());
+                tl.play();
+
+                if (phaseInf.getChildren().size()>1) {
+                    phaseInf.getChildren().remove(1);
+                }
+
                 // We unselect potential selections and set variables for the potential real agent
                 realAgentTurn = (pNew instanceof RealAgent) ? pNew.getColor() : "";
                 realAgentPhase = "";
@@ -179,7 +198,7 @@ public class GameController implements Initializable {
                 realAgentPhase = "Attacking";
                 RealAgent p = (RealAgent) evt.getSource();
                 Tile biggestF = biggestTileAtFront(p);
-                if (biggestF.getNumTroops()==1) {
+                if (biggestF==null || biggestF.getNumTroops()==1) {
                     p.setAction(null);
                     p.setResponse(true);
                 }
@@ -219,6 +238,12 @@ public class GameController implements Initializable {
                 cardsInit(p, (LinkedList<ArrayList<Card>>) evt.getNewValue(), 0);
             });
         }
+        if (evt.getPropertyName().compareTo("Winner")==0) {
+            Platform.runLater(() -> {
+                tl.stop();
+                phase.setText((String) evt.getNewValue() + " rules the World");
+            });
+        }
     };
 
 
@@ -250,6 +275,10 @@ public class GameController implements Initializable {
 
         BackgroundFill bf = new BackgroundFill(SEA, null, null);
         world.setBackground(new Background(bf));
+
+        tl = new Timeline(new KeyFrame(Duration.seconds(0.1), e -> timer.setValue(timer.getValue()-(0.1/(double) game.getPlayclock()))));
+        tl.setCycleCount(Animation.INDEFINITE);
+        time.progressProperty().bindBidirectional(timer);
 
         for (Tile t : game.getTiles().values()) {
             fill(t, t.getOccupier().getColor());

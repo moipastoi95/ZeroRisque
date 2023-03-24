@@ -1,6 +1,5 @@
 package org.tovivi.environment;
 
-
 import org.tovivi.agent.Agent;
 import org.tovivi.agent.AgentMonteCarlo;
 import org.tovivi.agent.Legume;
@@ -123,18 +122,33 @@ public class Game {
 
             pTerritories = p.getTiles().size();
             //if (p instanceof AgentMonteCarlo) this.playAgent(p, executor);
-
             Future<Actions> future = executor.submit(p);
+            FutureTask<Actuator> futureTask;
             try {
-                Actions a = future.get(playclock, TimeUnit.SECONDS);
+                long startTurn = System.currentTimeMillis();
+                Actions a = future.get(playclock*1000L - (System.currentTimeMillis() - startTurn), TimeUnit.MILLISECONDS);
 
                 pTerritories = p.getTiles().size();
-
                 // deploy
                 String print = "";
                 try {
+                    System.out.println("oui c'est passé");
                     support.firePropertyChange("newPhase", "", "Deployment");
-                    boolean flag = a.getDeployment(p) != null;
+                    // Set the futureTask
+                    futureTask = new FutureTask<>((() -> {
+                        try {
+                            a.getDeployment(p);
+                        } catch (IOException | URISyntaxException | IllegalActionException |
+                                 SimulationRunningException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }), null);
+                    // Submit the task until we get the result
+                    executor.submit(futureTask);
+                    while (!futureTask.isDone() && (playclock*1000L - (System.currentTimeMillis() - startTurn))>0) {
+                        Thread.sleep(1);
+                    }
+                    boolean flag = (futureTask.isDone()) && a.getDeployment(p) != null;
                     if (flag) {
                         if (a.getDeployment(p).isNumTroopsLegal(p)) {
                             while (flag) {
@@ -146,7 +160,7 @@ public class Game {
                                 }
                                 flag = a.performDeployment(p);
                                 System.out.println("    [Success] :: " + print);
-                                if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
+                                if (gameSpeed > 0) Thread.sleep(300 / gameSpeed);
                                 while (gameSpeed < -1) Thread.sleep(50);
                             }
                         }
@@ -160,32 +174,54 @@ public class Game {
                 }
 
                 // attack
+                futureTask = new FutureTask<>((() -> {a.getFirstOffensive(p,"Attacking");}), null);
+                executor.submit(futureTask);
                 print = "";
-                try {
-                    do {
-                        support.firePropertyChange("newPhase", "", "Attacking");
-                        if (a.getFirstOffensive(p,"Attacking") instanceof Attack) {
-                            print = a.getFirstOffensive(p, "Attacking").toString();
-                            System.out.println("    [Success] :: " + print);
-                            if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
-                            while (gameSpeed < -1) Thread.sleep(50);
+                do {
+                    support.firePropertyChange("newPhase", "", "Attacking");
+
+                    // Execute it and wait for the answer
+                    while (!futureTask.isDone() && (playclock*1000L - (System.currentTimeMillis() - startTurn))>0) {
+                        Thread.sleep(1);
+                    }
+                    if (futureTask.isDone() && a.getFirstOffensive(p, "GetAttack") instanceof Attack) {
+                        print = a.getFirstOffensive(p, "GetAttack").toString();
+                        System.out.println("    [Success] :: " + print);
+                        if (gameSpeed > 0) Thread.sleep(300 / gameSpeed);
+                        while (gameSpeed < -1) Thread.sleep(50);
+                    }
+                    System.out.println();
+                    // Set the futureTask
+                    futureTask = new FutureTask<>((() -> {
+                        try {
+                            a.performAttack(p);
+                        } catch (IllegalActionException | SimulationRunningException e) {
+                            throw new RuntimeException(e);
                         }
-                    } while (a.performAttack(p));
-                } catch (SimulationRunningException e) {
-                    System.out.println("    [Failed:Simulation currently running] :: " + print);
-                } catch (IllegalActionException e) {
-                    System.out.println("    [Failed:too many troops] :: " + print);
-                }
+                    }), null);
+                    // Execute it and wait for the answer
+                    executor.submit(futureTask);
+                    while (!futureTask.isDone() && (playclock*1000L - (System.currentTimeMillis() - startTurn))>0) {
+                        Thread.sleep(1);
+                    }
+                } while (futureTask.isDone() && a.getFirstOffensive(p, "GetAttack") != null && a.getFirstOffensive(p, "GetAttack") instanceof Attack);
 
                 // fortify
                 print = "";
                 try {
                     support.firePropertyChange("newPhase", "", "Fortifying");
-                    if (a.getFirstOffensive(p,"Fortifying") != null) {
-                        print = a.getFirstOffensive(p,"Fortifying").toString();
+                    // Set the futureTask
+                    futureTask = new FutureTask<>((() -> {a.getFirstOffensive(p,"Fortifying");}), null);
+                    // Submit the task until we get the result or the timeout exception
+                    executor.submit(futureTask);
+                    while (!futureTask.isDone() && (playclock*1000L - (System.currentTimeMillis() - startTurn))>0) {
+                        Thread.sleep(1);
+                    }
+                    if (futureTask.isDone() && a.getFirstOffensive(p,"GetFortify") != null) {
+                        print = a.getFirstOffensive(p,"GetFortify").toString();
                         a.performFortify(p);
                         System.out.println("    [Success] :: " + print);
-                        if (gameSpeed > 0) Thread.sleep(600 / gameSpeed);
+                        if (gameSpeed > 0) Thread.sleep(300 / gameSpeed);
                         while (gameSpeed < -1) Thread.sleep(50);
                     }
                 } catch (SimulationRunningException e) {
@@ -226,21 +262,20 @@ public class Game {
 
             }
 
-
-            // executor.shutdownNow();
+            executor.shutdownNow();
+            executor = Executors.newSingleThreadExecutor();
 
             // next player
             index = Math.floorMod(index+1,turns.size());
             try {
-                if (gameSpeed>0) Thread.sleep(1800/gameSpeed);
+                if (gameSpeed>0) Thread.sleep(1200/gameSpeed);
                 while (gameSpeed<-1) Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
         }
-        executor.shutdownNow();
         System.out.println("[END] The winner is : " + turns.get(0).getColor() + ". Psartek !");
+        support.firePropertyChange("Winner", 0, turns.get(0).getColor());
     }
 
     private void setupElements(ArrayList<Agent> agents, int territories) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
@@ -381,6 +416,15 @@ public class Game {
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
         support.addPropertyChangeListener(pcl);
     }
+
+    public int getPlayclock() {
+        return playclock;
+    }
+
+    public void setPlayclock(int playclock) {
+        this.playclock = playclock;
+    }
+
     public static void main(String[] args) throws IOException {
         // this main function will just start the game, with parameters (list of player, list of tiles)
         // the Game object will make players play, and restrict time for turn. It will end by giving the winner

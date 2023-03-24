@@ -46,7 +46,8 @@ public class RealAgent extends Agent {
     @Override
     public Deployment getNextDeploy() {
 
-        int troopsCard = 0; MultiDeploy playCards = new MultiDeploy();
+        int troopsCard = 0;
+        MultiDeploy playCards;
         if (!Card.getAllSets(this).isEmpty()) {
             playCards = getPlayCards();
             if (playCards!=null) troopsCard = Card.countOnlyCombo(((PlayCards) playCards.getDeploys().get(0)).getCards(), this);

@@ -85,9 +85,9 @@ public class Actions {
     }
 
     public Offensive getFirstOffensive(Agent player, String phase) {
-        if(onLiveAction && firstOffensive==null) {
+        if(onLiveAction) {
             if(phase.compareTo("Attacking")==0) firstOffensive = player.getNextAttack();
-            else firstOffensive = player.getFortify();
+            else if(phase.compareTo("Fortifying")==0) firstOffensive = player.getFortify();
         }
         return firstOffensive;
     }
