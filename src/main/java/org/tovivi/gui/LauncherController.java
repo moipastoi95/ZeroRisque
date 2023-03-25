@@ -28,7 +28,7 @@ public class LauncherController implements Initializable {
 
     protected static Game game ;
     @FXML
-    private ComboBox<Integer> playclock;
+    private ComboBox<String> playclock;
     @FXML
     private ComboBox<String> blue;
     @FXML
@@ -45,19 +45,19 @@ public class LauncherController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         // Set the agents
-        red.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo"));
+        red.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo", "RealAgent"));
         red.setValue("AgentMonteCarlo");
-        blue.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo"));
+        blue.setItems(FXCollections.observableArrayList("RandomAgent", "AgentMonteCarlo", "RealAgent"));
         blue.setValue("RandomAgent");
 
 
         // Set playclock value
-        playclock.setItems(FXCollections.observableArrayList(10, 60, 120));
-        playclock.setValue(120);
+        playclock.setItems(FXCollections.observableArrayList("120", "60", "30"));
+        playclock.setValue("120");
 
         // Set the number of territories and game speed
         territories.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 21, 14));
-        speed.setItems(FXCollections.observableArrayList("1", "2", "5", "30", "MAX"));
+        speed.setItems(FXCollections.observableArrayList("1", "3", "15", "MAX"));
         speed.setValue("1");
     }
 
@@ -87,9 +87,9 @@ public class LauncherController implements Initializable {
                 sp = -1;
             }
             else {
-                sp = Integer.valueOf(speed.getValue());
+                sp = Integer.valueOf(speed.getValue())*2;
             }
-            game = new Game(agents, territories.getValue(), playclock.getValue(), sp);
+            game = new Game(agents, territories.getValue(), Integer.valueOf(playclock.getValue()), sp);
 
             //Switching to the game to instantiate it
             App.getStage().hide();

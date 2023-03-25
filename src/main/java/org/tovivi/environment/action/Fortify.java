@@ -11,10 +11,6 @@ import java.util.HashMap;
 
 public class Fortify extends Offensive {
 
-    private Tile fromTile;
-    private Tile toTile;
-    private int numTroops;
-
     /**
      * Fortify a tile with troops from another tile
      * @param fromTile the tile where to get troops
@@ -57,12 +53,15 @@ public class Fortify extends Offensive {
         if (stopFortification()) {
             return true;
         }
-        // each tile is owned by the player
+        // each tile is owned by the player or the toTile has 0 troops
         if(!fromTile.getOccupier().equals(player) || !toTile.getOccupier().equals(player)) {
             return false;
         }
         // the fromTile has enough troops
         if (fromTile.getNumTroops() <= numTroops) {
+            return false;
+        }
+        if (!connexTiles(fromTile).contains(toTile)) {
             return false;
         }
         return true;
@@ -85,6 +84,7 @@ public class Fortify extends Offensive {
         // proceed to the fortification
         fromTile.setNumTroops(fromTile.getNumTroops()-numTroops);
         toTile.setNumTroops(toTile.getNumTroops()+numTroops);
+
         return null;
     }
 
@@ -110,6 +110,22 @@ public class Fortify extends Offensive {
         toTile.setNumTroops(toTile.getNumTroops()-numTroops);
 
         return true;
+    }
+
+    public static ArrayList<Tile> connexTiles(Tile t) {
+        ArrayList<Tile> res = new ArrayList<>();
+        ArrayList<Tile> front = new ArrayList<>(); front.add(t);
+        while (!front.isEmpty()) {
+            String color = front.get(0).getOccupier().getColor();
+            ArrayList<Tile> neigh = front.get(0).getNeighbors();
+            res.add(front.remove(0));
+            for (Tile n : neigh) {
+                if (!front.contains(n) && !res.contains(n) && n.getOccupier().getColor().compareTo(color)==0) {
+                    front.add(n);
+                }
+            }
+        }
+        return res;
     }
 
     @Override

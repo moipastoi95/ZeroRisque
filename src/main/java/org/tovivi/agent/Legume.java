@@ -56,4 +56,14 @@ public class Legume extends Agent{
     public Fortify getFortify() {
         return null;
     }
+
+    @Override
+    public Fortify getFortify(Tile fromTile, Tile toTile) {
+        return null;
+    }
+
+    @Override
+    public MultiDeploy getPlayCards() {
+        return null;
+    }
 }

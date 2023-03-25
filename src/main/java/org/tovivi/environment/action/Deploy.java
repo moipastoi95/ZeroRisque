@@ -62,6 +62,13 @@ public class Deploy extends Deployment {
         return "[Deploy:" + tile.getName() + " -> +" + numTroops + "]";
     }
 
+    public String toShortString() {
+        if (stopDeploy()) {
+            return "null -> +0";
+        }
+        return tile.getName() + " -> +" + numTroops;
+    }
+
     @Override
     boolean isMoveLegal(Agent player) {
         return tile.getOccupier().equals(player);

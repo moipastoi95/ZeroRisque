@@ -3,9 +3,9 @@ package org.tovivi.environment.action;
 import org.tovivi.environment.Tile;
 
 public abstract class Offensive extends Actuator {
-    private Tile fromTile;
-    private Tile toTile;
-    private int numTroops;
+    protected Tile fromTile;
+    protected Tile toTile;
+    protected int numTroops;
 
     public Offensive(Tile fromTile, Tile toTile, int numTroops) {
         this.fromTile = fromTile;

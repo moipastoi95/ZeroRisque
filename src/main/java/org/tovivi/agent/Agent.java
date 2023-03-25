@@ -18,7 +18,7 @@ public abstract class Agent implements Callable<Actions> {
     private Game game;
     private ArrayList<Card> deck;
 
-    private PropertyChangeSupport support = new PropertyChangeSupport(this);
+    protected PropertyChangeSupport support = new PropertyChangeSupport(this);
     private LinkedList<LinkedList<Double>> proba = new LinkedList<>();
 
     /**
@@ -175,6 +175,10 @@ public abstract class Agent implements Callable<Actions> {
     public abstract Deployment getNextDeploy() throws IOException, URISyntaxException;
     public abstract Attack getNextAttack();
     public abstract Fortify getFortify();
+
+    public abstract Fortify getFortify(Tile fromTile, Tile toTile);
+
+    public abstract MultiDeploy getPlayCards();
 
     public void addPropertyChangeListener(PropertyChangeListener pcl) {
         support.addPropertyChangeListener(pcl);
