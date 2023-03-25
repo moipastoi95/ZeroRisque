@@ -1,0 +1,34 @@
+######################################################################################################
+
+deploy:213,500,210:relu,softmax
+
+# Deploy NN :
+# Input Shape : 213 parameters [3*42 (territories) + 2*42 (cards) + 2 (Jokers) + 1 (Turn)]
+# Hidden layer : 500 parameters
+# activation 1 : relu
+# Output Shape : 210 parameters [5*42 (for each territory, 5 possible amount of troops deployed]
+# activation 2 : softmax
+
+######################################################################################################
+
+attack:213,500,481:relu,softmax
+
+# Attack NN :
+# Input Shape : 213
+# Hidden layer : 500
+# activation 1 : relu
+# Output Shape : 481 parameters [5*42 (for each territory, 5 possible actions : deploy 2 troops, 1/4 of the troops, 1/2, 3/4, all the troops)]
+# activation 2 : softmax
+
+######################################################################################################
+
+fortify:213,500,1723:relu,softmax
+
+# Attack NN :
+# Input Shape : 213
+# Hidden layer : 500
+# activation 1 : relu
+# Output Shape : 1723 [(41*42) (number of possible fortifications) + 1 for the skip action]
+# activation 2 : softmax
+
+######################################################################################################

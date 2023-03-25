@@ -96,7 +96,7 @@ public class RandomAgent extends Agent{
     }
 
     @Override
-    public Deployment getNextDeploy() {
+    public Deployment getNextDeploy(int numTroops) {
         return null;
     }
 

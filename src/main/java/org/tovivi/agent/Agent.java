@@ -172,7 +172,7 @@ public abstract class Agent implements Callable<Actions> {
 
     public abstract Actions action() throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
-    public abstract Deployment getNextDeploy() throws IOException, URISyntaxException;
+    public abstract Deployment getNextDeploy(int numTroops) throws IOException, URISyntaxException;
     public abstract Attack getNextAttack();
     public abstract Fortify getFortify();
 

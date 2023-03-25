@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 
 public class Actions {
     private Deployment deployment;
+    private int troopsRemaining = 0;
     private Offensive firstOffensive;
     private boolean onLiveAction = false;
 
@@ -30,7 +31,7 @@ public class Actions {
     }
 
     /**
-     * perform 1 deployment operation
+     * perform 1 deployment operation (and in the case of onLiveAction can ask for the next deployment if it remains troops
      * @param player the player
      * @return tell if there is more deployment operation left
      * @throws IllegalActionException
@@ -38,7 +39,13 @@ public class Actions {
      */
     public boolean performDeployment(Agent player) throws IllegalActionException, SimulationRunningException, IOException, URISyntaxException {
         if (onLiveAction) {
-            if(deployment != null) deployment = (Deployment) deployment.perform(player);
+            if(deployment != null) {
+                troopsRemaining -= deployment.getNumTroops();
+                deployment = (Deployment) deployment.perform(player);
+                if (troopsRemaining>0) {
+                    deployment = player.getNextDeploy(troopsRemaining);
+                }
+            }
             return deployment != null;
         }
         if (deployment != null) {
@@ -78,8 +85,9 @@ public class Actions {
     }
 
     public Deployment getDeployment(Agent player) throws IOException, URISyntaxException, IllegalActionException, SimulationRunningException {
-        if (onLiveAction) {
-            if(deployment == null) deployment = player.getNextDeploy();
+        if (onLiveAction && deployment==null) {
+            troopsRemaining = player.getNumDeploy();
+            deployment = player.getNextDeploy(troopsRemaining);
         }
         return deployment;
     }
@@ -90,5 +98,13 @@ public class Actions {
             else if(phase.compareTo("Fortifying")==0) firstOffensive = player.getFortify();
         }
         return firstOffensive;
+    }
+
+    public int getTroopsRemaining() {
+        return troopsRemaining;
+    }
+
+    public void setTroopsRemaining(int troopsRemaining) {
+        this.troopsRemaining = troopsRemaining;
     }
 }

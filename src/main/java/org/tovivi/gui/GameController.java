@@ -566,17 +566,10 @@ public class GameController implements Initializable {
 
         Deploy d = new Deploy(numTroops, game.getTiles().get(nameTile));
         md.getDeploys().add(d);
-        Label dep = new Label(d.toShortString());
-        ((VBox) phaseInf.lookup("#deployInput")).getChildren().add(dep);
-        if ((maxTroops-numTroops)==0) {
-            p.setAction(new MultiDeploy(md.getDeploys()));
-            p.setResponse(true);
-            phaseInf.getChildren().remove(1);
-            md = new MultiDeploy();
-        }
-        else {
-            deploymentInit(p, maxTroops-numTroops);
-        }
+        p.setAction(new MultiDeploy(md.getDeploys()));
+        p.setResponse(true);
+        phaseInf.getChildren().remove(1);
+        md = new MultiDeploy();
     }
 
     /**

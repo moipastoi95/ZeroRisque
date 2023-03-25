@@ -101,7 +101,7 @@ public class AgentMonteCarlo extends Agent {
     }
 
     @Override
-    public Deployment getNextDeploy() throws IOException, URISyntaxException {
+    public Deployment getNextDeploy(int numTroops) throws IOException, URISyntaxException {
         this.root.setN(0);
         this.root.resetScore();
         this.root.setPhase("Deploy");

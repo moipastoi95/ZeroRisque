@@ -124,15 +124,14 @@ public class Game {
             //if (p instanceof AgentMonteCarlo) this.playAgent(p, executor);
             Future<Actions> future = executor.submit(p);
             FutureTask<Actuator> futureTask;
+            long startTurn = System.currentTimeMillis();
             try {
-                long startTurn = System.currentTimeMillis();
                 Actions a = future.get(playclock*1000L - (System.currentTimeMillis() - startTurn), TimeUnit.MILLISECONDS);
 
                 pTerritories = p.getTiles().size();
                 // deploy
                 String print = "";
                 try {
-                    System.out.println("oui c'est passé");
                     support.firePropertyChange("newPhase", "", "Deployment");
                     // Set the futureTask
                     futureTask = new FutureTask<>((() -> {
@@ -152,16 +151,35 @@ public class Game {
                     if (flag) {
                         if (a.getDeployment(p).isNumTroopsLegal(p)) {
                             while (flag) {
+
+                                // Set the futureTask
+                                futureTask = new FutureTask<>((() -> {
+                                    try {
+                                        a.performDeployment(p);
+                                    } catch (IOException | URISyntaxException | IllegalActionException |
+                                             SimulationRunningException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }), null);
+
                                 print = a.getDeployment(p).toString();
                                 // In case of playing cards
                                 if (a.getDeployment(p) instanceof MultiDeploy && ((MultiDeploy) a.getDeployment(p)).getDeploys().get(0) instanceof PlayCards) {
                                     ArrayList<Card> cards = ((PlayCards) ((MultiDeploy) a.getDeployment(p)).getDeploys().get(0)).getCards();
                                     theDiscardPile.addAll(cards);
                                 }
-                                flag = a.performDeployment(p);
-                                System.out.println("    [Success] :: " + print);
+
                                 if (gameSpeed > 0) Thread.sleep(300 / gameSpeed);
                                 while (gameSpeed < -1) Thread.sleep(50);
+
+                                // Submit the task until we get the result
+                                executor.submit(futureTask);
+                                while (!futureTask.isDone() && (playclock*1000L - (System.currentTimeMillis() - startTurn))>0) {
+                                    Thread.sleep(1);
+                                }
+                                flag = a.getTroopsRemaining()>0 && futureTask.isDone();
+                                System.out.println("    [Success] :: " + print);
+
                             }
                         }
                     }
@@ -261,14 +279,13 @@ public class Game {
                 }
 
             }
-
             executor.shutdownNow();
             executor = Executors.newSingleThreadExecutor();
 
             // next player
             index = Math.floorMod(index+1,turns.size());
             try {
-                if (gameSpeed>0) Thread.sleep(1200/gameSpeed);
+                if (gameSpeed>0 && (playclock*1000L - (System.currentTimeMillis() - startTurn))>0) Thread.sleep(1200/gameSpeed);
                 while (gameSpeed<-1) Thread.sleep(50);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

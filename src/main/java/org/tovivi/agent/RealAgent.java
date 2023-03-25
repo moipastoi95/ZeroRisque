@@ -44,7 +44,7 @@ public class RealAgent extends Agent {
     }
 
     @Override
-    public Deployment getNextDeploy() {
+    public Deployment getNextDeploy(int numTroops) {
 
         int troopsCard = 0;
         MultiDeploy playCards;
@@ -53,11 +53,11 @@ public class RealAgent extends Agent {
             if (playCards!=null) troopsCard = Card.countOnlyCombo(((PlayCards) playCards.getDeploys().get(0)).getCards(), this);
         }
         response = false;
-        support.firePropertyChange("realDeploy",0, getNumDeploy()+troopsCard);
+        support.firePropertyChange("realDeploy",0, numTroops+troopsCard);
 
         while (!response) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -71,7 +71,7 @@ public class RealAgent extends Agent {
         support.firePropertyChange("realAttack",0, 1);
         while (!response) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -85,7 +85,7 @@ public class RealAgent extends Agent {
         support.firePropertyChange("realFortify",0,1);
         while (!response) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
