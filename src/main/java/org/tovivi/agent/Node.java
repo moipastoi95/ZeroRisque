@@ -19,7 +19,7 @@ public class Node {
 
     private ArrayList<Card> deck;
     private int N; //Nombre de visite de ce noeud
-    private int score;
+    private double score;
     private String player;
     private boolean noMoreChild = false;
     private String phase;
@@ -83,7 +83,7 @@ public class Node {
 
             else if(action instanceof Attack){
                 Attack att = (Attack) action;
-                double prob = player.getProba(att.getFromTile().getNumTroops()%50, att.getToTile().getNumTroops()%50);
+                double prob = player.getProba(att.getFromTile().getNumTroops(), att.getToTile().getNumTroops());
                 if(prob < 0.4) prob = 0.0;
                 Game nextLoose = new Game(this.game);
                 nextLoose.getTiles().get(att.getFromTile().getName()).setNumTroops(1);
@@ -130,11 +130,11 @@ public class Node {
 
     public ArrayList<Card> getDeck(){return this.deck;}
 
-    public int getScore(){return this.score;}
+    public double getScore(){return this.score;}
 
     public void resetScore(){this.score = 0;}
 
-    public void addScore(int value){this.score += value;}
+    public void addScore(double value){this.score += value;}
 
     public Node getParent() {
         return parent;
@@ -179,13 +179,11 @@ public class Node {
             if(t.getOccupier().getColor() == player.getColor()) {
                 boolean flag = false;
                 ArrayList<String> opponentTiles = new ArrayList<>();
-                if(t.getNumTroops() > 1) {
-                    for (Tile neighbor : t.getNeighbors()) {
-                        if (neighbor.getOccupier().getColor() != player.getColor()) {
-                            flag = true;
-                            // add the real ref of tiles
-                            opponentTiles.add(g.getTiles().get(neighbor.getName()).getName());
-                        }
+                for (Tile neighbor : t.getNeighbors()) {
+                    if (neighbor.getOccupier().getColor() != player.getColor()) {
+                        flag = true;
+                        // add the real ref of tiles
+                        opponentTiles.add(g.getTiles().get(neighbor.getName()).getName());
                     }
                 }
                 if (flag) {
@@ -233,19 +231,28 @@ public class Node {
     }
 
     private ArrayList<Actuator> getAttackActions() {
-        Agent player = this.getPlayer();
         ArrayList<Actuator> actions = new ArrayList<>();
 
         for(String tileKey: frontier.keySet()){
             Tile tile = this.getTile(tileKey);
             for(String oppTileKey: frontier.get(tileKey)){
                 if(tile.getNumTroops()-1 != 0){
-                    actions.add(new Attack(tile, this.getTile(oppTileKey), tile.getNumTroops()-1, null, null));
+                    Tile oppTile = this.getTile(oppTileKey);
+                    double prob = this.getPlayer().getProba(tile.getNumTroops(), oppTile.getNumTroops());
+                    //System.out.println(prob);
+                    boolean flag = prob > 0.45;
+                    if(flag)
+                        actions.add(new Attack(tile, this.getTile(oppTileKey), tile.getNumTroops()-1, null, null));
                 }
             }
         }
+        //System.out.println("GetAttackValidé");
         actions.add(null);
         return actions;
+    }
+
+    public boolean testProb(double prob){
+        return Math.random() < prob;
     }
 
     public Tile getTile(String key){return this.getGame().getTiles().get(key);}

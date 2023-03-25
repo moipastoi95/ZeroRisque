@@ -407,18 +407,19 @@ public class Game {
         int scoreAgent = 0;
         int scoreOpp = 0;
         for(Tile t: this.getTiles().values()){
-            if(t.getOccupier().getColor() == player.getColor()){scoreAgent += t.getNumTroops();}
-            else if(t.getOccupier().getColor() != "Grey"){scoreOpp += t.getNumTroops();}
+            if(t.getOccupier().getColor() == player.getColor()){scoreAgent += t.getNumTroops() + 5;}
+            else if(t.getOccupier().getColor() != "Grey"){scoreOpp += t.getNumTroops() + 5;}
+            else scoreOpp += t.getNumTroops()/2;
         }
         int res = scoreAgent - scoreOpp;
 
         if(res > 0){
-            if(res > 50) res = 100;
-            else res = res+50;
+            if(res > 300) res = 600;
+            else res = res+300;
         }
         else {
-            if(res < -50) res = 0;
-            else res = res + 50;
+            if(res < -300) res = 0;
+            else res = res + 300;
         }
 
         return res;

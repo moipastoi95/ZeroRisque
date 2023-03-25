@@ -4,22 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Cartes ajoutées (ça a l'air de tout bien marché c'est nickel chrome)">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/MultiLayerPerceptron.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/RealAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/RealAgent.java" afterDir="false" />
+    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Agent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Node.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Actions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Actions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/GameController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/LauncherController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/LauncherController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/game.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/game.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/launcher.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/launcher.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,6 +94,13 @@
     </option>
   </component>
   <component name="RunManager">
+    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.tovivi.gui.App" />
+      <module name="zerorisque" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="ZeroRisque3" />
       <method v="2">
