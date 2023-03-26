@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="">
+    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Résolution de tous les bugs normalement, Agent pas ouf mais il jour">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Agent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Node.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/Game.java" afterDir="false" />
@@ -138,6 +137,7 @@
       <workItem from="1679606460554" duration="3655000" />
       <workItem from="1679610128541" duration="8179000" />
       <workItem from="1679651974356" duration="1084000" />
+      <workItem from="1679838614739" duration="15313000" />
     </task>
     <task id="LOCAL-00001" summary="Maven Structure">
       <created>1678443731577</created>
@@ -356,7 +356,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679534332939</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Résolution de tous les bugs normalement, Agent pas ouf mais il jour">
+      <created>1679762409670</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1679762409671</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -367,14 +374,25 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="PropertyChangeListener" />
     <MESSAGE value="Real Time playing" />
     <MESSAGE value="Real Time playing + More continents" />
     <MESSAGE value="Map finie" />
@@ -399,6 +417,7 @@
     <MESSAGE value="Ptit debug (mtn c'est 100% garantit code de qualité pendant 2 ans)" />
     <MESSAGE value="Bug fortification (le spinner n'était pas actualisé)" />
     <MESSAGE value="Cartes ajoutées (ça a l'air de tout bien marché c'est nickel chrome)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cartes ajoutées (ça a l'air de tout bien marché c'est nickel chrome)" />
+    <MESSAGE value="Résolution de tous les bugs normalement, Agent pas ouf mais il jour" />
+    <option name="LAST_COMMIT_MESSAGE" value="Résolution de tous les bugs normalement, Agent pas ouf mais il jour" />
   </component>
 </project>

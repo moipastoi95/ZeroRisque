@@ -1,6 +1,5 @@
 package org.tovivi.agent;
 
-import org.tovivi.environment.Card;
 import org.tovivi.environment.Game;
 import org.tovivi.environment.Tile;
 import org.tovivi.environment.action.*;
@@ -8,7 +7,6 @@ import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -18,13 +16,11 @@ import static java.lang.Math.*;
 public class AgentMonteCarlo extends Agent {
 
     private Node root;
-
     private Node actual_node;
     private int nbActions = 0;
-    private long timeLimit = 5000;
-    private int E = 10;
-    private double c = sqrt(6); //Paramètre d'exploration
-    private int depth = 0; //Profondeur actuelle de la recherche
+    private long timeLimit = 2000;
+    private int E = 1;
+    private double c = sqrt(4); //Paramètre d'exploration
 
     public AgentMonteCarlo(String color, Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super(color, game);
@@ -33,6 +29,17 @@ public class AgentMonteCarlo extends Agent {
 
     public AgentMonteCarlo(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super(color);
+    }
+
+    /**Create a monte carlo agent with the given parameters E and C
+     * @param E Multiplied by game's score in the UCT calculus
+     * @param c Exploration parameter
+     * */
+    public AgentMonteCarlo(String color, Game game, int E, double c) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        super(color, game);
+        this.E = E;
+        this.c = c;
+        this.root = new Node(new Game(game), 0, null, this.getDeck(), this, "Deploy");
     }
 
     public AgentMonteCarlo(Agent agent) {
@@ -54,31 +61,32 @@ public class AgentMonteCarlo extends Agent {
         return new Actions();
     }
 
-    //TODO: while(ressource_left):
-    // 0 - Choisir le nouveau noeud à partir duquel explorer (fonction traverse)
-    // 1 - A partir de ce noeud parcourir l'arbre jusqu'à un état final (fonction rollout)
-    // 2 - Calculer la valeur de l'état final (en fonction de qui à gagné)
-    // 3 - Propager la valeur de manière récursive sur les noeuds parents (fonction backpropagate)
-    // 4 - Renvoyer le meilleur child
+    /**
+     * Monte Carlo tree search from the root node
+     * 0 - Choose the new node from where to explore (traverse function)
+     * 1 - From this node, play the game until a certain depth (rollout function) and get the value of the resulting game
+     * 2 - Recursively propagate this value to the parents' node (backpropagate function)
+     * @return 3 - The best Action to do (As an actuator)*/
     public Actuator actionTest() throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
-        Random rand = new Random();
         Actuator new_action;
         ArrayList<Actuator> possible_actions;
 
-        int actualD = 0;
+        long timeL = timeLimit;
 
-        Long time = System.currentTimeMillis();
+        if(this.root.getPhase().equals("Deploy") || this.root.getPhase().equals("Fortify")){
+            timeL = 4*timeLimit;
+        }
 
-        while (System.currentTimeMillis() - time < timeLimit) {
-            depth = 0;
+        long time = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - time < timeL) {
+            //System.out.println(this.best_child());
             this.traverse();
-            /*if(depth != actualD){
-                actualD = depth;
-                System.out.println("Profondeur en cour" + actualD);
-            }*/
 
+            //System.out.println(this.actual_node.getPhase());
             possible_actions = this.actual_node.getActions();
+            //System.out.println(possible_actions);
             ArrayList<Actuator> redundant = new ArrayList<>();
             for (Actuator act : actual_node.getChilds().keySet()) {
                 for (Actuator newAct : possible_actions) {
@@ -90,43 +98,35 @@ public class AgentMonteCarlo extends Agent {
                     else if(act == null && newAct == null) redundant.add(null);
                 }
             }
+            if(nbActions == 0 && possible_actions.contains(null)) possible_actions.remove(null);
             possible_actions.removeAll(redundant);
 
             int s = possible_actions.size();
             if(s == 0) this.backPropagate(actual_node, 1);
             else {
-                new_action = possible_actions.get(rand.nextInt(s));
+                new_action = possible_actions.get(0);
                 actual_node.generateChilds(new_action);
-
                 double Score;
                 Node next_node = actual_node.getNextNode(new_action);
                 Score = this.rollout(next_node);
                 this.backPropagate(next_node, Score);
                 if(s == 1) actual_node.setNoMoreChild();
             }
-
-            //Actuator best_action = this.best_child();
-            //System.out.println();
-            //System.out.println("Meilleur action actuel " + best_action);
         }
 
         //System.out.println("Appel de best child");
         new_action = this.best_child();
-        //System.out.println("Good");
-
-        this.depth = 0;
-
-        //System.out.println(new_action);
 
         return new_action;
     }
 
+    /**Should return the best deployment to do in the actual situation by calling the function action test*/
     @Override
     public Deployment getNextDeploy() throws IOException, URISyntaxException {
+        this.nbActions = 0;
         this.root.setN(0);
         this.root.resetScore();
         this.root.setPhase("Deploy");
-        depth = 0;
 
         try {
             this.root.setGame(new Game(this.getGame()), this);
@@ -152,12 +152,12 @@ public class AgentMonteCarlo extends Agent {
         }
     }
 
+    /**Should return the best Attack to do in the actual situation by calling the function action test*/
     @Override
     public Attack getNextAttack() {
         this.root.setN(0);
         this.root.resetScore();
         this.root.setPhase("Attack");
-        depth = 0;
 
         try {
             this.root.setGame(new Game(this.getGame()), this);
@@ -167,7 +167,6 @@ public class AgentMonteCarlo extends Agent {
 
 
         try {
-            int scoreAct = this.getGame().score(this);
             //System.out.println(scoreAct);
             Actuator actionToPerfom = this.actionTest();
             //System.out.println(actionToPerfom);
@@ -183,9 +182,33 @@ public class AgentMonteCarlo extends Agent {
         }
     }
 
+    /**Should return the best Fortification to do in the actual situation by calling the function action test*/
     @Override
     public Fortify getFortify() {
-        return null;
+        this.root.setN(0);
+        this.root.resetScore();
+        this.root.setPhase("Fortify");
+
+        try {
+            this.root.setGame(new Game(this.getGame()), this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try {
+            //System.out.println(scoreAct);
+            Actuator actionToPerfom = this.actionTest();
+            //System.out.println(actionToPerfom);
+            if(actionToPerfom == null) return null;
+            Fortify fort = (Fortify) actionToPerfom;
+            fort.setFromTile(this.getGame().getTiles().get(fort.getFromTile().getName()));
+            fort.setToTile(this.getGame().getTiles().get(fort.getToTile().getName()));
+            return fort;
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | InstantiationException |
+                 IllegalAccessException | IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -199,15 +222,12 @@ public class AgentMonteCarlo extends Agent {
     }
 
     /**
-     * Parcours l'arbre actuel jusqu'au meilleur leaf node actuel
-     *
-     * @return le meilleur noeud feuille
+     * Traverse the actual tree to find the actual best node to extend from
      */
-    public void traverse() throws IOException, URISyntaxException {
+    public void traverse() {
         actual_node = this.root;
-        Actuator act = null;
+        Actuator act;
         while (actual_node.getNoMoreChild()) {
-            depth += 1;
             act = this.getBestChild(actual_node);
             //if(act == null) System.out.println("null cool");
             this.actual_node = actual_node.getNextNode(act);
@@ -219,10 +239,9 @@ public class AgentMonteCarlo extends Agent {
      * a été visité.
      *
      * @param n    : noeud dont on vaut calculer la valeur
-     * @param prob
      * @return La valeur sous forme d'un double
      */
-    public double getUCT(Node n, Double prob) {
+    public double getUCT(Node n) {
         if (n.getN() == 0) {
             return Double.MAX_VALUE;
         } else {
@@ -231,9 +250,9 @@ public class AgentMonteCarlo extends Agent {
     }
 
     /**
-     * Renvoie le meilleur enfant de la famille
+     * Return the best child of the family
      *
-     * @return Le meilleur noeud
+     * @return The best actual best Action to perform from the node n
      */
     public Actuator getBestChild(Node n) {
         double max = -Double.MAX_VALUE;
@@ -241,7 +260,7 @@ public class AgentMonteCarlo extends Agent {
         for (Actuator act : n.getChilds().keySet()) {
             for (Node child : n.getChilds().get(act).keySet()) {
                 //System.out.print("Calcul de luct");
-                double i = this.getUCT(child, n.getChilds().get(act).get(child));
+                double i = this.getUCT(child);
                 if (i > max && child.getN() > 0) {
                     max = i;
                     res = act;
@@ -253,60 +272,73 @@ public class AgentMonteCarlo extends Agent {
         return res;
     }
 
-    //TODO: Doit renvoyer la valeur du leaf node atteint à partir du noeud n
-    // Pour ce faire, parcours le jeu de manière aléatoire
-    // Pour le moment c'est de type très très nul mais oklm
+    /**"Random" Simulation of the game from the node n ("Random" because the rollout try to randomly choose
+     * in the best possibles actions during the simulation which one to perform)*/
     public double rollout(Node n) {
+        Random rand = new Random();
         //System.out.println("Début d'un rollout");
         Agent player = n.getPlayer();
-        Random rand = new Random();
-        double res = 0;
+        int nbrTour = 0;
+        double res;
         try {
             Game simu = new Game(n.getGame());
-            Agent gamer = simu.getPlayers().get(player.getColor());
+            Agent gamer = simu.getPlayers().get(n.getPlayer().getColor());
+            if(!Objects.equals(gamer.getColor(), this.getColor()))
+                nbrTour++;
+
             res = simu.score(player);
-            Node next = null;
-            boolean oppTurn = false;
-            for (int i = 0; i < 10; i++) {
-                //System.out.println("AAAAAAAAAAA");
-                if((Objects.equals(n.getPhase(), "Deploy") && i == 0) || oppTurn) {
-                    if(!oppTurn) oppTurn = true;
-                    else {
-                        oppTurn = false;
-                        gamer = next.getOpp();
-                    }
-                    next = new Node(simu, 0, null, gamer.getDeck(), gamer, n.getPhase());
+            Node next;
+            String phase = n.getPhase();
+            int a=nbrTour,i=0;
+            while (nbrTour != 2) {
+                if(a != nbrTour && i > 6) {
+                    a = nbrTour;
+                    phase = "Fortify";
+                    i=0;
                 }
-                else {
-                    next = new Node(simu, 0, null, gamer.getDeck(), gamer, "Attack");
-                }
+                else i++;
+
+                next = new Node(simu, 0, null, gamer.getDeck(), gamer, phase);
+
                 ArrayList<Actuator> possible_actions = next.getActions();
                 //System.out.println(possible_actions);
                 int s = possible_actions.size();
-                if(s == 0) return simu.score(gamer);
-                Actuator new_action = possible_actions.get(rand.nextInt(s));
-                if(i == 3 && gamer.getColor() == this.getColor()) new_action = null;
+                if(s == 0 && Objects.equals(gamer.getColor(), this.getColor())) return 1;
+                else if(s == 0) return 0;
+                //System.out.println(possible_actions);
+                int p = rand.nextInt(s);
+                Actuator new_action = possible_actions.get(p/2);
+                //System.out.println(new_action)
 
                 if(new_action != null) new_action.perform(gamer);
-                else oppTurn = true;
                 res = simu.score(gamer);
+
+                if(Objects.equals(next.getPhase(), "Fortify")) {
+                    gamer = next.getOpp();
+                    phase = "Deploy";
+                    nbrTour++;
+                }
+                else if(Objects.equals(next.getPhase(), "Attack")){
+                    if(new_action == null) phase = "Fortify";
+                    else phase = "Attack";
+                }
+                else if(next.getPhase().equals("Deploy")) phase = "Attack";
             }
         } catch (IOException | URISyntaxException | ClassNotFoundException | InvocationTargetException |
                  NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalActionException |
                  SimulationRunningException e) {
-            System.out.println(e);
             throw new RuntimeException(e);
         }
-        //System.out.println("fin du rollout");
+        System.out.println("fin du rollout");
         return res/600;
     }
 
-    //TODO: Doit propager la valeur du noeud final à tous les noeuds précedents déjà exploré dans l'arbre
+    /**Recursively Backpropagates the value returned by rollout to update all the visited nodes*/
     public void backPropagate(Node n, double result) {
         if (n.getParent() != null) {
             n.addScore(result);
             n.setN(n.getN() + 1);
-            if(n.getParent().getPlayer().getColor() != n.getPlayer().getColor())
+            if(!Objects.equals(n.getParent().getPlayer().getColor(), n.getPlayer().getColor()))
                 backPropagate(n.getParent(), 1-result);
             backPropagate(n.getParent(), result);
         } else {
@@ -315,7 +347,7 @@ public class AgentMonteCarlo extends Agent {
         }
     }
 
-    //TODO: Doit renvoyer le meilleur noeuds, genre l'action que l'algo doit renvoyer en gros
+    /**Return the best action to do from the root node*/
     public Actuator best_child() {
         return this.getBestChild(this.root);
     }

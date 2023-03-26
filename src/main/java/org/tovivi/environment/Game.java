@@ -407,9 +407,12 @@ public class Game {
         int scoreAgent = 0;
         int scoreOpp = 0;
         for(Tile t: this.getTiles().values()){
-            if(t.getOccupier().getColor() == player.getColor()){scoreAgent += t.getNumTroops() + 5;}
-            else if(t.getOccupier().getColor() != "Grey"){scoreOpp += t.getNumTroops() + 5;}
-            else scoreOpp += t.getNumTroops()/2;
+            if(t.getOccupier().getColor() == player.getColor()){scoreAgent += 4;}
+            else {scoreOpp += 5;}
+        }
+        for(Continent cont: this.getContinents().values()){
+            if(cont.getOccupier() == this.players.get(player.getColor())) scoreAgent += 18;
+            else if(cont.getOccupier() != null) scoreOpp += 18;
         }
         int res = scoreAgent - scoreOpp;
 

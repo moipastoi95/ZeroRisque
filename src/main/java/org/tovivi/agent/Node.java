@@ -1,5 +1,6 @@
 package org.tovivi.agent;
 
+import org.tensorflow.framework.metrics.AUCCurve;
 import org.tovivi.environment.*;
 import org.tovivi.environment.action.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
@@ -77,7 +78,8 @@ public class Node {
                     }
                     dep.perform(next.getPlayers().get(this.player));
                 }
-                childs.put(new Node(next, 0,  this, next.getPlayers().get(this.player).getDeck(), player, "Attack"), 1.0);
+                childs.put(new Node(next, 0,  this, next.getPlayers().get(this.player).getDeck(),
+                        player, "Attack"), 1.0);
                 this.getChilds().put(action, childs);
             }
 
@@ -87,21 +89,41 @@ public class Node {
                 if(prob < 0.4) prob = 0.0;
                 Game nextLoose = new Game(this.game);
                 nextLoose.getTiles().get(att.getFromTile().getName()).setNumTroops(1);
-                childs.put(new Node(nextLoose, 0, this, null, player, "Attack"), 1 - prob);
+                childs.put(new Node(nextLoose, 0, this, nextLoose.getPlayers().get(this.player).getDeck(),
+                        player, "Attack"), 1 - prob);
 
                 Game nextWin = new Game(nextLoose);
                 int troopMoved = (int) ((att.getFromTile().getNumTroops()-1)*prob);
                 if(troopMoved == 0) troopMoved = 1;
                 //nextWin.getTiles().get(att.getFromTile().getName()).setNumTroops(1);
                 nextWin.getTiles().get(att.getToTile().getName()).setOccupier(player,troopMoved);
-                childs.put(new Node(nextWin, 0, this, null, player, "Attack"), prob);
+                childs.put(new Node(nextWin, 0, this, nextWin.getPlayers().get(this.player).getDeck(),
+                        player, "Attack"), prob);
 
                 this.getChilds().put(action, childs);
             }
-            else if(action == null){
-                Game next_game = new Game(this.game);
-                childs.put(new Node(next_game, 0, this, null, this.getOpp(), "Deploy"), 1.0);
+            else if(action instanceof Fortify){
+                Fortify fortAction = (Fortify) action;
+                Game next_game = new Game((this.getGame()));
+                next_game.getTiles().get(fortAction.getFromTile().getName()).setNumTroops(1);
+                next_game.getTiles().get(fortAction.getToTile().getName()).setNumTroops(fortAction.getFromTile().getNumTroops()-1);
+                childs.put(new Node(next_game, 0, this, next_game.getPlayers().get(this.getOpp().getColor()).getDeck(),
+                        this.getOpp(), "Deploy"), 1.);
                 this.getChilds().put(action, childs);
+            }
+            else if(action == null) {
+                if (this.phase == "Fortify") {
+                    Game next_game = new Game(this.game);
+                    childs.put(new Node(next_game, 0, this, next_game.getPlayers().get(this.player).getDeck(),
+                            this.getPlayer(), "Deploy"), 1.0);
+                    this.getChilds().put(action, childs);
+                }
+                else {
+                    Game next_game = new Game(this.game);
+                    childs.put(new Node(next_game, 0, this, next_game.getPlayers().get(this.player).getDeck(),
+                            this.getOpp(), "Fortify"), 1.0);
+                    this.getChilds().put(action, childs);
+                }
             }
 
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
@@ -201,6 +223,9 @@ public class Node {
         else if(this.phase == "Attack"){
             return this.getAttackActions();
         }
+        else if(this.phase == "Fortify"){
+            return this.getFortifyAction();
+        }
         else return null;
     }
 
@@ -231,7 +256,9 @@ public class Node {
     }
 
     private ArrayList<Actuator> getAttackActions() {
-        ArrayList<Actuator> actions = new ArrayList<>();
+        ArrayList<Actuator> actions1 = new ArrayList<>();
+        ArrayList<Actuator> actions2 = new ArrayList<>();
+        ArrayList<Actuator> actions3 = new ArrayList<>();
 
         for(String tileKey: frontier.keySet()){
             Tile tile = this.getTile(tileKey);
@@ -240,19 +267,51 @@ public class Node {
                     Tile oppTile = this.getTile(oppTileKey);
                     double prob = this.getPlayer().getProba(tile.getNumTroops(), oppTile.getNumTroops());
                     //System.out.println(prob);
-                    boolean flag = prob > 0.45;
-                    if(flag)
-                        actions.add(new Attack(tile, this.getTile(oppTileKey), tile.getNumTroops()-1, null, null));
+                    if(prob > 0.45){
+                        if(prob < 63){
+                            actions3.add(new Attack(tile, this.getTile(oppTileKey), tile.getNumTroops()-1, null, null));
+                        }
+                        else if(prob < 71){
+                            actions2.add(new Attack(tile, this.getTile(oppTileKey), tile.getNumTroops()-1, null, null));
+                        }
+                        else
+                            actions1.add(new Attack(tile, this.getTile(oppTileKey), tile.getNumTroops()-1, null, null));
+
+                    }
                 }
             }
         }
         //System.out.println("GetAttackValidé");
-        actions.add(null);
-        return actions;
+        actions1.add(null);
+        actions1.addAll(actions2);
+        actions1.addAll(actions3);
+        return  actions1;
     }
 
-    public boolean testProb(double prob){
-        return Math.random() < prob;
+    public ArrayList<Actuator> getFortifyAction(){
+        ArrayList<Actuator> fortifications1 = new ArrayList<>();
+        ArrayList<Actuator> fortifications2 = new ArrayList<>();
+        ArrayList<Actuator> fortifications3 = new ArrayList<>();
+
+        for(Tile tile: this.getPlayer().getTiles()){
+            int numTroops = tile.getNumTroops()-1;
+            for(String key: this.frontier.keySet()){
+                Tile targetTile = this.getTile(key);
+                if(tile != targetTile && tile.getNumTroops() > 1) {
+                    Fortify fortify = new Fortify(tile, targetTile, numTroops);
+                    if(fortify.isMoveLegal(this.getPlayer()))
+                        if(numTroops < 10)
+                            fortifications3.add(fortify);
+                        else if(numTroops < 30)
+                            fortifications2.add(fortify);
+                        else fortifications1.add(fortify);
+                }
+            }
+        }
+        fortifications1.addAll(fortifications2);
+        fortifications1.add(null);
+        fortifications1.addAll(fortifications3);
+        return fortifications1;
     }
 
     public Tile getTile(String key){return this.getGame().getTiles().get(key);}
