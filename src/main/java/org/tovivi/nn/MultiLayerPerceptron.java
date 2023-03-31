@@ -10,57 +10,23 @@ import java.util.Arrays;
 
 public class MultiLayerPerceptron {
 
-    private ArrayList<Integer> shape;
-
-    private ArrayList<String> activations;
-
     private String name;
 
     private ArrayList<Layer> layers = new ArrayList<>();
 
-    public MultiLayerPerceptron(ArrayList<Integer> shape, ArrayList<String> activations, String name, String configName) {
-        setShape(shape);
-        setActivations(activations);
+    public MultiLayerPerceptron(ArrayList<String> activations, String name, String configName) {
         setName(name);
-        setLayers(loadLayers(configName));
+        setLayers(loadLayers(configName, activations));
     }
 
-    public ArrayList<Layer> loadLayers(String configName) {
+    public ArrayList<Layer> loadLayers(String configName, ArrayList<String> activations) {
 
         ArrayList<Layer> res = new ArrayList<>();
-        for (int i=0; i<getActivations().size(); i++) {
+        for (int i=0; i<activations.size(); i++) {
             String path = configName + "_models/" + getName() + "/layer_"+i + "/";
-            res.add(new Layer(path));
+            res.add(new Layer(path, activations.get(i)));
         }
         return res;
-    }
-
-    /**
-     * Function that apply "act" on the matrix X
-     * @param act activation function
-     * @param X matrix on which to apply the function
-     */
-    public static void apply (UnivariateDifferentiableFunction act, Matrix X) {
-
-        for (int i=0; i<X.getRowDimension(); i++) {
-            X.set(i, 0, (act.value(X.get(i, 0))));
-        }
-    }
-
-    public ArrayList<Integer> getShape() {
-        return shape;
-    }
-
-    public void setShape(ArrayList<Integer> shape) {
-        this.shape = shape;
-    }
-
-    public ArrayList<String> getActivations() {
-        return activations;
-    }
-
-    public void setActivations(ArrayList<String> activations) {
-        this.activations = activations;
     }
 
     public String getName() {
@@ -81,10 +47,23 @@ public class MultiLayerPerceptron {
 
     @Override
     public String toString() {
-        return "MultiLayerPerceptron{" +
-                "shape=" + shape +
-                ", activations=" + activations +
-                ", name='" + name + '\'' +
-                '}';
+        String str = "MultiLayerPerceptron{" + getName() + ":";
+        for (Layer l : layers) {
+            str += l.toString();
+        }
+        return str + "}";
+    }
+
+    /**
+     * give a output prediction according to the input matrix
+     * @param X the input matrix (suppose to have the shape that fits the shape of the first layer)
+     * @return the matrix of the prediction
+     */
+    public Matrix predict(Matrix X) {
+        Matrix R = new Matrix(X.getArray());
+        for (Layer l : getLayers()) {
+            R = l.predictLayer(R);
+        }
+        return R;
     }
 }

@@ -1,5 +1,7 @@
 package org.tovivi.environment;
 
+import org.tovivi.nn.AIManager;
+
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -7,7 +9,7 @@ import java.util.*;
 
 public class TextReader {
 
-    final private String sep = ":";
+    final static private String sep = ":";
 
     /**
      * Read the file that give information about continents to create the Hashmap of continents
@@ -15,7 +17,7 @@ public class TextReader {
      * @param url : the url of the file in the project repository
      * @return The HasMap that stores the continents with their names as keys
      */
-    public HashMap<String, Continent> readContinents(URL url) throws IOException, URISyntaxException {
+    public static HashMap<String, Continent> readContinents(URL url) throws IOException, URISyntaxException {
 
         HashMap<String, Continent> res = new HashMap<>();
         File file = new File(url.toURI());
@@ -39,7 +41,7 @@ public class TextReader {
         return res;
     }
 
-    public LinkedList<LinkedList<Double>> readProba(URL url) throws IOException, URISyntaxException {
+    public static LinkedList<LinkedList<Double>> readProba(URL url) throws IOException, URISyntaxException {
 
         LinkedList<LinkedList<Double>> res = new LinkedList<>();
         File file = new File(url.toURI());
@@ -67,7 +69,7 @@ public class TextReader {
      * @param url : the url of the file in the project repository
      * @return The HasMap that stores the countries with their names as keys
      */
-    public HashMap<String, Tile> readCountries(Game g, URL url) throws IOException, URISyntaxException {
+    public static HashMap<String, Tile> readCountries(Game g, URL url) throws IOException, URISyntaxException {
         HashMap<String, Tile> res = new HashMap<>();
         File file = new File(url.toURI());
 
@@ -106,7 +108,7 @@ public class TextReader {
      * @param url : the url of the file in the project repository
      * @return The HasMap that stores the countries with their names as keys
      */
-    public Stack<Card> readCards(Game g, URL url) throws IOException, URISyntaxException {
+    public static Stack<Card> readCards(Game g, URL url) throws IOException, URISyntaxException {
         Stack<Card> res = new Stack<>();
         File file = new File(url.toURI());
 
@@ -143,7 +145,7 @@ public class TextReader {
      * @param g : the game which  will be updated according to the edges
      * @param url: the url of the file in the project repository
      */
-    public void readEdges(Game g, URL url) throws IOException, URISyntaxException {
+    public static void readEdges(Game g, URL url) throws IOException, URISyntaxException {
         File file = new File(url.toURI());
 
         // Creating an object of BufferedReader class
@@ -180,7 +182,7 @@ public class TextReader {
      * @param g : the game which  will be updated according to the edges
      * @param env_data : the String array of text files that are used to create the game
      */
-    public void readAll(Game g, String[] env_data) {
+    public static void readAll(Game g, String[] env_data) {
         try {
             for (String s : env_data) {
                 if (s.compareTo("continent-bonus")==0) {
@@ -201,6 +203,86 @@ public class TextReader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    /**
+     * function designed for the AIManager to have a fixed list of the tiles
+     * @return the arrayList of the tiles
+     */
+    public static ArrayList<String> readTilesName() throws IOException, URISyntaxException {
+
+        ArrayList<String> res = new ArrayList<>();
+
+        File file = new File(TextReader.class.getResource("continent-country").toURI());
+        // Creating an object of BufferedReader class
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        // Declaring a string variable
+        String str;
+        // Condition holds true until there is character in a string
+        while ((str = br.readLine()) != null) {
+
+            //Getting the two values separated by the "sep"
+            String country = str.substring(str.indexOf(sep) + 1);
+
+            res.add(country);
+        }
+        return res;
+    }
+
+    /**
+     * function designed for the AIManager to have a fixed list of the edges
+     * @return the arrayList of the edges
+     */
+    public static ArrayList<String> readEdgesName() throws IOException, URISyntaxException {
+
+        ArrayList<String> res = new ArrayList<>();
+
+        File file = new File(TextReader.class.getResource("country-neighbor").toURI());
+        // Creating an object of BufferedReader class
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        // Declaring a string variable
+        String str;
+        // Condition holds true until there is character in a string
+        while ((str = br.readLine()) != null) {
+            res.add(str);
+        }
+        return res;
+    }
+
+    /**
+     * function designed for the AIManager to have a fixed hashMap<String,Integer> of the cards that allows rapid read with the name and keeps
+     * the order with the value
+     * @return the arrayList of the edges or cards (do not include the jokers)
+     */
+    public static HashMap<String,Integer> readCardsName() throws IOException, URISyntaxException {
+
+        HashMap<String,Integer> res = new HashMap<>();
+
+        File file = new File(TextReader.class.getResource("country-card").toURI());
+        // Creating an object of BufferedReader class
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        // Declaring a string variable
+        String str;
+        // Condition holds true until there is character in a string
+        int i = 0;
+        while ((str = br.readLine()) != null) {
+            str = str.substring(0,str.indexOf(sep));
+            res.put(str,i);
+            i++;
+        }
+        return res;
+    }
+
+    public static void readAllNames(AIManager aim) {
+        try {
+            aim.setAllTiles(readTilesName().toArray(new String[42]));
+            aim.setAllEdges(readEdgesName().toArray(new String[83]));
+            aim.setAllCards(readCardsName());
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

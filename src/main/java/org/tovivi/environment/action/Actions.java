@@ -1,6 +1,7 @@
 package org.tovivi.environment.action;
 
 import org.tovivi.agent.Agent;
+import org.tovivi.agent.AgentMCNN;
 import org.tovivi.environment.Card;
 import org.tovivi.environment.Tile;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
@@ -48,7 +49,7 @@ public class Actions {
             }
             return deployment != null;
         }
-        if (deployment != null) {
+        if (deployment != null && !(player instanceof AgentMCNN)) {
             deployment = (Deployment) deployment.perform(player);
         }
         return deployment != null;

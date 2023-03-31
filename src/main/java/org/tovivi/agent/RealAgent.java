@@ -1,5 +1,6 @@
 package org.tovivi.agent;
 
+import Jama.Matrix;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -10,6 +11,7 @@ import org.tovivi.environment.Tile;
 import org.tovivi.environment.action.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
+import org.tovivi.nn.AIManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +25,8 @@ import java.util.ArrayList;
 public class RealAgent extends Agent {
 
     private Actuator action = null;
+
+    private boolean playCards = true;
 
     private boolean response = false;
 
@@ -46,11 +50,25 @@ public class RealAgent extends Agent {
     @Override
     public Deployment getNextDeploy(int numTroops) {
 
+        try {
+            AIManager aim = new AIManager("config");
+            System.out.println("start");
+            Matrix Input = aim.gameToMatrix(getGame(), getColor());
+            Matrix Output = aim.prediction("deploy",Input);
+            System.out.println("finish");
+            aim.saveInOutData(Input, Output, "deploy");
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
         int troopsCard = 0;
         MultiDeploy playCards;
-        if (!Card.getAllSets(this).isEmpty()) {
+        if (!Card.getAllSets(this).isEmpty() && canPlayCards()) {
             playCards = getPlayCards();
-            if (playCards!=null) troopsCard = Card.countOnlyCombo(((PlayCards) playCards.getDeploys().get(0)).getCards(), this);
+            if (playCards!=null) {
+                troopsCard = Card.countOnlyCombo(((PlayCards) playCards.getDeploys().get(0)).getCards(), this);
+                setPlayCards(false);
+            }
         }
         response = false;
         support.firePropertyChange("realDeploy",0, numTroops+troopsCard);
@@ -131,5 +149,13 @@ public class RealAgent extends Agent {
 
     public void setResponse(boolean response) {
         this.response = response;
+    }
+
+    public boolean canPlayCards() {
+        return playCards;
+    }
+
+    public void setPlayCards(boolean playCards) {
+        this.playCards = playCards;
     }
 }

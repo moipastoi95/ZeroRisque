@@ -1,34 +1,45 @@
 ######################################################################################################
 
-deploy:213,500,210:relu,softmax
+deploy:256,500,210:relu,softmax
 
 # Deploy NN :
-# Input Shape : 213 parameters [3*42 (territories) + 2*42 (cards) + 2 (Jokers) + 1 (Turn)]
+# Input Shape : 256 parameters [3*42 (territories) + 3*42 (cards of the players + cards in the discard pile) + 3 (Jokers owned by each players + number of jokers in the stack (not discarded) + 1 (Turn)]
 # Hidden layer : 500 parameters
 # activation 1 : relu
-# Output Shape : 210 parameters [5*42 (for each territory, 5 possible amount of troops deployed]
+# Output Shape : 210 parameters [5*42 (for each territory, 5 possible amount of troops to deploy, (2, 1/4, 1/2, 3/4, all)]
 # activation 2 : softmax
 
 ######################################################################################################
 
-attack:213,500,481:relu,softmax
+attack:256,350,499:relu,softmax
 
 # Attack NN :
-# Input Shape : 213
-# Hidden layer : 500
+# Input Shape : 256
+# Hidden layer : 350
 # activation 1 : relu
-# Output Shape : 481 parameters [5*42 (for each territory, 5 possible actions : deploy 2 troops, 1/4 of the troops, 1/2, 3/4, all the troops)]
+# Output Shape : 499 parameters [2*83 (2*each front, *3 possible actions : move 1 troops, 1/2 of the troops, all the troops) + 1 (skip attack phase)]
 # activation 2 : softmax
 
 ######################################################################################################
 
-fortify:213,500,1723:relu,softmax
+fortify:256,800,1723:relu,softmax
 
 # Attack NN :
-# Input Shape : 213
-# Hidden layer : 500
+# Input Shape : 256
+# Hidden layer : 800
 # activation 1 : relu
 # Output Shape : 1723 [(41*42) (number of possible fortifications) + 1 for the skip action]
 # activation 2 : softmax
+
+######################################################################################################
+
+evaluation:256,124,2:relu,sigmoid
+
+# Evaluation NN :
+# Input Shape : 256
+# Hidden layer : 124
+# activation 1 : relu
+# Output Shape : 2 [The evalutation of the state for each player]
+# activation 2 : sigmoid
 
 ######################################################################################################

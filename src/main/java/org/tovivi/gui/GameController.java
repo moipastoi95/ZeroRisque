@@ -169,7 +169,11 @@ public class GameController implements Initializable {
                 }
 
                 // We unselect potential selections and set variables for the potential real agent
-                realAgentTurn = (pNew instanceof RealAgent) ? pNew.getColor() : "";
+                realAgentTurn = "";
+                if (pNew instanceof RealAgent) {
+                    realAgentTurn = pNew.getColor();
+                    ((RealAgent) pNew).setPlayCards(true);
+                }
                 realAgentPhase = "";
                 unselect();
 

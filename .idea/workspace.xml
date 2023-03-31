@@ -4,34 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Pas mal de choses">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/AIManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/Layer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_0/bias" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_0/weights" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_1/bias" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_1/weights" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/deploy/layer_0/bias" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/deploy/layer_0/weights" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/deploy/layer_1/bias" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/deploy/layer_1/weights" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_0/bias" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_0/weights" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_1/bias" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_1/weights" afterDir="false" />
+    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Début réseaux de neurones">
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMCNN.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/treeNN/ChanceNodeNN.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/treeNN/NodeNN.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/ActivationFunction.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/evaluation/layer_0/bias" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/evaluation/layer_0/weights" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/evaluation/layer_1/bias" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/evaluation/layer_1/weights" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Agent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Agent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Legume.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Legume.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/RandomAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/RandomAgent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Node.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/RealAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/RealAgent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/TextReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/TextReader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Actions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Actions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Deploy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Deploy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/GameController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/LauncherController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/LauncherController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/AIManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/AIManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/Layer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/Layer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/MultiLayerPerceptron.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/nn/MultiLayerPerceptron.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/environment/pause.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/game.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/game.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_0/bias" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_0/bias" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_0/weights" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_0/weights" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_1/bias" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_1/bias" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_1/weights" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/attack/layer_1/weights" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/deploy/layer_0/weights" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/deploy/layer_0/weights" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/deploy/layer_1/weights" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/deploy/layer_1/weights" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_0/bias" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_0/bias" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_0/weights" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_0/weights" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_1/weights" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/nn/config_models/fortify/layer_1/weights" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,26 +88,32 @@
     <option name="version" value="2" />
   </component>
   <component name="ProjectId" id="2Modh2bsUBB1mdXGGdwdQ0H1yqJ" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/cytech/IdeaProjects/ZeroRisque3/src/main/resources/org/tovivi&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/cytech/IdeaProjects/ZeroRisque3/src/main/resources/org/tovivi",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.editor",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources/org/tovivi" />
@@ -154,7 +167,10 @@
       <workItem from="1679610128541" duration="8179000" />
       <workItem from="1679651974356" duration="1385000" />
       <workItem from="1679683207468" duration="12590000" />
-      <workItem from="1679739167464" duration="10398000" />
+      <workItem from="1679739167464" duration="74850000" />
+      <workItem from="1680000266296" duration="27969000" />
+      <workItem from="1680095937651" duration="11364000" />
+      <workItem from="1680135203128" duration="2550000" />
     </task>
     <task id="LOCAL-00001" summary="Maven Structure">
       <created>1678443731577</created>
@@ -380,7 +396,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679656487151</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Début réseaux de neurones">
+      <created>1679754857058</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1679754857058</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -398,7 +421,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Real Time playing" />
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Real Time playing + More continents" />
     <MESSAGE value="Map finie" />
     <MESSAGE value="Poubelle + Map bien (mais pas totalement exactement ce que je voulais faire à la base mais ça va venir, tkt)" />
@@ -423,6 +446,7 @@
     <MESSAGE value="Bug fortification (le spinner n'était pas actualisé)" />
     <MESSAGE value="Cartes ajoutées (ça a l'air de tout bien marché c'est nickel chrome)" />
     <MESSAGE value="Pas mal de choses" />
-    <option name="LAST_COMMIT_MESSAGE" value="Pas mal de choses" />
+    <MESSAGE value="Début réseaux de neurones" />
+    <option name="LAST_COMMIT_MESSAGE" value="Début réseaux de neurones" />
   </component>
 </project>

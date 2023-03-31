@@ -30,8 +30,7 @@ public abstract class Agent implements Callable<Actions> {
         this.tiles = new ArrayList<>();
         this.deck = new ArrayList<>();
         this.game = game;
-        TextReader tr = new TextReader();
-        this.proba = tr.readProba(Objects.requireNonNull(TextReader.class.getResource("proba.txt")));
+        this.proba = TextReader.readProba(Objects.requireNonNull(TextReader.class.getResource("proba.txt")));
     }
     public Agent(String color) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         this(color, null);

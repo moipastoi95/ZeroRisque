@@ -70,7 +70,7 @@ public class Deploy extends Deployment {
     }
 
     @Override
-    boolean isMoveLegal(Agent player) {
+    public boolean isMoveLegal(Agent player) {
         return tile.getOccupier().equals(player);
     }
 

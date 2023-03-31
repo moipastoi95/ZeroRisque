@@ -13,11 +13,13 @@ import java.util.Arrays;
 public class Layer {
 
     private Matrix weights;
-
     private Matrix bias;
+    private String activationName;
 
-    public Layer(String path) {
+
+    public Layer(String path, String activationName) {
         try {
+            setActivationName(activationName);
             loadLayer(path);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -56,11 +58,42 @@ public class Layer {
                     data[j] = rows.get(j);
                 }
                 if (i==0) setWeights(new Matrix(data));
-                else setBias(new Matrix(data));
+                else setBias((new Matrix(data)).transpose());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Function that apply "act" on the matrix X
+     * @param X matrix on which to apply the function
+     */
+    public Matrix apply (Matrix X) {
+
+        Matrix R = new Matrix(X.getArray());
+        switch (activationName) {
+            case "relu":
+                R = ActivationFunction.relu(X);
+                break;
+            case "softmax":
+                R = ActivationFunction.softmax(X);
+                break;
+            default:
+                R = ActivationFunction.sigmoid(X);
+        }
+        return R;
+    }
+
+    /**
+     * Used to make a forwardPropagation on this layer
+     * @param X input Matrix
+     * @return The matrix that result from the forward propagation on this layer
+     */
+    public Matrix predictLayer(Matrix X) {
+        Matrix P = new Matrix(X.getArray());
+        P = getBias().plus(P.times(getWeights())) ;
+        return apply(P);
     }
 
     public Matrix getWeights() {
@@ -77,5 +110,21 @@ public class Layer {
 
     public void setBias(Matrix bias) {
         this.bias = bias;
+    }
+
+    public String getActivationName() {
+        return activationName;
+    }
+
+    public void setActivationName(String activationName) {
+        this.activationName = activationName;
+    }
+
+    @Override
+    public String toString() {
+        return "Layer{" +
+                "shape=" + weights.getRowDimension() + "x" + weights.getColumnDimension() +
+                ", activationName='" + activationName + '\'' +
+                '}';
     }
 }

@@ -116,9 +116,13 @@ public class Node {
 
     public void setPhase(String phase){this.phase = phase;}
 
+    public String getPhase(){return phase;}
+
     public ArrayList<Card> getDeck(){return this.deck;}
 
     public int getScore(){return this.score;}
+
+    public void setScore(int score){this.score = score;}
 
     public void resetScore(){this.score = 0;}
 
@@ -126,6 +130,10 @@ public class Node {
 
     public Node getParent() {
         return parent;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 
     public Agent getPlayer() {

@@ -1,6 +1,7 @@
 package org.tovivi.environment;
 
 import org.tovivi.agent.Agent;
+import org.tovivi.agent.AgentMCNN;
 import org.tovivi.agent.AgentMonteCarlo;
 import org.tovivi.agent.Legume;
 import org.tovivi.environment.action.*;
@@ -61,6 +62,7 @@ public class Game {
         for(String key : Game.getPlayers().keySet()){
             Constructor<Agent> constr;
             //Instantiate the agents
+
             Agent player = Game.getPlayers().get(key);
             constr = (Constructor<Agent>) player.getClass().getConstructor(Agent.class);
             this.players.put(key, (Agent) constr.newInstance(player));
@@ -298,8 +300,7 @@ public class Game {
     private void setupElements(ArrayList<Agent> agents, int territories) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
 
         // Setup the map with the data resources
-        TextReader tr = new TextReader();
-        tr.readAll(this, env_data);
+        TextReader.readAll(this, env_data);
 
         for(Agent a : agents) {
             a.setGame(this);
@@ -321,6 +322,9 @@ public class Game {
 
             if(a instanceof AgentMonteCarlo){
                 ((AgentMonteCarlo) a).setRoot();
+            }
+            if(a instanceof AgentMCNN){
+                ((AgentMCNN) a).setRoot();
             }
         }
     }
@@ -378,6 +382,13 @@ public class Game {
         return tiles;
     }
 
+    public Stack<Card> getTheDiscardPile() {
+        return theDiscardPile;
+    }
+
+    public void setTheDiscardPile(Stack<Card> theDiscardPile) {
+        this.theDiscardPile = theDiscardPile;
+    }
 
     /**
      * This function distributes the tiles of the map randomly among the players
