@@ -4,7 +4,7 @@ Risk with some AI or what ?
 ## Rules of the game of ZeroRisque
 ### Principle
 * Two player and one neutral player (this one is never attacking he is just here to make some cases neutral but hard to take)
-* There is 42 territories on the map randomly assigned at the start of the game (14 each)
+* There are 42 territories on the map randomly assigned at the start of the game (14 each)
 * Each player starts with 28 troups, 2 in each territories
 * A player win when he have conquered the world 
 * Each turn a player win 1 troup for 3 terr (min 3 troups per turn) and a bonus for his continent
