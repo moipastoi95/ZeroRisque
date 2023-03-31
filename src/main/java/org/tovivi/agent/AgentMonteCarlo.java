@@ -35,10 +35,11 @@ public class AgentMonteCarlo extends Agent {
      * @param E Multiplied by game's score in the UCT calculus
      * @param c Exploration parameter
      * */
-    public AgentMonteCarlo(String color, Game game, int E, double c) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public AgentMonteCarlo(String color, Game game, int E, double c, long timeLimit) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(color, game);
         this.E = E;
         this.c = c;
+        this.timeLimit = timeLimit;
         this.root = new Node(new Game(game), 0, null, this.getDeck(), this, "Deploy");
     }
 
@@ -329,7 +330,6 @@ public class AgentMonteCarlo extends Agent {
                  SimulationRunningException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("fin du rollout");
         return res/600;
     }
 

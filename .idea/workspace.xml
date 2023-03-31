@@ -4,14 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Merging">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMCNN.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMCNN.java" afterDir="false" />
+    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Agent bien meilleur, ajout d'un constructeur dans AgentMonteCarlo pour lui donner les paramètres E et c dans la recherche (UCT = E(win/n) + c*(log(N)/n))">
       <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Actions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Actions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/GameController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/gui/GameController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/game.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/game.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,6 +96,13 @@
     </option>
   </component>
   <component name="RunManager">
+    <configuration name="App" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="org.tovivi.gui.App" />
+      <module name="zerorisque" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="ZeroRisque3" />
       <method v="2">
