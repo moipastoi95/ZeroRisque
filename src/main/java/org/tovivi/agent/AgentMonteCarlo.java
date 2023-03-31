@@ -35,12 +35,11 @@ public class AgentMonteCarlo extends Agent {
      * @param E Multiplied by game's score in the UCT calculus
      * @param c Exploration parameter
      * */
-    public AgentMonteCarlo(String color, Game game, int E, double c, long timeLimit) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        super(color, game);
+    public AgentMonteCarlo(String color, int E, double c, long timeLimit) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        super(color);
         this.E = E;
         this.c = c;
         this.timeLimit = timeLimit;
-        this.root = new Node(new Game(game), 0, null, this.getDeck(), this, "Deploy");
     }
 
     public AgentMonteCarlo(Agent agent) {

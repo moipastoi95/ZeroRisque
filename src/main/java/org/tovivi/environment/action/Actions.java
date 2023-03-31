@@ -89,7 +89,6 @@ public class Actions {
     public Deployment getDeployment(Agent player) throws IOException, URISyntaxException, IllegalActionException, SimulationRunningException {
         troopsRemaining = player.getNumDeploy();
         if (onLiveAction && deployment==null) {
-            System.out.println("oui");
             deployment = player.getNextDeploy(troopsRemaining);
         }
         return deployment;
