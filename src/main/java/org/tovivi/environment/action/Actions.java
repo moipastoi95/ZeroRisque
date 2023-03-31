@@ -41,16 +41,16 @@ public class Actions {
     public boolean performDeployment(Agent player) throws IllegalActionException, SimulationRunningException, IOException, URISyntaxException {
         if (onLiveAction) {
             if(deployment != null) {
-                troopsRemaining -= deployment.getNumTroops();
+                troopsRemaining -= deployment.getFirstNumTroops();
                 deployment = (Deployment) deployment.perform(player);
-                System.out.println(troopsRemaining);
-                if (troopsRemaining>0) {
+                if (troopsRemaining>0 && deployment==null) {
                     deployment = player.getNextDeploy(troopsRemaining);
                 }
             }
             return deployment != null;
         }
         if (deployment != null) {
+            troopsRemaining -= deployment.getFirstNumTroops();
             deployment = (Deployment) deployment.perform(player);
         }
         return deployment != null;
@@ -87,8 +87,9 @@ public class Actions {
     }
 
     public Deployment getDeployment(Agent player) throws IOException, URISyntaxException, IllegalActionException, SimulationRunningException {
+        troopsRemaining = player.getNumDeploy();
         if (onLiveAction && deployment==null) {
-            troopsRemaining = player.getNumDeploy();
+            System.out.println("oui");
             deployment = player.getNextDeploy(troopsRemaining);
         }
         return deployment;

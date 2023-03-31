@@ -26,6 +26,8 @@ public abstract class Deployment extends Actuator {
      */
     public abstract int getNumTroops();
 
+    public abstract int getFirstNumTroops();
+
     /**
      * Is the num of troops involve is allowed
      * @param player the player who owns the troops

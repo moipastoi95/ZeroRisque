@@ -5,7 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Agent bien meilleur, ajout d'un constructeur dans AgentMonteCarlo pour lui donner les paramètres E et c dans la recherche (UCT = E(win/n) + c*(log(N)/n))">
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMCNN.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMCNN.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/RealAgent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/RealAgent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/Game.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Actions.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Actions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Deploy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Deploy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Deployment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/Deployment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/MultiDeploy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/MultiDeploy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/PlayCards.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/environment/action/PlayCards.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/launcher.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/org/tovivi/gui/launcher.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

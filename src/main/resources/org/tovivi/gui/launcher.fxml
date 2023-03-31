@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="200.0" minWidth="600.0" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tovivi.gui.LauncherController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="200.0" minWidth="700.0" prefHeight="200.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.tovivi.gui.LauncherController">
    <center>
       <Button mnemonicParsing="false" onAction="#launch" text="START GAME" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -49,6 +49,66 @@
                <VBox.margin>
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
+            </Separator>
+            <GridPane fx:id="particular" prefHeight="30.0" prefWidth="616.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="0.0" prefWidth="0.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="70.0" prefWidth="80.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="80.0" minWidth="70.0" prefWidth="80.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="70.0" prefWidth="80.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="80.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="10.0" prefWidth="20.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="20.0" prefWidth="20.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label text="E" textFill="#1707eb" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets right="2.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Spinner prefHeight="24.0" prefWidth="92.0" GridPane.columnIndex="1" />
+                  <Label text="C" textFill="#1707eb" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets right="2.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Spinner prefWidth="80.0" GridPane.columnIndex="3" />
+                  <Label text="TL" textFill="#1707eb" GridPane.columnIndex="4" GridPane.halignment="RIGHT">
+                     <GridPane.margin>
+                        <Insets right="2.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Spinner prefWidth="80.0" GridPane.columnIndex="5" />
+                  <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" />
+                  <Label text="E" textFill="#da1313" GridPane.columnIndex="7" GridPane.halignment="RIGHT">
+                     <GridPane.margin>
+                        <Insets right="2.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Spinner prefHeight="24.0" prefWidth="92.0" GridPane.columnIndex="8" />
+                  <Label text="C" textFill="#da1313" GridPane.columnIndex="9" GridPane.halignment="RIGHT">
+                     <GridPane.margin>
+                        <Insets right="2.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Spinner prefHeight="24.0" prefWidth="92.0" GridPane.columnIndex="10" />
+                  <Label text="TL" textFill="#da1313" GridPane.columnIndex="11" GridPane.halignment="RIGHT" />
+                  <Spinner prefHeight="24.0" prefWidth="92.0" GridPane.columnIndex="12" />
+               </children>
+            </GridPane>
+            <Separator prefWidth="200.0">
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
             </Separator>
             <GridPane>
               <columnConstraints>

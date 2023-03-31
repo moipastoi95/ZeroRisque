@@ -17,22 +17,24 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class AgentMCNN extends Agent{
 
     private AIManager aim;
 
     final static public double C = Math.sqrt(2);
-    private final int seconds = 1;
+    private final double seconds = 0.1;
     private NodeNN root;
 
-    private HashMap<String, NodeNN> visitedNodes = new HashMap<>();
+    private HashMap<String, NodeNN> chosenPath = new HashMap<>();
+    private HashMap<String, NodeNN> exploredNodes = new HashMap<>();
 
     public AgentMCNN(String color, Game game) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(color, game);
         aim = new AIManager("config");
         this.root = new NodeNN(new Game(game), -1, null,  this, "deploy", aim,-1, this.getNumDeploy(), false);
-        visitedNodes.put(root.stringHashing(), getRoot());
+        chosenPath.put(root.stringHashing(), getRoot());
     }
 
     public AgentMCNN(String color) throws IOException, URISyntaxException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -151,17 +153,22 @@ public class AgentMCNN extends Agent{
             NodeNN copyRoot = new NodeNN(root);
             NodeNN newRoot = new NodeNN(getGame(), -1, copyRoot,this,phase,aim,-1,-1,pick);
             String hash = newRoot.stringHashing();
-            if (hash.equals(root.stringHashing())) {
-                root = visitedNodes.get(hash);
-            }
-            else if (visitedNodes.containsKey(hash)) {
 
+            // Specific case of the first time we met the root
+            if (chosenPath.containsKey(hash)) {
+                root = chosenPath.get(hash);
+            }
+            // If we have already explored this node and it's children
+            else if (exploredNodes.containsKey(hash)) {
+                cutAndBuildChosen(exploredNodes.get(hash));
+                root = chosenPath.get(hash);
             }
             else {
                 //TODO AJouter un delete des enfants
                 // Créer un score en tableau (pour les changements entre les joueurs)
                 root = newRoot;
                 newRoot.generate();
+                cutAndBuildChosen(newRoot);
             }
         } catch (IOException | URISyntaxException | ClassNotFoundException | InvocationTargetException |
                  NoSuchMethodException | InstantiationException | IllegalAccessException e) {
@@ -173,12 +180,14 @@ public class AgentMCNN extends Agent{
         while((System.currentTimeMillis() - startSearching)<(seconds*1000)) {
             //System.out.println("oui");
             NodeNN n = traverse();
-            System.out.println(n.getPhase() + " " + n.getScore() + " " + n.getPriorP() + " " + n.getNumToDeploy());
+            //System.out.println(n.getPhase() + " " + n.getScore() + " " + n.getPriorP() + " " + n.getNumToDeploy());
             n.generate();
-            visitedNodes.put(n.stringHashing(),n);
+            exploredNodes.put(n.stringHashing(),n);
             //System.out.println("non");
 
         }
+        System.out.println(exploredNodes.size());
+        System.out.println(chosenPath.size());
         return getBestAction();
     }
 
@@ -186,6 +195,54 @@ public class AgentMCNN extends Agent{
     public void setGame(Game game) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, IOException, URISyntaxException {
         super.setGame(game);
     }
+
+    /**
+     * Empty the explored nodes, goes up in the tree to store the parents that are not in chosenPath
+     * And iterates over its children to include them in exploredNodes, if they have children
+     * It also cut the children that will never be visited again to free space
+     * @param n
+     */
+    public void cutAndBuildChosen(NodeNN n) {
+
+        exploredNodes.clear();
+        NodeNN parent = n.getParent();
+        NodeNN current = n;
+        chosenPath.put(n.stringHashing(),n);
+        while (!chosenPath.containsKey(parent.stringHashing())) {
+            // We add the parent to the chosenPath
+            chosenPath.put(parent.stringHashing(), parent);
+            Iterator<NodeNN> child = parent.getChildren().values().iterator();
+            while (child.hasNext()) {
+                NodeNN c = child.next();
+                // If the nodes are the same we can not cut it
+                if (c.stringHashing().compareTo(current.stringHashing())==0) {
+                    // We store the score of these nodes in the target of the parent
+                    parent.getTargetA().set(0,c.getPos(),c.getScore());
+                    c = null;
+                    child.remove();
+                }
+            }
+            current = parent;
+            parent = current.getParent();
+        }
+        // We can now rebuild the exploredNodes
+        markAsExplored(n);
+        System.gc();
+    }
+
+    /**
+     * add the children of the node n in the hashmap exploredNodes
+     * @param n
+     */
+    public void markAsExplored(NodeNN n) {
+        if (!n.getChildren().isEmpty()) {
+            for (NodeNN child : n.getChildren().values()) {
+                exploredNodes.put(child.stringHashing(), child);
+                markAsExplored(child);
+            }
+        }
+    }
+
 
     public NodeNN getRoot() {
         return root;
@@ -197,7 +254,7 @@ public class AgentMCNN extends Agent{
 
     public void setRoot() throws IOException, URISyntaxException {
         setRoot(new NodeNN(getGame(), -1, null,  this, "deploy", aim,-1, this.getNumDeploy(), false));
-        visitedNodes.put(root.stringHashing(), getRoot());
+        chosenPath.put(root.stringHashing(), getRoot());
     }
 
     public AIManager getAim() {

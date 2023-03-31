@@ -1,9 +1,6 @@
 package org.tovivi.environment;
 
-import org.tovivi.agent.Agent;
-import org.tovivi.agent.AgentMCNN;
-import org.tovivi.agent.AgentMonteCarlo;
-import org.tovivi.agent.Legume;
+import org.tovivi.agent.*;
 import org.tovivi.environment.action.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
@@ -210,7 +207,7 @@ public class Game {
                         if (gameSpeed > 0) Thread.sleep(300 / gameSpeed);
                         while (gameSpeed < -1) Thread.sleep(50);
                     }
-                    System.out.println();
+
                     // Set the futureTask
                     futureTask = new FutureTask<>((() -> {
                         try {

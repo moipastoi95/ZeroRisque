@@ -135,6 +135,11 @@ public class MultiDeploy extends Deployment {
     }
 
     @Override
+    public int getFirstNumTroops() {
+        return getDeploys().get(0).getNumTroops();
+    }
+
+    @Override
     public boolean isNumTroopsLegal(Agent player) {
         // make sure to deploy a limited number of troops
         return getNumTroops() <= player.getNumDeploy();
@@ -153,4 +158,6 @@ public class MultiDeploy extends Deployment {
         }
         return count;
     }
+
+
 }

@@ -50,6 +50,7 @@ public class RealAgent extends Agent {
     @Override
     public Deployment getNextDeploy(int numTroops) {
 
+        /*
         try {
             AIManager aim = new AIManager("config");
             System.out.println("start");
@@ -60,6 +61,7 @@ public class RealAgent extends Agent {
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
+        */
 
         int troopsCard = 0;
         MultiDeploy playCards;

@@ -42,7 +42,6 @@ public class PlayCards extends Deployment {
         if (!isMoveLegal(player)) {
             throw new IllegalActionException();
         }
-
         player.removeAllCards(cards);
         return null;
     }
@@ -115,6 +114,11 @@ public class PlayCards extends Deployment {
     @Override
     public int getNumTroops() {
         return -Card.count(cards, player);
+    }
+
+    @Override
+    public int getFirstNumTroops() {
+        return getNumTroops();
     }
 
     @Override

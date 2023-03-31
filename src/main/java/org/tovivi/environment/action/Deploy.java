@@ -33,6 +33,11 @@ public class Deploy extends Deployment {
     }
 
     @Override
+    public int getFirstNumTroops() {
+        return getNumTroops();
+    }
+
+    @Override
     public boolean isNumTroopsLegal(Agent player) {
         return player.getNumDeploy() >= numTroops;
     }
