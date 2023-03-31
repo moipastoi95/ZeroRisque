@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Nb tours">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMCNN.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMCNN.java" afterDir="false" />
+    <list default="true" id="ad0473be-cf9c-4469-8cb6-8956c2a8c730" name="Changes" comment="Agent bien meilleur, ajout d'un constructeur dans AgentMonteCarlo pour lui donner les paramètres E et c dans la recherche (UCT = E(win/n) + c*(log(N)/n))">
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/tovivi/agent/AgentMonteCarlo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,6 +96,13 @@
     </option>
   </component>
   <component name="RunManager">
+    <configuration name="App" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="org.tovivi.gui.App" />
+      <module name="zerorisque" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="ZeroRisque3" />
       <method v="2">
@@ -371,14 +377,7 @@
       <option name="project" value="LOCAL" />
       <updated>1679754857058</updated>
     </task>
-    <task id="LOCAL-00034" summary="Nb tours">
-      <created>1680281253629</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1680281253629</updated>
-    </task>
-    <option name="localTasksCounter" value="35" />
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -397,6 +396,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Real Time playing + More continents" />
     <MESSAGE value="Map finie" />
     <MESSAGE value="Poubelle + Map bien (mais pas totalement exactement ce que je voulais faire à la base mais ça va venir, tkt)" />
     <MESSAGE value="Map ++" />
@@ -421,7 +421,6 @@
     <MESSAGE value="Cartes ajoutées (ça a l'air de tout bien marché c'est nickel chrome)" />
     <MESSAGE value="Pas mal de choses" />
     <MESSAGE value="Début réseaux de neurones" />
-    <MESSAGE value="Nb tours" />
-    <option name="LAST_COMMIT_MESSAGE" value="Nb tours" />
+    <option name="LAST_COMMIT_MESSAGE" value="Début réseaux de neurones" />
   </component>
 </project>
