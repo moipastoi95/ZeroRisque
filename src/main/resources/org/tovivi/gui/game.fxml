@@ -739,14 +739,20 @@
                         </StackPane>
                         <VBox fx:id="players" alignment="TOP_CENTER" prefWidth="195.0">
                            <children>
-                              <ImageView fx:id="pause" fitHeight="30.0" fitWidth="30.0" onMousePressed="#pause">
-                                 <image>
-                                    <Image url="@pause.png" />
-                                 </image>
-                                 <VBox.margin>
-                                    <Insets bottom="30.0" top="20.0" />
-                                 </VBox.margin>
-                              </ImageView>
+                              <HBox alignment="CENTER" prefHeight="48.0" prefWidth="185.0">
+                                 <children>
+                                    <ImageView fx:id="pause" fitHeight="30.0" fitWidth="30.0" onMousePressed="#pause">
+                                       <image>
+                                          <Image url="@pause.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label fx:id="turn" text="0">
+                                       <HBox.margin>
+                                          <Insets left="40.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                 </children>
+                              </HBox>
                               <VBox fx:id="Red" alignment="TOP_CENTER" prefWidth="195.0">
                                  <children>
                                     <Label text="Red Player" textFill="#da1313">

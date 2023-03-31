@@ -43,13 +43,14 @@ public class Actions {
             if(deployment != null) {
                 troopsRemaining -= deployment.getNumTroops();
                 deployment = (Deployment) deployment.perform(player);
+                System.out.println(troopsRemaining);
                 if (troopsRemaining>0) {
                     deployment = player.getNextDeploy(troopsRemaining);
                 }
             }
             return deployment != null;
         }
-        if (deployment != null && !(player instanceof AgentMCNN)) {
+        if (deployment != null) {
             deployment = (Deployment) deployment.perform(player);
         }
         return deployment != null;

@@ -1,6 +1,5 @@
 package org.tovivi.agent;
 
-import org.tensorflow.framework.metrics.AUCCurve;
 import org.tovivi.environment.*;
 import org.tovivi.environment.action.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;

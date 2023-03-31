@@ -122,7 +122,7 @@ public class AgentMonteCarlo extends Agent {
 
     /**Should return the best deployment to do in the actual situation by calling the function action test*/
     @Override
-    public Deployment getNextDeploy() throws IOException, URISyntaxException {
+    public Deployment getNextDeploy(int numToDeploy) throws IOException, URISyntaxException {
         this.nbActions = 0;
         this.root.setN(0);
         this.root.resetScore();

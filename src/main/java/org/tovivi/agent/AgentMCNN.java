@@ -151,7 +151,7 @@ public class AgentMCNN extends Agent{
             NodeNN copyRoot = new NodeNN(root);
             NodeNN newRoot = new NodeNN(getGame(), -1, copyRoot,this,phase,aim,-1,-1,pick);
             String hash = newRoot.stringHashing();
-            if (visitedNodes.containsKey(hash)) {
+            if (visitedNodes.containsKey(hash) && hash.equals(root)) {
                 root = visitedNodes.get(hash);
             }
             else {

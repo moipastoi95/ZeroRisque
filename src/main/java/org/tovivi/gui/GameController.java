@@ -40,6 +40,10 @@ public class GameController implements Initializable {
     @FXML
     // world is the AnchorPane that gathers all the AnchorPanes associated to the tiles
     private AnchorPane world ;
+
+    @FXML
+    // number of turn
+    private Label turn ;
     @FXML
     private VBox players;
     @FXML
@@ -158,7 +162,6 @@ public class GameController implements Initializable {
         if (evt.getPropertyName().compareTo("newTurn")==0) {
             Platform.runLater(() -> {
                 Agent pNew = (Agent) evt.getNewValue() ; Agent pOld = (Agent) evt.getOldValue();
-
                 tl.stop();
                 timer.setValue(1);
                 time.setStyle("-fx-accent: "+pNew.getColor().toLowerCase());
@@ -168,6 +171,9 @@ public class GameController implements Initializable {
                     phaseInf.getChildren().remove(1);
                 }
 
+                if (pNew.getColor().compareTo("Red")==0) {
+                    turn.setText(String.valueOf(Integer.valueOf(turn.getText())+1));
+                }
                 // We unselect potential selections and set variables for the potential real agent
                 realAgentTurn = "";
                 if (pNew instanceof RealAgent) {
