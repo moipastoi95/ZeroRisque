@@ -157,14 +157,14 @@ public class AgentMCNN extends Agent{
             }
             // If we have already explored this node and it's children
             else if (exploredNodes.containsKey(hash)) {
-                System.out.println("A deja été visité");
+                //System.out.println("A deja été visité");
                 cutAndBuildChosen(exploredNodes.get(hash));
                 root = chosenPath.get(hash);
                 root.setGame(getGame());
             }
             else {
                 //TODO Créer un score en tableau (pour les changements entre les joueurs)
-                System.out.println("peut être là le problème");
+                //System.out.println("peut être là le problème");
                 root = newRoot;
                 newRoot.generate();
                 cutAndBuildChosen(newRoot);

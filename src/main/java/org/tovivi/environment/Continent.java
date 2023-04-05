@@ -94,9 +94,12 @@ public class Continent implements PropertyChangeListener {
             else {
                 players.put(((Agent) evt.getNewValue()).getColor(), 1);
             }
-            //If there was someone
+            //If there was someone on the tile
             if (evt.getOldValue()!=null) {
                 players.put(((Agent) evt.getOldValue()).getColor(), players.get(((Agent) evt.getOldValue()).getColor())-1);
+                if (getOccupier()!=null && getOccupier().getColor().compareTo(((Agent) evt.getOldValue()).getColor())==0) {
+                    setOccupier(null);
+                }
             }
         }
     }

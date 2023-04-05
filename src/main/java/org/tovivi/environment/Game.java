@@ -106,11 +106,13 @@ public class Game {
 
         // DeepCopy of the discard pile
         for(Card c: Game.getTheDiscardPile()){
-            getTheDiscardPile().add(c);
-            if(getTheDiscardPile().firstElement().getType() != CardType.JOKER) {
-                getTheDiscardPile().firstElement().setBonusTile(this.getTiles().get(c.getBonusTile().getName()));
+            Card newCard = new Card(c);
+            if(c.getType() != CardType.JOKER) {
+                newCard.setBonusTile(this.getTiles().get(c.getBonusTile().getName()));
             }
+            getTheDiscardPile().add(newCard);
         }
+
     }
 
     public void play() {
