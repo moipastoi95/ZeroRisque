@@ -58,7 +58,7 @@ public class Fortify extends Offensive {
             return false;
         }
         // the fromTile has enough troops
-        if (fromTile.getNumTroops() <= numTroops) {
+        if (numTroops==0 || fromTile.getNumTroops() <= numTroops) {
             return false;
         }
         if (!connexTiles(fromTile).contains(toTile)) {

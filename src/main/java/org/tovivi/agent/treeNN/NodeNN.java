@@ -43,6 +43,8 @@ public class NodeNN {
 
     private double wins = 0; // Sum of the estimations of this node and child nodes rewards
 
+    private final int maxChild = 5;
+
     private double score;
 
     private double priorP;
@@ -120,6 +122,7 @@ public class NodeNN {
         double[][] targetArr = predict(getPhase()).getArray();
         Actuator act = null;
         for (int i=0; i<targetArr[0].length; i++) {
+
             switch (getPhase()) {
                 case "deploy":
                     act = aim.legalDeploy(getPlayer(),i, numToDeploy);
@@ -133,9 +136,6 @@ public class NodeNN {
                     if (i<targetArr[0].length-1) {
                         act = aim.legalFortify(getPlayer(),i);
                     }
-                    else {
-                        System.out.println(i);
-                    }
                     break;
             }
             if (act==null && !(i==targetArr[0].length-1 && getPhase().compareTo("deploy")!=0)) {
@@ -143,31 +143,35 @@ public class NodeNN {
             }
             int j=-1;
             // While the value of the action i is higher than the element j+1 of the linked list, continue
-            while (j+1<priorPs.size() && (targetArr[0][priorPs.get(j+1)]<targetArr[0][i])) {
-                j++;
-            }
-            // If j>=0 then the value need to be added to the linked list
-            if (j>=0) {
-                // The value will be added to the list (we check j+1 is indeed a index in the list)
-                if (j+1==priorPs.size()) {
-                    priorPs.add(i);
-                    actList.add(act);
+            if (i<targetArr[0].length-1 || getPhase().compareTo("deploy")==0) {
+
+                while (j+1<priorPs.size() && (targetArr[0][priorPs.get(j+1)]<targetArr[0][i])) {
+                    j++;
                 }
-                else {
-                    priorPs.add(j+1,i);
-                    actList.add(j+1, act);
+                // If j>=0 then the value need to be added to the linked list
+
+                if (j>=0) {
+                    // The value will be added to the list (we check j+1 is indeed a index in the list)
+                    if (j+1==priorPs.size()) {
+                        priorPs.add(i);
+                        actList.add(act);
+                    }
+                    else {
+                        priorPs.add(j+1,i);
+                        actList.add(j+1, act);
+                    }
+                    // We will only add maxChild-1 nodes because we will always add the null action
+                    // If the list size reaches the max size -1 , we remove the first one
+                    if (priorPs.size()>maxChild-nullAction) {
+                        priorPs.remove();
+                        actList.remove();
+                    }
                 }
-                // We will only add maxChild-1 nodes because we will always add the null action
-                // If the list size reaches the max size -1 , we remove the first one
-                if (priorPs.size()>maxChild-nullAction) {
-                    priorPs.remove();
-                    actList.remove();
+                // If the list size does not reach maxChild-1, we add the actuator anyway
+                else if (priorPs.size()<maxChild-nullAction) {
+                    priorPs.addFirst(i);
+                    actList.addFirst(act);
                 }
-            }
-            // If the list size does not reach maxChild-1, we add the actuator anyway
-            else if (priorPs.size()<maxChild-nullAction) {
-                priorPs.addFirst(i);
-                actList.addFirst(act);
             }
         }
         setTargetA(new Matrix(targetArr));
@@ -202,6 +206,7 @@ public class NodeNN {
 
         try {
             Game nextGame = new Game(getGame());
+            // System.out.println(nextGame.getTheDiscardPile().size()==getGame().getTheDiscardPile().size());
             String nextPl = nextPlayer(nextGame);
 
             // After an attack or a fortify phase, it can lead to a Chance node
@@ -241,10 +246,12 @@ public class NodeNN {
                 }
             }
             int nextNumToDeploy = -1;
-            // if act is a Deployment we can copy the tiles in the deployment and perform the action.
+            // if act is a Deployment we can modify the game according to these deployments.
             if(act instanceof Deployment){
                 for (int i=0; i<((Deployment) act).getTiles().size(); i++) {
-                    ((Deployment) act).getTiles().set(i,nextGame.getTiles().get(((Deployment) act).getTiles().get(i).getName()));
+                    String tileName = ((Deployment) act).getTiles().get(i).getName();
+                    nextGame.getTiles().get(tileName)
+                            .setNumTroops(nextGame.getTiles().get(tileName).getNumTroops() + ((Deployment) act).getNumTroops());
                 }
                 nextNumToDeploy = numToDeploy-((Deployment) act).getNumTroops();
                 // If there is still troops to deploy, the next node will be a deploy node too
@@ -321,7 +328,7 @@ public class NodeNN {
         }
         else {
             //Continue the generation of the tree
-            setChildren(generateChildren(5, getNumToDeploy()));
+            setChildren(generateChildren(maxChild, getNumToDeploy()));
         }
     }
 

@@ -104,6 +104,13 @@ public class Game {
             }
         }
 
+        // DeepCopy of the discard pile
+        for(Card c: Game.getTheDiscardPile()){
+            getTheDiscardPile().add(c);
+            if(getTheDiscardPile().firstElement().getType() != CardType.JOKER) {
+                getTheDiscardPile().firstElement().setBonusTile(this.getTiles().get(c.getBonusTile().getName()));
+            }
+        }
     }
 
     public void play() {
@@ -150,7 +157,6 @@ public class Game {
                     if (flag) {
                         if (a.getDeployment(p).isNumTroopsLegal(p)) {
                             while (flag) {
-
                                 // Set the futureTask
                                 futureTask = new FutureTask<>((() -> {
                                     try {

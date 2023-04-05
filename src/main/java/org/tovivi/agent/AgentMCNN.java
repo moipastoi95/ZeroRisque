@@ -9,13 +9,13 @@ import org.tovivi.environment.action.*;
 import org.tovivi.environment.action.exceptions.IllegalActionException;
 import org.tovivi.environment.action.exceptions.SimulationRunningException;
 import org.tovivi.nn.AIManager;
+import org.w3c.dom.ls.LSOutput;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -24,7 +24,7 @@ public class AgentMCNN extends Agent{
     private AIManager aim;
 
     final static public double C = Math.sqrt(2);
-    private final double seconds = 0.1;
+    private final double seconds = 0.5;
     private NodeNN root;
 
     private HashMap<String, NodeNN> chosenPath = new HashMap<>();
@@ -54,7 +54,6 @@ public class AgentMCNN extends Agent{
 
     @Override
     public Deployment getNextDeploy(int numTroops) throws IOException, URISyntaxException {
-
         ArrayList<Deployment> depL = new ArrayList<>();
         ArrayList<Card> goodCards = Card.chooseCards(getDeck(), this);
         int goodCardsValue = Card.count(goodCards, this);
@@ -64,6 +63,7 @@ public class AgentMCNN extends Agent{
             depL.addAll(pc.autoDeploy());
         }
         depL.add((Deployment) searchForBestAction("deploy"));
+
         MultiDeploy deployPart = new MultiDeploy(depL);
         return deployPart;
     }
@@ -88,7 +88,6 @@ public class AgentMCNN extends Agent{
         return null;
     }
 
-    // TODO fonction qui génère le root s'il n'a pas été généré (pour des raisons de Random gen ou de profondeur trop faible)
     public NodeNN traverse() {
 
         NodeNN res = root;
@@ -119,16 +118,16 @@ public class AgentMCNN extends Agent{
         if (maxInd>=0) {
             switch (root.getPhase()) {
                 case "deploy":
-                    res = aim.legalDeploy(root.getPlayer(), maxInd, root.getNumToDeploy());
+                    res = aim.legalDeploy(this, maxInd, root.getNumToDeploy());
                     break;
                 case "attack":
                     if (maxInd < root.getTargetA().getArray()[0].length - 1) {
-                        res = aim.legalAttack(root.getPlayer(), maxInd);
+                        res = aim.legalAttack(this, maxInd);
                     }
                     break;
                 case "fortify":
                     if (maxInd < root.getTargetA().getArray()[0].length - 1) {
-                        res = aim.legalFortify(root.getPlayer(), maxInd);
+                        res = aim.legalFortify(this, maxInd);
                     }
                     break;
             }
@@ -147,11 +146,9 @@ public class AgentMCNN extends Agent{
         if (phase.compareTo("deploy")!=0) {
             pick = root.isPick();
         }
-
         try {
-
             NodeNN copyRoot = new NodeNN(root);
-            NodeNN newRoot = new NodeNN(getGame(), -1, copyRoot,this,phase,aim,-1,-1,pick);
+            NodeNN newRoot = new NodeNN(getGame(), -1, copyRoot,this, phase, aim,-1,-1,pick);
             String hash = newRoot.stringHashing();
 
             // Specific case of the first time we met the root
@@ -160,12 +157,14 @@ public class AgentMCNN extends Agent{
             }
             // If we have already explored this node and it's children
             else if (exploredNodes.containsKey(hash)) {
+                System.out.println("A deja été visité");
                 cutAndBuildChosen(exploredNodes.get(hash));
                 root = chosenPath.get(hash);
+                root.setGame(getGame());
             }
             else {
-                //TODO AJouter un delete des enfants
-                // Créer un score en tableau (pour les changements entre les joueurs)
+                //TODO Créer un score en tableau (pour les changements entre les joueurs)
+                System.out.println("peut être là le problème");
                 root = newRoot;
                 newRoot.generate();
                 cutAndBuildChosen(newRoot);
@@ -176,18 +175,15 @@ public class AgentMCNN extends Agent{
         }
 
         long startSearching = System.currentTimeMillis();
-        System.out.println(root);
+
         while((System.currentTimeMillis() - startSearching)<(seconds*1000)) {
             //System.out.println("oui");
             NodeNN n = traverse();
-            //System.out.println(n.getPhase() + " " + n.getScore() + " " + n.getPriorP() + " " + n.getNumToDeploy());
             n.generate();
+            //System.out.println(n.getPhase() + " " + n.getScore() + " " + n.getPriorP() + " " + n.getNumToDeploy());
             exploredNodes.put(n.stringHashing(),n);
             //System.out.println("non");
-
         }
-        System.out.println(exploredNodes.size());
-        System.out.println(chosenPath.size());
         return getBestAction();
     }
 
@@ -204,30 +200,29 @@ public class AgentMCNN extends Agent{
      */
     public void cutAndBuildChosen(NodeNN n) {
 
-        exploredNodes.clear();
         NodeNN parent = n.getParent();
         NodeNN current = n;
+        exploredNodes.clear();
         chosenPath.put(n.stringHashing(),n);
-        while (!chosenPath.containsKey(parent.stringHashing())) {
+        do  {
             // We add the parent to the chosenPath
             chosenPath.put(parent.stringHashing(), parent);
             Iterator<NodeNN> child = parent.getChildren().values().iterator();
             while (child.hasNext()) {
                 NodeNN c = child.next();
-                // If the nodes are the same we can not cut it
-                if (c.stringHashing().compareTo(current.stringHashing())==0) {
+                // We just want to keep the node that we've chosen
+                if (c.stringHashing().compareTo(current.stringHashing())!=0) {
                     // We store the score of these nodes in the target of the parent
+                    // TODO A voir s'il ne faut pas enregistrer les positions pour normaliser les scores
                     parent.getTargetA().set(0,c.getPos(),c.getScore());
-                    c = null;
                     child.remove();
                 }
             }
             current = parent;
             parent = current.getParent();
-        }
+        } while (parent!=null && !chosenPath.containsKey(parent.stringHashing()));
         // We can now rebuild the exploredNodes
         markAsExplored(n);
-        System.gc();
     }
 
     /**
@@ -237,12 +232,14 @@ public class AgentMCNN extends Agent{
     public void markAsExplored(NodeNN n) {
         if (!n.getChildren().isEmpty()) {
             for (NodeNN child : n.getChildren().values()) {
-                exploredNodes.put(child.stringHashing(), child);
+                // We add the child  in the exploredNodes hashMap if they are not ChanceNodeNN (i.e. able to become a root)
+                if (!(child instanceof ChanceNodeNN)) {
+                    exploredNodes.put(child.stringHashing(), child);
+                }
                 markAsExplored(child);
             }
         }
     }
-
 
     public NodeNN getRoot() {
         return root;

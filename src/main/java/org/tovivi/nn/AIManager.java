@@ -13,7 +13,6 @@ import java.util.*;
 public class AIManager {
 
     private String configName;
-
     private HashMap<String,Integer> allCards; // Format of the key : cardType:country
     private String[] allTiles; // Format : country
     private String[] allEdges; // Format : country1:country2
@@ -41,7 +40,6 @@ public class AIManager {
         TextReader.readAllNames(this);
         config();
         System.out.println(getAllTiles()[41]);
-
     }
 
     public void config() throws URISyntaxException, FileNotFoundException {
@@ -192,7 +190,7 @@ public class AIManager {
             int numTroops ;
             switch (c/42) {
                 case 0:
-                    numTroops=2;
+                    numTroops=Math.min(2, numToDeploy);
                     break;
                 case 1:
                     numTroops = (int) Math.ceil((double) numToDeploy/4);
@@ -262,7 +260,7 @@ public class AIManager {
      */
     public Fortify legalFortify(Agent player, int c) {
         try {
-            int fromTileInt = c/41; // fromTileInt encodes the to tile where the troops come from
+            int fromTileInt = c/42; // fromTileInt encodes the to tile where the troops come from
             int toTileInt = c%41; // fromTileInt encodes which tile receives the troops (be careful that the fromTile is not included so the int order is shifted by 1 from it)
             // So we have to increment toTileInt if above fromTileInt to find the real int
             toTileInt = (toTileInt>=fromTileInt) ? toTileInt+1 : toTileInt;
@@ -273,8 +271,11 @@ public class AIManager {
             Tile fromTile = player.getGame().getTiles().get(fromTileStr);
             Tile toTile = player.getGame().getTiles().get(toTileStr);
 
-            Fortify res = new Fortify(fromTile, toTile, fromTile.getNumTroops());
-            if (res.isMoveLegal(player)) return res;
+            Fortify res = new Fortify(fromTile, toTile, fromTile.getNumTroops()-1);
+            if (res.isMoveLegal(player)) {
+                return res;
+            }
+
             return null;
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
