@@ -1,4 +1,4 @@
-# ZeroRisque
+# ZeroRisque (equivalent to RiskZero in French)
 
 ***
 ## Rules of the game of ZeroRisque
