@@ -1,7 +1,7 @@
 # ZeroRisque (equivalent to RiskZero in French)
 
 ***
-## Rules of the game of ZeroRisque
+## Rules of the game of Risk
 ### Principle
 * Two player and one neutral player (this one is never attacking he is just here to make some cases neutral but hard to take)
 * There are 42 territories on the map randomly assigned at the start of the game (14 each)
