@@ -1,5 +1,9 @@
 # ZeroRisque (equivalent to RiskZero in French)
 
+## Run the application
+
+To run the app you have to run the class App in your IDE (we tried to make it runnable with a jar but it is quite complicated with JavaFx) 
+
 ***
 ## Rules of the game of Risk
 ### Principle
