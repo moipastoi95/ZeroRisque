@@ -1,5 +1,5 @@
 # ZeroRisque
-Risk with some AI or what ?
+
 ***
 ## Rules of the game of ZeroRisque
 ### Principle
@@ -34,11 +34,27 @@ Bonus for being the owner of the continent :
 * North America : 5 
 * South America : 2
 
+### Cards
+
+At the end of his turn if a player has invaded at least 1 territory he can draw a card.
+* The cards are divided into 4 groups (INFANTRY, CAVALRY, ARTILLERY, and JOKER cards)
+* In addition, the cards of type other than JOKER are accompanied by the name of one of the territories
+* There are 42 cards (14 of each type) and 2 JOKER
+* Cards are played by 3.
+* A player must collect 3 cards of different types or 3 times the same type knowing that the JOKER can take the role of any type
+* If the player has one of the territories indicated on the cards, that territory or territories receive 2 troops.
+
+# User Interface
+
+## Notation
+
+The maps are noted in this way: ART:Australia for a map of type ARTILLERY with the territory Australia.
+
+## Command
+
+* To do the actions, just follow the indications at the bottom left of the window when it is your turn
+* To select a territory, click on the associated tile
+* Be careful, for the fortification, if you click on a tile it will simply change the destination territory
+* You must click on the territory from which the troops are leaving to cancel the selection and change it
 
 
-
-```
-C'est du code ça
-```
-
-> Citation
